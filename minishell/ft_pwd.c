@@ -12,6 +12,11 @@
 
 #include "../minishell.h"
 
-void		ft_pwd(char **arg, int fd)
+char		*ft_pwd(char **arg, int fd)
 {
+	char	*pwd;
+	size_t	size_pwd;
+
+	getcwd(pwd, 13);
+	return (pwd);
 }

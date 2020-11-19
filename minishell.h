@@ -17,9 +17,13 @@
 # include <unistd.h>
 # include <stdlib.h>
 
+# define TRUE	1
+# define FALSE	0
+
 typedef struct	s_data
 {
 	char		**envp_dupl;
+	int			envp_size;
 	int			redir_left;
 	int			redir_rigth;
 	int			redir_double_rigth;
