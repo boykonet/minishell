@@ -1,41 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   ft_pwd.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gkarina <gkarina@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/11/19 14:05:06 by gkarina           #+#    #+#             */
-/*   Updated: 2020/11/19 14:05:06 by gkarina          ###   ########.fr       */
+/*   Created: 2020/11/19 15:31:27 by gkarina           #+#    #+#             */
+/*   Updated: 2020/11/19 15:31:27 by gkarina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHELL_H
-# define MINISHELL_H
+#include "../minishell.h"
 
-# include <stdio.h>
-# include <unistd.h>
-# include <stdlib.h>
-
-typedef struct	s_data
+void		ft_pwd(char **arg, int fd)
 {
-	char		**envp_dupl;
-	int			redir_left;
-	int			redir_rigth;
-	int			redir_double_rigth;
-}				t_data;
-
-/*typedef enum	e_ch
-{
-	A = 0,
-	B
-}				t_ch;
-
-t_ch flag;
-
-
-flag = A;
-
-flag = B;*/
-
-#endif
+}
