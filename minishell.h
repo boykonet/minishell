@@ -21,9 +21,19 @@
 # define TRUE	1
 # define FALSE	0
 
+typedef struct	s_str
+{
+	t_list		*args;
+	t_list		*curr;
+	char		*command;
+	char		*flag;
+	char		*redir;
+	char		*name_fd;
+}				t_str;
+
 typedef struct	s_data
 {
-	char		**envp_dupl;
+	t_list		*envp_dupl;
 	int			envp_size;
 	int			redir_left;
 	int			redir_rigth;

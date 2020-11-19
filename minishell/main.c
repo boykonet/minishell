@@ -12,6 +12,13 @@
 
 #include "../minishell.h"
 
+void		free_data(t_data *data)
+{
+	if (envp_dupl)
+		free_str(env_dupl);
+	free(envp_dupl);
+}
+
 void		init_data(t_data *data)
 {
 	data->envp_dupl = NULL;
@@ -45,38 +52,45 @@ void		free_str(char **str)
 	free(str);
 }
 
-char		**copy_str(char **str, int str_size)
+void		del_content(void *content)
 {
-	char	**str_dupl;
-	int		i;
-	int		j;
+	if (content)
+		free(content);
+}
+
+t_list		*copy_in_struct(char **str)
+{
+	t_list	*head;
+	t_list	*curr;
+	size_t	str_size;
+	size_t	i;
 
 	i = 0;
-	j = 0;
-	str_dupl = NULL;
-	if (!(str_dupl = malloc(sizeof(char*) * (str_size + 1))))
+	if (!(head = ft_lstnew(ft_strdup(str[i++]))))
 		return (NULL);
-	str_dupl[str_size] = NULL;
-	while (str[i])
+	curr = head;
+	str_size = number_of_lines(str);
+	while (i < str_size)
 	{
-		if (!(str_dupl[j] = malloc(sizeof(char) * ft_strlen(str[i]))))
+		if (!(curr->next = ft_lstnew(ft_strdup(str[i++]))))
 		{
-			free_str(str_dupl);
+			ft_lstclear(&head, &del_content);
 			return (NULL);
 		}
-		i++;
-		j++;
+		curr = curr->next;
 	}
-	return (str_dupl);
+	return (head);
 }
 
 int			main(int argc, char **argv, char **envp)
 {
+	t_str	s_str;
 	t_data	data;
 
+	init_s_str(&s_str);
 	init_data(&data);
-	data.envp_size = number_of_lines(envp);
-	if (!(data.envp_dupl = copy_str(envp, data.envp_size)))
+//	data.envp_size = number_of_lines(envp);
+	if (!(s_str.args = copy_in_struct(envp)))
 	{
 		strerror(errno);
 		return (-1);
@@ -85,6 +99,7 @@ int			main(int argc, char **argv, char **envp)
 	{
 		gnl();
 		parser(&data);
+		builtins(&data);
 	}
 	return (0);
 }

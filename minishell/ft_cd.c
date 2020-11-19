@@ -12,7 +12,7 @@
 
 #include "../minishell.h"
 
-void		ft_cd()
+void		ft_cd(t_list *arg, int fd, char *envp)
 {
-
+	if (ft_strncmp())
 }
