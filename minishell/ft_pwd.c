@@ -12,27 +12,17 @@
 
 #include "../minishell.h"
 
-size_t		ft_strlen(const char *s)
+char		*ft_pwd(char *pwd)
 {
-	int		i;
-
-	i = 0;
-	while (s[i])
-		i++;
-	return (i);
-}
-
-void		ft_pwd(char **arg, int fd)
-{
-	char	*pwd;
-
-	pwd = getcwd(NULL, 0);
-	write(fd, pwd, ft_strlen(pwd));
-	write(fd, "\n", 1);
+	if (!(pwd = getcwd(NULL, 0)))
+		return (NULL);
+	return (pwd);
 }
 
 int		main(int argc, char **argv, char **envp)
 {
+	t_data	data;
+	t_str	s_str;
 	char	*arg[4] = {
 	"pwd",
 	">>",
@@ -40,9 +30,26 @@ int		main(int argc, char **argv, char **envp)
 	NULL };
 	int		fd;
 
-	if ((fd = open(arg[2], O_CREAT | O_RDWR | O_APPEND, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)) == -1)
-		write(1, "error\n", 6);
+	if (!ft_strncmp(s_str.redir, "<", 1))
+		data.redir_left = 1;
 
-	ft_pwd(arg, fd);
+	else if (!ft_strncmp(s_str.redir, ">", 1))
+		data.redir_rigth = 1;
+
+	else if (!ft_strncmp(s_str.redir, ">>", 2))
+		data.redir_double_rigth = 1;
+
+	if (data.redir_double_rigth == 1)
+		if ((fd = open(s_str.name_fd, O_CREAT | O_RDWR | O_APPEND, \
+				S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)) == -1)
+			return (-1);
+	else if (data.redir_rigth == 1)
+		if ((fd = open(s_str.name_fd, O_CREAT | O_RDWR | O_TRUNC, \
+						S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)) == -1)
+			return (-1);
+	else if (data.redir_left == 1)
+		data.redir_left = 1; /* ya ne znau cho etot redirect delaet */
+
+	ft_pwd(pwd);
 	close(fd);
 }

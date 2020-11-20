@@ -1,9 +1,27 @@
 #include "../minishell.h"
 
-void		parser()
+t_params		*new_param(t_params *params)
 {
-/* на этапе парсинга узнать или после него, присутствует ли символ >>*/
-/*	if (right_shift_operator == 1)
-		fd = */
-	
+	t_params	*new;
+
+	if (!(new = malloc(sizeof(t_params))))
+		return (NULL);
+	new->next = NULL;
+	return (new);
+}
+
+void		parser(t_data *data, t_list *head, char *line)
+{
+	int		i;
+
+	i = 0;
+	while (line[i])
+	{
+		if (!params = ft_lstnew(params))
+		while (line[i] != '|' || line[i] != ';')
+		{
+
+		}
+		params = params->next;
+	}
 }

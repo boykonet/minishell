@@ -12,20 +12,25 @@
 
 #include "../minishell.h"
 
-void		ft_echo(char **arg, int fd, int )
+char		*ft_echo(t_str *s_str, t_data *data, int fd)
 {
-	int		i;
 	int		back_slash;
+	int		i;
 
-	i = 1;
 	back_slash = 0;
-	if (ft_strnstr(arg[i], "-n"))
+	i = 0;
+	s_str->curr = s_str->args;
+	if (!ft_strncmp(flags, "-n", 2))
 		back_slash = 1;
-	while (arg[i])
+	while (s_str->curr)
 	{
-		if (i - 1 == )
-		write_str(arg[i], fd, 0);
+		if (s_str->args_size - i == 0)
+			write_str((s_str->curr)->content, fd, 1);
+		else
+			write_str((s_str->curr)->content, fd, 0);
+		(s_str->curr) = (s_str->curr)->next;
+		i++;
 	}
-	if (back_slash != 1)
+	if (back_slash == 0)
 		write(fd, "\n", 1);
 }
