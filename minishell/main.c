@@ -104,26 +104,27 @@ void		wait_line(char *str)
 int				main(int argc, char **argv, char **envp)
 {
 	t_params	params;
-	char		*line;
+	const char	*line;
+	char		*curr;
 	char		**envp_dupl;
 	int			ch;
 
-	init_params(&params);
 	if (!(envp_dupl = copy_str(envp)))
 		return (-1);
 	while (TRUE)
 	{
-		wait_line("minishell$");
+		wait_line("minishell$ ");
 		if (get_next_line(0, &line) < 0)
 			return (-1);
-		while (line)
+		curr = (char*)line;
+		while (curr)
 		{
 			init_params(&params);
-			ch = parser(&params, &line);
+			ch = parser(&params, &curr);
 			builtins(&params, ch);
-			free(line);
 			free_params(&params);
 		}
+		free(line);
 	}
 	return (0);
 }
