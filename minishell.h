@@ -23,25 +23,22 @@
 
 typedef struct		s_params
 {
-	t_list			*args;
+	char			**flags;
+	char			**args;
 	char			*command;
-	char			*flags;
 	char			*redir;
 	char			*name_fd;
 	char			*error;
-	int				args_size;
-	struct s_str	*next;
 }					t_params;
 
-typedef struct		s_data
-{
-	t_list			*envp_dupl;
-	char			*pwd;
-	int				envp_size;
-	int				redir_left;
-	int				redir_rigth;
-	int				redir_double_rigth;
-}					t_data;
+/* typedef struct		s_data */
+/* { */
+/* 	t_list			*envp_dupl; */
+/* 	/1* int				envp_size; *1/ */
+/* 	/1* int				redir_left; *1/ */
+/* 	/1* int				redir_rigth; *1/ */
+/* 	/1* int				redir_double_rigth; *1/ */
+/* }					t_data; */
 
 /*typedef enum	e_ch
 {

@@ -12,12 +12,23 @@
 
 #include "../minishell.h"
 
-char		*ft_cd(t_list *args, char *home, char *pwd_curr, char *old_pwd)
+void		change_pwd(char **pwd_curr, char **old_pwd, char *pwd)
+{
+	char	*tmp;
+
+	tmp = old_pwd;
+	old_pwd = pwd_curr;
+	free(tmp);
+	pwd_curr = ft_strdup(pwd);
+}
+
+char		*ft_cd(char **args, char **home, char **pwd_curr, char **old_pwd)
 {
 	char	*pwd;
 	char	*str;
 	char	*start;
 	char	*end;
+	char	*tmp;
 
 	pwd = NULL;
 	str = NULL;
@@ -29,12 +40,9 @@ char		*ft_cd(t_list *args, char *home, char *pwd_curr, char *old_pwd)
 		str = ft_strdup("/");
 	else if (!ft_strncmp(args->content, "..", 2) || \
 			!ft_strncmp(args->content, "../", 3))
-	{
 		str = ft_substr(pwd, 0, ft_strrchr(pwd, '/') - pwd);
-		free(pwd);
-	}
 	else if (!ft_strncmp(args->content, ".", 1))
-		str = pwd;
+		str = ft_strdup(pwd);
 	else if (!ft_strncmp(args->content, "~", 1) || \
 			args->content == NULL)
 	{
@@ -42,8 +50,12 @@ char		*ft_cd(t_list *args, char *home, char *pwd_curr, char *old_pwd)
 		end = ft_strrchr(home, '"') - 1;
 		str = ft_substr(start, 0, end - start);
 	}
+	else if (!ft_strncmp(args->content, "-", 1))
+		spr = ft_strdup(*old_pwd);
 	if (chdir(str) < 0)
 		return (NULL);
+	change_pwd(pwd_curr, old_pwd, str);
+	free(pwd);
 	return (str);
 }
 

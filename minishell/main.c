@@ -12,62 +12,6 @@
 
 #include "../minishell.h"
 
-void		del_content(void *content)
-{
-	if (content)
-		free(content);
-}
-
-void		free_data(t_data *data)
-{
-	if (data->envp_dupl)
-		ft_lstclear(&data->envp_dupl, &del_content);
-}
-
-void		free_params(t_params *params)
-{
-	if (params->args)
-		ft_lstclear(&params->args, &del_content);
-	if (params->command)
-		free(params->command);
-	if (params->flag)
-		free(params->flag);
-	if (params->redir)
-		free(params->redir);
-	if (params->name_fd)
-		free(params->name_fd);
-}
-
-void		init_data(t_data *data)
-{
-	data->envp_dupl = NULL;
-	data->pwd = NULL;
-	data->envp_size = 0;
-	data->redir_left = 0;
-	data->redir_rigth = 0;
-	data->redir_double_rigth = 0;
-}
-
-void		init_params(t_str *params)
-{
-	params->args = NULL;
-	params->curr = NULL;
-	params->command = NULL;
-	params->flag = NULL;
-	params->redir = NULL;
-	params->name_fd = NULL;
-	params->args_size = 0;
-}
-
-size_t		number_of_lines(char **arr)
-{
-	size_t	count;
-
-	count = 0;
-	while (arr[count])
-		count++;
-	return (count);
-}
 
 void		free_string(char **str)
 {
@@ -83,61 +27,103 @@ void		free_string(char **str)
 	free(str);
 }
 
-t_list		*copy_in_list(char **str)
+void		free_params(t_params *params)
 {
-	t_list	*head;
-	t_list	*curr;
+	if (params->args)
+		free_string(params->args);
+	if (params->command)
+		free(params->command);
+	if (params->flag)
+		free(params->flag);
+	if (params->redir)
+		free(params->redir);
+	if (params->name_fd)
+		free(params->name_fd);
+}
+
+void		init_params(t_str *params)
+{
+	params->args = NULL;
+	params->command = NULL;
+	params->flag = NULL;
+	params->redir = NULL;
+	params->name_fd = NULL;
+}
+
+size_t		number_of_lines(char **arr)
+{
+	size_t	count;
+
+	count = 0;
+	while (arr[count])
+		count++;
+	return (count);
+}
+
+char		*copy_str(char **str)
+{
+	char	**str_dup;
 	size_t	i;
+	size_t	j;
+	size_t	str_size;
 
 	i = 0;
-	if (!(head = ft_lstnew(ft_strdup(str[i++]))))
+	j = 0;
+	str_size = number_of_lines(str);
+	if (!(str_dup = malloc(sizeof(char*) * (str_size + 1))))
 		return (NULL);
-	curr = head;
-	curr = curr->next;
+	str_dup[str_size] = NULL;
 	while (str[i])
 	{
-		if (!(curr = ft_lstnew(ft_strdup(str[i]))))
+		if (!(str_dup[j] = ft_strdup(str[i])))
 		{
-			ft_lstclear(&head, &del_content);
+			free_string(str_dup);
 			return (NULL);
 		}
-		curr = curr->next;
 		i++;
+		j++;
 	}
-	return (head);
+	return (str_dup);
 }
 
-void		wait_line(char *)
+void		wait_line(char *str)
 {
-	char	*curr_location;
+/* chochu chtoby bylo tak: ~/minishell/minishell$*/
+//	char	*curr_location;
+//	int		i;
 
-	write(1, curr_location, ft_strlen(curr_location));
-	write(1, " $>", 3);
+	/* i = 0; */
+	/* while (i < 2) */
+	/* { */
+
+	/* } */
+//	write(1, curr_location, ft_strlen(curr_location));
+	write(1, str, ft_strlen(str));
 }
 
-int			main(int argc, char **argv, char **envp)
+int				main(int argc, char **argv, char **envp)
 {
 	t_params	params;
-	t_data		data;
 	char		*line;
+	char		**envp_dupl;
+	int			ch;
 
 	init_params(&params);
-	init_data(&data);
-	if (!(data.envp_dupl = copy_in_list(envp)))
-	{
-		strerror(errno);
+	if (!(envp_dupl = copy_str(envp)))
 		return (-1);
-	}
 	while (TRUE)
 	{
-		write(1, "minishell $>", 12);
+		wait_line("minishell$");
 		if (get_next_line(0, &line) < 0)
 			return (-1);
-		parser(&data, &params, line);
-		builtins(&data, &params);
-		free(line);
-		free_params(&params);
-		free_data(&data);
+		while (line)
+		{
+			init_params(&params);
+			ch = parser(&params, &line);
+			builtins(&params, ch);
+			free(line);
+			free_params(&params);
+		}
 	}
 	return (0);
 }
