@@ -17,6 +17,8 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <fcntl.h>
+# include "./gnl/get_next_line.h"
+# include "./libft/libft.h"
 
 # define TRUE	1
 # define FALSE	0

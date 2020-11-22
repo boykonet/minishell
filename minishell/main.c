@@ -33,19 +33,19 @@ void		free_params(t_params *params)
 		free_string(params->args);
 	if (params->command)
 		free(params->command);
-	if (params->flag)
-		free(params->flag);
+	if (params->flags)
+		free(params->flags);
 	if (params->redir)
 		free(params->redir);
 	if (params->name_fd)
 		free(params->name_fd);
 }
 
-void		init_params(t_str *params)
+void		init_params(t_params *params)
 {
 	params->args = NULL;
 	params->command = NULL;
-	params->flag = NULL;
+	params->flags = NULL;
 	params->redir = NULL;
 	params->name_fd = NULL;
 }
@@ -60,7 +60,7 @@ size_t		number_of_lines(char **arr)
 	return (count);
 }
 
-char		*copy_str(char **str)
+char		**copy_str(char **str)
 {
 	char	**str_dup;
 	size_t	i;
@@ -104,7 +104,7 @@ void		wait_line(char *str)
 int				main(int argc, char **argv, char **envp)
 {
 	t_params	params;
-	const char	*line;
+	char		*line;
 	char		*curr;
 	char		**envp_dupl;
 	int			ch;
@@ -116,14 +116,17 @@ int				main(int argc, char **argv, char **envp)
 		wait_line("minishell$ ");
 		if (get_next_line(0, &line) < 0)
 			return (-1);
-		curr = (char*)line;
-		while (curr)
+		curr = line;
+		while (*curr)
 		{
+			printf("%c", *curr);
+			curr++;
 			init_params(&params);
-			ch = parser(&params, &curr);
-			builtins(&params, ch);
-			free_params(&params);
+/*			ch = parser(&params, &curr);
+			builtins(&params, ch);*/
+//			free_params(&params);
 		}
+		printf("\n");
 		free(line);
 	}
 	return (0);

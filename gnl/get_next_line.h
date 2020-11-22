@@ -3,28 +3,38 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: snaomi <snaomi@student.42.fr>              +#+  +:+       +#+        */
+/*   By: gkarina <gkarina@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/06/03 13:44:05 by snaomi            #+#    #+#             */
-/*   Updated: 2020/09/18 11:02:15 by snaomi           ###   ########.fr       */
+/*   Created: 2020/07/01 16:23:21 by gkarina           #+#    #+#             */
+/*   Updated: 2020/07/01 16:23:21 by gkarina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
 
-# include <unistd.h>
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 1024
+# endif
+
 # include <stdlib.h>
+# include <unistd.h>
 
-typedef struct		s_gnl
+typedef struct	s_data
 {
-	int				fd;
-	char			*reminder;
-	struct s_gnl	*next;
-}					t_gnl;
+	char		*rem;
+	char		*temp;
+	char		*var;
+	int			len;
+	int			count;
+	int			err;
+}				t_data;
 
-int					get_next_line(int fd, char **line);
-/* int					get_line(char **line, char *buf, w_list *tmp); */
-t_gnl				*ft_lstnew_gnl(int fd);
+int				get_next_line(int fd, char **line);
+size_t			ft_strlen(const char *s);
+char			*ft_strjoin(char const *s1, char const *s2);
+char			*ft_strchr(const char *s, int c);
+char			*ft_strdup(const char *s1);
+size_t			ft_strlcpy(char *dst, const char *src, size_t dstsize);
 
 #endif
