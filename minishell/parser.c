@@ -14,25 +14,21 @@
 
 int			check_tokens(char *str)
 {
-	if (!ft_strncmp(str, "|"))
+	if (!ft_strncmp(str, "|", 1))
 		return (1);
-	else if (!ft_strncmp(str, ";"))
+	else if (!ft_strncmp(str, ";", 1))
 		return (2);
 	return (0);
 }
 
-int			remove_spaces(char *line)
+char		*remove_spaces(char *line)
 {
 	while (*line == ' ')
-	{
-		/* if (!check_tokens(*line) */
-		/* 	return (0); */
 		line++;
-	}
-	return (1);
+	return (line);
 }
 
-char		*write_in_string(char **line, int signal)
+/*char		*write_in_string(char **line, int signal)
 {
 	char	*str;
 	
@@ -41,64 +37,82 @@ char		*write_in_string(char **line, int signal)
 		
 	}
 	return (str);
-}
+}*/
 
-int			read_command(char **command, char **line)
+/*int			read_command(char **command, char **line)
 {
-	if (!remove_spaces(line))
+	if (!remove_spaces(*line))
 		return (2);
 	while (*line)
 	{
 		
 	}
 	return (1);
-}
+}*/
 
-char		*read_tokens(char *line)
+char			*read_tokens(char *line)
 {
-	char	buff[2];
-	char	*result;
-	char	*tmp;
+	char			buff[2];
+	char			*result;
+	char			*tmp;
+	int				flag;
+	int				count;
 
 	result = ft_strdup("");
-	ft_memset(buff, '\0', sizeof(char) * 2);
-	while (*line != ' ')
+	buff[1] = '\0';
+	flag = 0;
+	count = 0;
+	if (line[count] != ' ')
 	{
-		buff[0] = *line;
-		tmp = result;
-		if (!(result = ft_strjoin(result, buff)))
-			return (NULL);
-		free(tmp);
-		tmp = NULL;
-		line++;
+		if (line[count] == '\'' || line[count] == '\"')
+		{
+			flag = line[count] == '\'' ? 1 : 2;
+			count++;
+			while ((line[count] != '\'' && flag == 1) || (line[count] != '\"' && flag == 2))
+				count++;
+			if (line[count + 1])
+			if (!(result = ft_substr(line, 0, ++count)))
+				return (NULL);
+			line += ft_strlen(result) + 1;
+		}
+		else
+		{
+			while (line[count] != ' ')
+				count++;
+			if (!(result = ft_substr(line, 0, count)))
+				return (NULL);
+			line++;
+		}
 	}
 	return (result);
 }
 
-t_list		*parser(/*t_params *params, */char **line)
+t_list		*parser(/*t_params *params, */char *line)
 {
 	t_list	*head;
 	t_list	*curr;
-	char	*line_curr;
 
-	line_curr = (*line);
+	line = remove_spaces(line);
+	if (!(head = ft_lstnew(read_tokens(line))))
+		return (NULL);
+	line += ft_strlen(head->content) + 1;
 	curr = head;
-	while (*line_curr)
+	while (*line)
 	{
-		remove_spaces(&line_curr);
-		if (!(curr = ft_lstnew(NULL)))
+		line = remove_spaces(line);
+		if (!(curr->next = ft_lstnew(read_tokens(line))))
 		{
 			/* ft_lstclear(&head, &del_content); */
 			return (NULL); // 0
 		}
-		curr->content = read_tokens(line_curr);
-		printf("%s\n\n", curr->content);
-		line_curr += ft_strlen(curr->content) + 1;
-		printf("%s\n", line_curr);
-//		if (*line_curr == '\0')
-//			break ;
 		curr = curr->next;
+		line += ft_strlen(curr->content) + 1;
+		/* curr = curr->next; */
 	}
+	/* write(1, "<", 1); */
+	/* write(1, line, 1); */
+	/* write(1, ">", 1); */
+	/* write(1, "\n", 1); */
 	return (head);
 	/* char	buff[2]; */
 	/* char	*tmp; */
@@ -167,14 +181,44 @@ t_list		*parser(/*t_params *params, */char **line)
 int			main()
 {
 	char	*line;
+	char	*curr;
 	t_list	*list;
+	t_list	*curr_list;
+	int		i;
+	t_params	params;
 
-	line = ft_strdup("echo -n qwerty qwerty qwerty >> file.txt | grep -lE \"main\"");
-	list = parser(&line);
+	i = 0;
+	init_params(&params);
+	line = ft_strdup("    echo -n \'   qwerty qwerty qwerty   \' >> file.txt | grep -lE \"main\"");
+	if (!(list = parser(line)))
+		return (-1);
 	while (list)
 	{
-		printf("%s\n", list->content);
+		params->command = ft_strdup(list->content);
+		list = list->next;
+		if (*list->content == '-')
+		{
+			curr_list = list;
+			while ()
+			curr = list->content;
+			i = ft_strlen(list->content);
+			if (!(params->flags = malloc(sizeof(char*) * i)))
+				return (NULL);
+			params->flags[i - 1] = NULL;
+			i = 0;
+			while (*curr)
+			{
+				if (!(params->flags = malloc(sizeof(char) * )
+			}
+		}
 		list = list->next;
 	}
+	/* while (list) */
+	/* { */
+	/* 	printf("[%d] <%s>\n", i, list->content); */
+	/* 	list = list->next; */
+	/* 	i++; */
+	/* } */
+	printf("end\n");
 	return (0);
 }

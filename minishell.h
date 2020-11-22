@@ -33,15 +33,6 @@ typedef struct		s_params
 	char			*error;
 }					t_params;
 
-/* typedef struct		s_data */
-/* { */
-/* 	t_list			*envp_dupl; */
-/* 	/1* int				envp_size; *1/ */
-/* 	/1* int				redir_left; *1/ */
-/* 	/1* int				redir_rigth; *1/ */
-/* 	/1* int				redir_double_rigth; *1/ */
-/* }					t_data; */
-
 /*typedef enum	e_ch
 {
 	A = 0,

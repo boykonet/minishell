@@ -41,15 +41,6 @@ void		free_params(t_params *params)
 		free(params->name_fd);
 }
 
-void		init_params(t_params *params)
-{
-	params->args = NULL;
-	params->command = NULL;
-	params->flags = NULL;
-	params->redir = NULL;
-	params->name_fd = NULL;
-}
-
 size_t		number_of_lines(char **arr)
 {
 	size_t	count;
