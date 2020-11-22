@@ -16,11 +16,31 @@
 # include <stdio.h>
 # include <unistd.h>
 # include <stdlib.h>
+# include <fcntl.h>
+# include "./gnl/get_next_line.h"
+# include "./libft/libft.h"
 
-typedef struct	s_flags
+# define TRUE	1
+# define FALSE	0
+
+typedef struct		s_params
 {
-	int			flag_echo;
-}				t_flags;
+	char			**flags;
+	char			**args;
+	char			*command;
+	char			*redir;
+	char			*name_fd;
+	char			*error;
+}					t_params;
+
+/* typedef struct		s_data */
+/* { */
+/* 	t_list			*envp_dupl; */
+/* 	/1* int				envp_size; *1/ */
+/* 	/1* int				redir_left; *1/ */
+/* 	/1* int				redir_rigth; *1/ */
+/* 	/1* int				redir_double_rigth; *1/ */
+/* }					t_data; */
 
 /*typedef enum	e_ch
 {
