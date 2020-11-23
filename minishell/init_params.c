@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#incude "../minishell.h"
+#include "../minishell.h"
 
 void		init_params(t_params *params)
 {

@@ -188,18 +188,22 @@ int			main()
 	t_params	params;
 
 	i = 0;
-	init_params(&params);
-	line = ft_strdup("    echo -n \'   qwerty qwerty qwerty   \' >> file.txt | grep -lE \"main\"");
+	/* init_params(&params); */
+	line = ft_strdup("    echo -n \'   \"qwerty\" qwerty qwerty   \' >> file.txt | grep -lE \"main\"");
 	if (!(list = parser(line)))
 		return (-1);
 	while (list)
 	{
-		params->command = ft_strdup(list->content);
+		if (!(params->command = ft_strdup(list->content)))
+			return (NULL);
 		list = list->next;
 		if (*list->content == '-')
 		{
 			curr_list = list;
-			while ()
+			while (*list->content == '-')
+			{
+
+			}
 			curr = list->content;
 			i = ft_strlen(list->content);
 			if (!(params->flags = malloc(sizeof(char*) * i)))
@@ -219,6 +223,6 @@ int			main()
 	/* 	list = list->next; */
 	/* 	i++; */
 	/* } */
-	printf("end\n");
+	/* printf("end\n"); */
 	return (0);
 }

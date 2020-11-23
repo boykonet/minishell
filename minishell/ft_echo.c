@@ -12,23 +12,24 @@
 
 #include "../minishell.h"
 
-char		*ft_echo(t_str *s_str, t_data *data, int fd)
+char		*ft_echo(t_params *params)
 {
+	t_list	*curr;
 	int		back_slash;
 	int		i;
 
 	back_slash = 0;
 	i = 0;
-	s_str->curr = s_str->args;
-	if (!ft_strncmp(flags, "-n", 2))
+	curr = params->args;
+	if (!ft_strncmp(params->flags, "n", 1))
 		back_slash = 1;
-	while (s_str->curr)
+	while (curr)
 	{
-		if (s_str->args_size - i == 0)
-			write_str((s_str->curr)->content, fd, 1);
+		if (params->args_size - i == 0)
+			write_str((params->curr)->content, fd, 1);
 		else
-			write_str((s_str->curr)->content, fd, 0);
-		(s_str->curr) = (s_str->curr)->next;
+			write_str((params->curr)->content, fd, 0);
+		(params->curr) = (params->curr)->next;
 		i++;
 	}
 	if (back_slash == 0)
