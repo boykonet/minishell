@@ -28,28 +28,6 @@ char		*remove_spaces(char *line)
 	return (line);
 }
 
-/*char		*write_in_string(char **line, int signal)
-{
-	char	*str;
-	
-	while (ft_isalpha(**line))
-	{
-		
-	}
-	return (str);
-}*/
-
-/*int			read_command(char **command, char **line)
-{
-	if (!remove_spaces(*line))
-		return (2);
-	while (*line)
-	{
-		
-	}
-	return (1);
-}*/
-
 char			*read_tokens(char *line)
 {
 	char			buff[2];
@@ -87,14 +65,14 @@ char			*read_tokens(char *line)
 	return (result);
 }
 
-t_list		*parser(/*t_params *params, */char *line)
+int			parser(t_params *params, char *line)
 {
 	t_list	*head;
 	t_list	*curr;
 
 	line = remove_spaces(line);
 	if (!(head = ft_lstnew(read_tokens(line))))
-		return (NULL);
+		return (0);
 	line += ft_strlen(head->content) + 1;
 	curr = head;
 	while (*line)
@@ -102,18 +80,17 @@ t_list		*parser(/*t_params *params, */char *line)
 		line = remove_spaces(line);
 		if (!(curr->next = ft_lstnew(read_tokens(line))))
 		{
-			/* ft_lstclear(&head, &del_content); */
-			return (NULL); // 0
+			ft_lstclear(&head, &del_content);
+			return (0);
 		}
 		curr = curr->next;
 		line += ft_strlen(curr->content) + 1;
-		/* curr = curr->next; */
 	}
 	/* write(1, "<", 1); */
 	/* write(1, line, 1); */
 	/* write(1, ">", 1); */
 	/* write(1, "\n", 1); */
-	return (head);
+	return (1);
 	/* char	buff[2]; */
 	/* char	*tmp; */
 	/* int		count_args; */
@@ -178,6 +155,12 @@ t_list		*parser(/*t_params *params, */char *line)
 	/* return (0); */
 }
 
+void		write_params_in_struct(char **param, char *var)
+{
+	if (!(*param = ft_strdup(var)))
+		return ();
+}
+
 int			main()
 {
 	char	*line;
@@ -194,6 +177,7 @@ int			main()
 		return (-1);
 	while (list)
 	{
+		if (!ft_strncmp(list->content, "-", 1))
 		if (!(params->command = ft_strdup(list->content)))
 			return (NULL);
 		list = list->next;

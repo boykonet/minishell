@@ -12,26 +12,62 @@
 
 #include "../minishell.h"
 
-char		*ft_echo(t_params *params)
+char		*ft_echo(char **args, char *flags, t_env *env)
 {
-	t_list	*curr;
-	int		back_slash;
+	char	*result;
+	char	*curr;
 	int		i;
+	int		j;
 
-	back_slash = 0;
 	i = 0;
-	curr = params->args;
-	if (!ft_strncmp(params->flags, "n", 1))
-		back_slash = 1;
-	while (curr)
+	while (args[i])
 	{
-		if (params->args_size - i == 0)
-			write_str((params->curr)->content, fd, 1);
-		else
-			write_str((params->curr)->content, fd, 0);
-		(params->curr) = (params->curr)->next;
+		j = 0;
+		curr = args[i];
+		while (*curr)
+		{
+			if (*curr == '$')
+			{
+				while (*curr != '$' || *curr != '\0')
+					j++;
+				find_
+			}
+			j++;
+		}
+		
 		i++;
 	}
-	if (back_slash == 0)
-		write(fd, "\n", 1);
+	/* t_list	*curr; */
+	/* char	*result; */
+	/* char	*tmp; */
+	/* int		back_slash; */
+	/* int		i; */
+
+	/* i = 0; */
+	/* tmp = NULL; */
+	/* back_slash = 0; */
+	/* curr = params->args; */
+	/* if (!ft_strncmp(params->flags, "n", 1)) */
+	/* 	back_slash = 1; */
+	/* if (!(result = ft_strdup(""))) */
+	/* 	return (NULL); */
+	/* while (curr) */
+	/* { */
+	/* 	tmp = result; */
+	/* 	if (!(result = ft_strjoin(result, curr->content))) */
+	/* 	{ */
+	/* 		free(tmp); */
+	/* 		free_params(params); */
+	/* 		return (NULL); */
+	/* 	} */
+	/* 	/1* if (params->args_size - i == 0) *1/ */
+	/* 	/1* 	write_str(curr->content, fd, 1); *1/ */
+	/* 	/1* else *1/ */
+	/* 	/1* 	write_str(curr->content, fd, 0); *1/ */
+	/* 	curr = curr->next; */
+	/* 	i++; */
+	/* } */
+	/* if (back_slash == 0) */
+	/* 	write(fd, "\n", 1); */
+	return (result);
 }

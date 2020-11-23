@@ -23,10 +23,17 @@
 # define TRUE	1
 # define FALSE	0
 
+typedef struct		s_env
+{
+	char			*name;
+	char			*value;
+	struct s_env	*next;	
+}					t_env;
+
 typedef struct		s_params
 {
-	char			**flags;
 	char			**args;
+	char			*flags;
 	char			*command;
 	char			*redir;
 	char			*name_fd;
