@@ -12,30 +12,54 @@
 
 #include "../minishell.h"
 
-char		*ft_echo(char **args, char *flags, t_env *env)
+void		ft_echo(t_list **args, char *flags, t_env *env)
 {
-	char	*result;
-	char	*curr;
+	t_list	*curr;
+	t_env	*env_dupl;
+	char	*tmp;
+	char	*str;
 	int		i;
-	int		j;
 
+	tmp = NULL;
 	i = 0;
-	while (args[i])
+	curr = (*args);
+	while (curr)
 	{
-		j = 0;
-		curr = args[i];
-		while (*curr)
+		while (tmp = ft_strnstr(curr->content, "$?", ft_strlen(curr->content)))
 		{
-			if (*curr == '$')
-			{
-				while (*curr != '$' || *curr != '\0')
-					j++;
-				find_
-			}
-			j++;
+			curr->content = ft_substr(curr->content, 0, tmp - curr->content);
+
+			curr->content = ft_strdup(ft_atoi());
+			free(tmp);
+			break ;
 		}
-		
-		i++;
+		if ((tmp = ft_strchr(curr->content, '$')))
+		{
+			if (!ft_strncmp(tmp, "$?", ft_strlen(curr)))
+				{
+					tmp = ft_substr(curr->content, 0, i);
+					
+					curr->content = ft_strjoin(curr->contentft_atoi(return_value);
+					free(tmp);
+					break ;
+				}
+		}
+		while (curr->content[i])
+		{
+			if (*curr->content == '$')
+			{
+				if (!ft_strncmp(curr->content, "$?", ft_strlen(curr)))
+				{
+					tmp = ft_substr(curr->content, 0, i);
+					
+					curr->content = ft_strjoin(curr->contentft_atoi(return_value);
+					free(tmp);
+					break ;
+				}
+			while (curr->content[i] != '$' || curr->content[i] != '\0')
+				i++;
+			find_
+		}
 	}
 	/* t_list	*curr; */
 	/* char	*result; */
@@ -69,5 +93,5 @@ char		*ft_echo(char **args, char *flags, t_env *env)
 	/* } */
 	/* if (back_slash == 0) */
 	/* 	write(fd, "\n", 1); */
-	return (result);
+	return (0);
 }

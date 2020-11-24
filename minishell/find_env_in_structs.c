@@ -12,22 +12,16 @@
 
 #include "../minishell.h"
 
-char		*find_string(t_env *env, char *needle)
+t_env		*find_env_in_structs(t_env *env, char *needle)
 {
-	t_list	*curr;
-	char	*result;
+	t_env	*curr;
 
-	result = NULL;
-	curr = list;
+	curr = env;
 	while (curr)
 	{
-		if (!ft_strncmp(curr->content, needle, ft_strlen(needle)))
+		if (!ft_strncmp(curr->name, needle, ft_strlen(needle)))
 			break ;
 		curr = curr->next;
 	}
-	if (!curr)
-		return (NULL);
-	if (!(result = ft_strdup(curr->content)))
-		return (NULL);
-	return (result);
+	return (curr);
 }

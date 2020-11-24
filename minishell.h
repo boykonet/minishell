@@ -40,17 +40,16 @@ typedef struct		s_params
 	char			*error;
 }					t_params;
 
-/*typedef enum	e_ch
-{
-	A = 0,
-	B
-}				t_ch;
-
-t_ch flag;
-
-
-flag = A;
-
-flag = B;*/
+int					ft_cd(char *args, char **home, char **pwd_curr, char **old_pwd);
+void				builtins(t_params *params, char **home, char **pwd_curr, char **old_pwd);
+void				del_content(void *content);
+t_env				*find_env_in_structs(t_env *env, char *needle);
+char				*ft_pwd(char *pwd);
+int					init_fd(char *name_fd, char *redir);
+void				init_params(t_params *params);
+int					parser(t_params *params, char *line);
+void				write_str(char *str, int fd, int flag);
+t_env				*ft_lstnew_env(void *name, void *value);
+t_env				*copy_envp_to_struct(char **envp);
 
 #endif

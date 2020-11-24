@@ -51,18 +51,6 @@ size_t		number_of_lines(char **arr)
 	return (count);
 }
 
-t_env		*ft_lstnew_env(void *name, void *value)
-{
-	t_env	*new;
-
-	if (!(new = malloc(sizeof(t_env))))
-		return (NULL);
-	new->name = name;
-	new->value = value;
-	new->next = NULL;
-	return (new);
-}
-
 t_env		*copy_envp_to_struct(char **envp)
 {
 	t_env	*env;
