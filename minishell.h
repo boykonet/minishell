@@ -23,36 +23,33 @@
 # define TRUE	1
 # define FALSE	0
 
+typedef struct		s_env
+{
+	char			*name;
+	char			*value;
+	struct s_env	*next;	
+}					t_env;
+
 typedef struct		s_params
 {
-	char			**flags;
 	char			**args;
+	char			*flags;
 	char			*command;
 	char			*redir;
 	char			*name_fd;
 	char			*error;
 }					t_params;
 
-/* typedef struct		s_data */
-/* { */
-/* 	t_list			*envp_dupl; */
-/* 	/1* int				envp_size; *1/ */
-/* 	/1* int				redir_left; *1/ */
-/* 	/1* int				redir_rigth; *1/ */
-/* 	/1* int				redir_double_rigth; *1/ */
-/* }					t_data; */
-
-/*typedef enum	e_ch
-{
-	A = 0,
-	B
-}				t_ch;
-
-t_ch flag;
-
-
-flag = A;
-
-flag = B;*/
+int					ft_cd(char *args, char **home, char **pwd_curr, char **old_pwd);
+void				builtins(t_params *params, char **home, char **pwd_curr, char **old_pwd);
+void				del_content(void *content);
+t_env				*find_env_in_structs(t_env *env, char *needle);
+char				*ft_pwd(char *pwd);
+int					init_fd(char *name_fd, char *redir);
+void				init_params(t_params *params);
+int					parser(t_params *params, char *line);
+void				write_str(char *str, int fd, int flag);
+t_env				*ft_lstnew_env(void *name, void *value);
+t_env				*copy_envp_to_struct(char **envp);
 
 #endif

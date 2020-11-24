@@ -41,15 +41,6 @@ void		free_params(t_params *params)
 		free(params->name_fd);
 }
 
-void		init_params(t_params *params)
-{
-	params->args = NULL;
-	params->command = NULL;
-	params->flags = NULL;
-	params->redir = NULL;
-	params->name_fd = NULL;
-}
-
 size_t		number_of_lines(char **arr)
 {
 	size_t	count;
@@ -60,30 +51,30 @@ size_t		number_of_lines(char **arr)
 	return (count);
 }
 
-char		**copy_str(char **str)
+t_env		*copy_envp_to_struct(char **envp)
 {
-	char	**str_dup;
+	t_env	*env;
+	t_env	*curr;
+	char	*tmp;
 	size_t	i;
-	size_t	j;
-	size_t	str_size;
 
 	i = 0;
-	j = 0;
-	str_size = number_of_lines(str);
-	if (!(str_dup = malloc(sizeof(char*) * (str_size + 1))))
+	if (!(env = ft_lstnew_env(NULL, NULL)))
 		return (NULL);
-	str_dup[str_size] = NULL;
-	while (str[i])
+	curr = env;
+	tmp = ft_strchr(envp[i], '=');
+	curr->name = ft_substr(envp[i], 0, tmp - envp[i]);
+	curr->value = ft_substr(tmp, 1, ft_strlen(envp[i]));
+	while (envp[++i])
 	{
-		if (!(str_dup[j] = ft_strdup(str[i])))
-		{
-			free_string(str_dup);
+		if (!(curr->next = ft_lstnew_env(NULL, NULL)))
 			return (NULL);
-		}
-		i++;
-		j++;
+		curr = curr->next;
+		tmp = ft_strchr(envp[i], '=');
+		curr->name = ft_substr(envp[i], 0, tmp - envp[i]);
+		curr->value = ft_substr(tmp, 1, ft_strlen(envp[i]));
 	}
-	return (str_dup);
+	return (env);
 }
 
 void		wait_line(char *str)
@@ -103,31 +94,42 @@ void		wait_line(char *str)
 
 int				main(int argc, char **argv, char **envp)
 {
+	t_env		*env;
 	t_params	params;
 	char		*line;
-	char		*curr;
-	char		**envp_dupl;
+//	char		*curr;
 	int			ch;
+	int			err;
 
-	if (!(envp_dupl = copy_str(envp)))
+	if (!(env = copy_envp_to_struct(envp)))
 		return (-1);
-	while (TRUE)
+	while (env)
 	{
-		wait_line("minishell$ ");
-		if (get_next_line(0, &line) < 0)
-			return (-1);
-		curr = line;
-		while (*curr)
-		{
-			printf("%c", *curr);
-			curr++;
-			init_params(&params);
-/*			ch = parser(&params, &curr);
-			builtins(&params, ch);*/
-//			free_params(&params);
-		}
-		printf("\n");
-		free(line);
+		printf("<%s=%s>\n", env->name, env->value);
+		env = env->next;
 	}
+	/* while (TRUE) */
+	/* { */
+	/* 	wait_line("minishell$ "); */
+
+	/* 	while ((err = get_next_line(0, &line)) > 0) */
+	/* 	{ */
+	/* 		printf("<%s>\n", line); */
+	/* 		/1* curr = line; *1/ */
+	/* 		/1* while (*curr) *1/ */
+	/* 		/1* { *1/ */
+	/* 		/1* 	printf("%c", *curr); *1/ */
+	/* 		/1* 	curr++; *1/ */
+	/* 		init_params(&params); */
+	/* 		/1* ch = parser(&params, line); *1/ */
+	/* 		/1* builtins(&params, ch); *1/ */
+	/* 		/1* free_params(&params); *1/ */
+	/* 		/1* } *1/ */
+	/* 		/1* printf("\n"); *1/ */
+	/* 		free(line); */
+	/* 	} */
+	/* 	if (err == -1) // free all */
+	/* 		return (-1); */
+	/* } */
 	return (0);
 }

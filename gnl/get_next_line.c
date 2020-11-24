@@ -53,6 +53,8 @@ static int			update_line(char **line, char *buff, t_data *data)
 		if ((data->rem = ft_strdup(&buff[++(data->count)])) == NULL)
 			return (data->err = -1);
 	}
+	else if ((data->var = ft_strchr(buff, '|')) || (data->var = ft_strchr(buff, ';')))
+		;
 	data->temp = *line;
 	if ((*line = ft_strjoin(*line, buff)) == NULL)
 	{

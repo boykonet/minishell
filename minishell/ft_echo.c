@@ -12,25 +12,86 @@
 
 #include "../minishell.h"
 
-char		*ft_echo(t_str *s_str, t_data *data, int fd)
+void		ft_echo(t_list **args, char *flags, t_env *env)
 {
-	int		back_slash;
+	t_list	*curr;
+	t_env	*env_dupl;
+	char	*tmp;
+	char	*str;
 	int		i;
 
-	back_slash = 0;
+	tmp = NULL;
 	i = 0;
-	s_str->curr = s_str->args;
-	if (!ft_strncmp(flags, "-n", 2))
-		back_slash = 1;
-	while (s_str->curr)
+	curr = (*args);
+	while (curr)
 	{
-		if (s_str->args_size - i == 0)
-			write_str((s_str->curr)->content, fd, 1);
-		else
-			write_str((s_str->curr)->content, fd, 0);
-		(s_str->curr) = (s_str->curr)->next;
-		i++;
+		while (tmp = ft_strnstr(curr->content, "$?", ft_strlen(curr->content)))
+		{
+			curr->content = ft_substr(curr->content, 0, tmp - curr->content);
+
+			curr->content = ft_strdup(ft_atoi());
+			free(tmp);
+			break ;
+		}
+		if ((tmp = ft_strchr(curr->content, '$')))
+		{
+			if (!ft_strncmp(tmp, "$?", ft_strlen(curr)))
+				{
+					tmp = ft_substr(curr->content, 0, i);
+					
+					curr->content = ft_strjoin(curr->contentft_atoi(return_value);
+					free(tmp);
+					break ;
+				}
+		}
+		while (curr->content[i])
+		{
+			if (*curr->content == '$')
+			{
+				if (!ft_strncmp(curr->content, "$?", ft_strlen(curr)))
+				{
+					tmp = ft_substr(curr->content, 0, i);
+					
+					curr->content = ft_strjoin(curr->contentft_atoi(return_value);
+					free(tmp);
+					break ;
+				}
+			while (curr->content[i] != '$' || curr->content[i] != '\0')
+				i++;
+			find_
+		}
 	}
-	if (back_slash == 0)
-		write(fd, "\n", 1);
+	/* t_list	*curr; */
+	/* char	*result; */
+	/* char	*tmp; */
+	/* int		back_slash; */
+	/* int		i; */
+
+	/* i = 0; */
+	/* tmp = NULL; */
+	/* back_slash = 0; */
+	/* curr = params->args; */
+	/* if (!ft_strncmp(params->flags, "n", 1)) */
+	/* 	back_slash = 1; */
+	/* if (!(result = ft_strdup(""))) */
+	/* 	return (NULL); */
+	/* while (curr) */
+	/* { */
+	/* 	tmp = result; */
+	/* 	if (!(result = ft_strjoin(result, curr->content))) */
+	/* 	{ */
+	/* 		free(tmp); */
+	/* 		free_params(params); */
+	/* 		return (NULL); */
+	/* 	} */
+	/* 	/1* if (params->args_size - i == 0) *1/ */
+	/* 	/1* 	write_str(curr->content, fd, 1); *1/ */
+	/* 	/1* else *1/ */
+	/* 	/1* 	write_str(curr->content, fd, 0); *1/ */
+	/* 	curr = curr->next; */
+	/* 	i++; */
+	/* } */
+	/* if (back_slash == 0) */
+	/* 	write(fd, "\n", 1); */
+	return (0);
 }
