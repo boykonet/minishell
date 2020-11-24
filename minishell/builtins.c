@@ -12,29 +12,37 @@
 
 #include "../minishell.h"
 
-void		builtins(t_params *params, char **home, char **pwd_curr, char **old_pwd)
+void		builtins(t_params *params, t_env *env)
 {
 	char	*str;
+	char	*home;
+	char	*pwd_curr;
+	char	*old_pwd;
 
 	str = NULL;
-	if (!ft_strncmp(str->command, "echo", 4))
-		str = ft_echo(params, fd, envp);
+	find_data_in_env(env, "PWD", &pwd_curr, 0);
+	find_env_in_structs(env, "OLDPWD", &old_pwd, 0);
+	find_env_in_structs(env, "HOME", &home, 0);
+	if (!pwd_curr || !old_pwd || !home)
+		return ;
+	if (!ft_strncmp(params->command, "echo", 4))
+		ft_echo(&params->args, env, return_value);
 
-	else if (!ft_strncmp(str->command, "pwd", 3))
-		str = ft_pwd(params->args);
+	else if (!ft_strncmp(params->command, "pwd", 3))
+		str = ft_pwd(str);
 
-	else if (!ft_strncmp(str->command, "cd", 2))
-		str = ft_cd(params->args, home, pwd_curr, old_pwd);
+	else if (!ft_strncmp(params->command, "cd", 2))
+		return_value = ft_cd((params->args)->content, &home, &pwd_curr, &old_pwd);
 
-	else if (!ft_strncmp(str->command, "export", 6))
-		ft_export();
+	/* else if (!ft_strncmp(str->command, "export", 6)) */
+	/* 	ft_export(); */
 
-	else if (!ft_strncmp(str->command, "unset", 5))
-		ft_unset();
+	/* else if (!ft_strncmp(str->command, "unset", 5)) */
+	/* 	ft_unset(); */
 
-	else if (!ft_strncmp(str->command, "env", 3))
-		ft_env();
+	/* else if (!ft_strncmp(str->command, "env", 3)) */
+	/* 	ft_env(); */
 
-	else if (!ft_strncmp(str->command, "exit", 4))
-		ft_exit();
+	/* else if (!ft_strncmp(str->command, "exit", 4)) */
+	/* 	ft_exit(); */
 }

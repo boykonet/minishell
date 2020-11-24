@@ -44,7 +44,7 @@ static int			init_line(char **line, t_data *data)
 static int			update_line(char **line, char *buff, t_data *data)
 {
 	buff[data->len] = '\0';
-	if ((data->var = ft_strchr(buff, '\n')))
+	else if ((data->var = ft_strchr(buff, '\n')))
 	{
 		data->count = 0;
 		while (buff[data->count] != '\n')
@@ -53,8 +53,6 @@ static int			update_line(char **line, char *buff, t_data *data)
 		if ((data->rem = ft_strdup(&buff[++(data->count)])) == NULL)
 			return (data->err = -1);
 	}
-	else if ((data->var = ft_strchr(buff, '|')) || (data->var = ft_strchr(buff, ';')))
-		;
 	data->temp = *line;
 	if ((*line = ft_strjoin(*line, buff)) == NULL)
 	{

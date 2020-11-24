@@ -44,7 +44,10 @@ char			*read_tokens(char *line)
 	{
 		if (line[count] == '\'' || line[count] == '\"')
 		{
-			flag = line[count] == '\'' ? 1 : 2;
+			if (line[count] == '\'')
+				flag = 1;
+			else
+				flag = 2;
 			count++;
 			while ((line[count] != '\'' && flag == 1) || (line[count] != '\"' && flag == 2))
 				count++;

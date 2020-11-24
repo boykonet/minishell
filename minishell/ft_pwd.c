@@ -14,8 +14,7 @@
 
 char		*ft_pwd(char *pwd)
 {
-	if (!(pwd = getcwd(NULL, 0)))
-		return (NULL);
+	pwd = getcwd(NULL, 0);
 	return (pwd);
 }
 

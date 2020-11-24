@@ -43,7 +43,6 @@ int			ft_cd(char *args, char **home, char **pwd_curr, char **old_pwd)
 	str = NULL;
 	start = NULL;
 	end = NULL;
-
 	if (!ft_strncmp(args, "~", 1) || *args == '\0')
 	{
 		start = ft_strchr(*home, '/');
@@ -60,18 +59,18 @@ int			ft_cd(char *args, char **home, char **pwd_curr, char **old_pwd)
 		str = ft_strdup(args);
 
 	/* printf("%s\n", str); */
-	a = chdir(str);
-	/* if ((a = chdir(args) < 0)) */
-	/* 	return (a); */
-	printf("a = [%d]\n", a);
-	printf("%d\n", errno);
-	printf("%s\n", strerror(errno));
+	/* a = chdir(str); */
+	if ((a = chdir(args) < 0))
+		return (-1);
+	/* printf("a = [%d]\n", a); */
+	/* printf("%d\n", errno); */
+	/* printf("%s\n", strerror(errno)); */
 	if (!(pwd = ft_pwd(pwd)))
-		return (0);
+		return (-1);
 	change_pwd(pwd_curr, old_pwd, pwd);
 	free(pwd);
 	free(str);
-	return (1);
+	return (0);
 }
 
 int		main(int argc, char **argv, char **envp)

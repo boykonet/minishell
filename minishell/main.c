@@ -30,7 +30,7 @@ void		free_string(char **str)
 void		free_params(t_params *params)
 {
 	if (params->args)
-		free_string(params->args);
+		ft_lstclear(&params->args, &del_content);
 	if (params->command)
 		free(params->command);
 	if (params->flags)
@@ -49,32 +49,6 @@ size_t		number_of_lines(char **arr)
 	while (arr[count])
 		count++;
 	return (count);
-}
-
-t_env		*copy_envp_to_struct(char **envp)
-{
-	t_env	*env;
-	t_env	*curr;
-	char	*tmp;
-	size_t	i;
-
-	i = 0;
-	if (!(env = ft_lstnew_env(NULL, NULL)))
-		return (NULL);
-	curr = env;
-	tmp = ft_strchr(envp[i], '=');
-	curr->name = ft_substr(envp[i], 0, tmp - envp[i]);
-	curr->value = ft_substr(tmp, 1, ft_strlen(envp[i]));
-	while (envp[++i])
-	{
-		if (!(curr->next = ft_lstnew_env(NULL, NULL)))
-			return (NULL);
-		curr = curr->next;
-		tmp = ft_strchr(envp[i], '=');
-		curr->name = ft_substr(envp[i], 0, tmp - envp[i]);
-		curr->value = ft_substr(tmp, 1, ft_strlen(envp[i]));
-	}
-	return (env);
 }
 
 void		wait_line(char *str)
@@ -103,33 +77,49 @@ int				main(int argc, char **argv, char **envp)
 
 	if (!(env = copy_envp_to_struct(envp)))
 		return (-1);
-	while (env)
-	{
-		printf("<%s=%s>\n", env->name, env->value);
-		env = env->next;
-	}
-	/* while (TRUE) */
+	/* while (env) */
 	/* { */
-	/* 	wait_line("minishell$ "); */
-
-	/* 	while ((err = get_next_line(0, &line)) > 0) */
-	/* 	{ */
-	/* 		printf("<%s>\n", line); */
-	/* 		/1* curr = line; *1/ */
-	/* 		/1* while (*curr) *1/ */
-	/* 		/1* { *1/ */
-	/* 		/1* 	printf("%c", *curr); *1/ */
-	/* 		/1* 	curr++; *1/ */
-	/* 		init_params(&params); */
-	/* 		/1* ch = parser(&params, line); *1/ */
-	/* 		/1* builtins(&params, ch); *1/ */
-	/* 		/1* free_params(&params); *1/ */
-	/* 		/1* } *1/ */
-	/* 		/1* printf("\n"); *1/ */
-	/* 		free(line); */
-	/* 	} */
-	/* 	if (err == -1) // free all */
-	/* 		return (-1); */
+	/* 	printf("<%s=%s>\n", env->name, env->value); */
+	/* 	env = env->next; */
 	/* } */
+	while (TRUE)
+	{
+		wait_line("minishell$ ");
+
+		if ((err = get_next_line(0, &line)) < 0)
+		{
+			return (-1);
+			printf("<%s>\n", line);
+			/* curr = line; */
+			/* while (*curr) */
+			/* { */
+			/* 	printf("%c", *curr); */
+			/* 	curr++; */
+			init_params(&params);
+			/* ch = parser(&params, line); */
+			/* builtins(&params, ch); */
+			/* free_params(&params); */
+			/* } */
+			/* printf("\n"); */
+			free(line);
+		}
+		if (err == 0)
+			free(line);
+		printf("<%s>\n", line);
+		/* curr = line; */
+		/* while (*curr) */
+		/* { */
+		/* 	printf("%c", *curr); */
+		/* 	curr++; */
+		init_params(&params);
+		/* ch = parser(&params, line); */
+		/* builtins(&params, ch); */
+		/* free_params(&params); */
+		/* } */
+		/* printf("\n"); */
+		free(line);
+		if (err == -1) // free all
+			return (-1);
+	}
 	return (0);
 }

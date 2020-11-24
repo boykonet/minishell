@@ -32,7 +32,7 @@ typedef struct		s_env
 
 typedef struct		s_params
 {
-	char			**args;
+	t_list			*args;
 	char			*flags;
 	char			*command;
 	char			*redir;
@@ -43,7 +43,7 @@ typedef struct		s_params
 int					ft_cd(char *args, char **home, char **pwd_curr, char **old_pwd);
 void				builtins(t_params *params, char **home, char **pwd_curr, char **old_pwd);
 void				del_content(void *content);
-t_env				*find_env_in_structs(t_env *env, char *needle);
+void				find_data_in_env(t_env *env, char *needle, char **result, int serial_num);
 char				*ft_pwd(char *pwd);
 int					init_fd(char *name_fd, char *redir);
 void				init_params(t_params *params);
