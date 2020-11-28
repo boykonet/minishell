@@ -47,7 +47,7 @@ void				find_data_in_env(t_env *env, char *needle, char **result, int serial_num
 char				*ft_pwd(char *pwd);
 int					init_fd(char *name_fd, char *redir);
 void				init_params(t_params *params);
-int					parser(t_params *params, char *line);
+t_list				*parser(t_params *params, char *line);
 void				write_str(char *str, int fd, int flag);
 t_env				*ft_lstnew_env(void *name, void *value);
 t_env				*copy_envp_to_struct(char **envp);
