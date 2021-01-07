@@ -15,8 +15,11 @@
 void		init_params(t_params *params)
 {
 	params->args = NULL;
-	params->command = NULL;
-	params->flags = NULL;
-	params->redir = NULL;
-	params->name_fd = NULL;
+	params->cmd = NULL;
+	params->redir_in = NULL;
+	params->redir_out = NULL;
+	params->redir_err = NULL;
+	params->name_in = NULL;
+	params->name_out = NULL;
+	params->name_err = NULL;
 }

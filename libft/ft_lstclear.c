@@ -1,20 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init_fd.c                                          :+:      :+:    :+:   */
+/*   ft_lstclear.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gkarina <gkarina@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/12/17 22:48:39 by gkarina           #+#    #+#             */
-/*   Updated: 2020/12/17 22:48:39 by gkarina          ###   ########.fr       */
+/*   Created: 2020/05/13 14:45:55 by gkarina           #+#    #+#             */
+/*   Updated: 2020/05/13 14:45:55 by gkarina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "libft.h"
 
-void		init_fd(t_fd *fd)
+void	ft_lstclear(t_list **lst, void (*del)(void *))
 {
-	fd->name_in = NULL;
-	fd->name_out = NULL;
-	fd->name_err = NULL;
+	t_list	*current;
+
+	while (*lst != NULL)
+	{
+		current = (*lst)->next;
+		if (del)
+		{
+			(*del)((*lst)->content);
+		}
+		free(*lst);
+		(*lst) = current;
+	}
 }

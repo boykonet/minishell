@@ -1,20 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init_fd.c                                          :+:      :+:    :+:   */
+/*   ft_lstadd_front.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gkarina <gkarina@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/12/17 22:48:39 by gkarina           #+#    #+#             */
-/*   Updated: 2020/12/17 22:48:39 by gkarina          ###   ########.fr       */
+/*   Created: 2020/05/11 20:25:37 by gkarina           #+#    #+#             */
+/*   Updated: 2020/05/11 20:25:37 by gkarina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "libft.h"
 
-void		init_fd(t_fd *fd)
+void	ft_lstadd_front(t_list **lst, t_list *new)
 {
-	fd->name_in = NULL;
-	fd->name_out = NULL;
-	fd->name_err = NULL;
+	if (new != NULL)
+	{
+		new->next = *lst;
+		(*lst) = new;
+	}
 }

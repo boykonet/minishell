@@ -1,38 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser.c                                           :+:      :+:    :+:   */
+/*   ft_strjoin.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gkarina <gkarina@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/11/21 00:11:07 by gkarina           #+#    #+#             */
-/*   Updated: 2020/11/21 00:11:07 by gkarina          ###   ########.fr       */
+/*   Created: 2020/05/10 17:56:20 by gkarina           #+#    #+#             */
+/*   Updated: 2020/05/10 17:56:20 by gkarina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "libft.h"
 
-t_list 			*parser(t_list *tokens, t_fd *fd)
+char	*ft_strjoin(char const *s1, char const *s2)
 {
-	t_list		*res;
-	t_list		*curr;
-	t_params	*params;
+	char	*dst;
+	size_t	strlen1;
+	size_t	strlen2;
+	size_t	count;
 
-	if (!(params = malloc(sizeof(t_params))))
+	count = 0;
+	if (s1 == NULL || s2 == NULL)
 		return (NULL);
-	init_params(params);
-	if (!(params->cmd = ft_strdup(tokens->content)))
-	{
-		
-	}
-	if (!(res = ft_lstnew(tokens->content)))
+	strlen1 = ft_strlen(s1);
+	strlen2 = ft_strlen(s2);
+	dst = (char*)malloc(sizeof(char) + (strlen1 + strlen2 + 1));
+	if (dst == NULL)
 		return (NULL);
-	tokens = tokens->next;
-	curr = res;
-	while (tokens)
-	{
-		curr->next =
-		tokens = tokens->next;
-	}
-	return (res);
+	while (*s1)
+		dst[count++] = *s1++;
+	while (*s2)
+		dst[count++] = *s2++;
+	dst[count] = '\0';
+	return (dst);
 }

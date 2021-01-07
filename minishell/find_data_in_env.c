@@ -20,9 +20,9 @@ void		find_data_in_env(t_env *env, char *needle, char **result, \
 		env = env->next;
 	}
 	if (!env)
-		*result = NULL;
+		*result = ft_strdup("");
 	else if (serial_num == 0)
-		*result = env->value;
+		*result = ft_strdup(env->value);
 	else if (serial_num == 1)
-		*result = env->name;
+		*result = ft_strdup(env->name);
 }

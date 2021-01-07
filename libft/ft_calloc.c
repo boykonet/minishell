@@ -1,38 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser.c                                           :+:      :+:    :+:   */
+/*   ft_calloc.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gkarina <gkarina@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/11/21 00:11:07 by gkarina           #+#    #+#             */
-/*   Updated: 2020/11/21 00:11:07 by gkarina          ###   ########.fr       */
+/*   Created: 2020/05/04 19:14:48 by gkarina           #+#    #+#             */
+/*   Updated: 2020/05/04 19:14:48 by gkarina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "libft.h"
 
-t_list 			*parser(t_list *tokens, t_fd *fd)
+void	*ft_calloc(size_t count, size_t size)
 {
-	t_list		*res;
-	t_list		*curr;
-	t_params	*params;
+	unsigned char	*str;
+	unsigned char	c;
+	size_t			memory_size;
+	size_t			j;
 
-	if (!(params = malloc(sizeof(t_params))))
-		return (NULL);
-	init_params(params);
-	if (!(params->cmd = ft_strdup(tokens->content)))
+	j = 0;
+	c = 0;
+	memory_size = count * size;
+	if (memory_size == 0)
 	{
-		
+		if ((str = malloc(1)) == NULL)
+			return (NULL);
+		str[0] = '\0';
+		return (str);
 	}
-	if (!(res = ft_lstnew(tokens->content)))
+	if ((str = malloc(memory_size)) == NULL)
 		return (NULL);
-	tokens = tokens->next;
-	curr = res;
-	while (tokens)
-	{
-		curr->next =
-		tokens = tokens->next;
-	}
-	return (res);
+	while (--memory_size)
+		str[j++] = c;
+	str[j] = c;
+	return ((void*)str);
 }

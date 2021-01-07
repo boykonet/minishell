@@ -29,16 +29,22 @@ void		free_string(char **str)
 
 void		free_params(t_params *params)
 {
+	if (params->cmd)
+		free(params->cmd);
 	if (params->args)
-		ft_lstclear(&params->args, &del_content);
-	if (params->command)
-		free(params->command);
-	if (params->flags)
-		free(params->flags);
-	if (params->redir)
-		free(params->redir);
-	if (params->name_fd)
-		free(params->name_fd);
+		free_string(&params->args);
+	if (params->redir_in)
+		free(params->redir_in);
+	if (params->redir_out)
+		free(params->redir_out);
+	if (params->redir_err)
+		free(params->redir_err);
+	if (params->name_in)
+		free(params->name_in);
+	if (params->name_out)
+		free(params->name_out);
+	if (params->name_err)
+		free(params->name_err);
 }
 
 size_t		number_of_lines(char **arr)
@@ -70,56 +76,49 @@ int				main(int argc, char **argv, char **envp)
 {
 	t_env		*env;
 	t_params	params;
+	t_fd		fd;
+	t_list		*tokens;
+	t_list 		*cmd_args;
+	static int	status;
 	char		*line;
-//	char		*curr;
-	int			ch;
-	int			err;
+	char 		*curr;
 
 	if (!(env = copy_envp_to_struct(envp)))
 		return (-1);
-	/* while (env) */
-	/* { */
-	/* 	printf("<%s=%s>\n", env->name, env->value); */
-	/* 	env = env->next; */
-	/* } */
 	while (TRUE)
 	{
+		line = NULL;
 		wait_line("minishell$ ");
 
-		if ((err = get_next_line(0, &line)) < 0)
+		if ((get_next_line(0, &line)) < 0)
+			return (-1);
+		curr = line;
+		while (*curr)
 		{
-			return (-1);
-			printf("<%s>\n", line);
-			/* curr = line; */
-			/* while (*curr) */
-			/* { */
-			/* 	printf("%c", *curr); */
-			/* 	curr++; */
+			tokens = NULL;
 			init_params(&params);
-			/* ch = parser(&params, line); */
-			/* builtins(&params, ch); */
-			/* free_params(&params); */
-			/* } */
-			/* printf("\n"); */
-			free(line);
+			init_fd(&fd);
+
+			tokens = lexer(&curr, env);
+			if (*curr == ';')
+				curr++;
+			while (tokens)
+			{
+				printf("%s\n", tokens->content);
+				tokens = tokens->next;
+			}
+			printf("\nvishel\n\n");
+
+//			cmd_args = parser(tokens, &fd);
+//
+//			builtins(&params, ch);
+
+			free_params(&params);
+			free_fd(&fd);
+			ft_lstclear(&tokens, del_content);
 		}
-		if (err == 0)
-			free(line);
-		printf("<%s>\n", line);
-		/* curr = line; */
-		/* while (*curr) */
-		/* { */
-		/* 	printf("%c", *curr); */
-		/* 	curr++; */
-		init_params(&params);
-		/* ch = parser(&params, line); */
-		/* builtins(&params, ch); */
-		/* free_params(&params); */
-		/* } */
-		/* printf("\n"); */
 		free(line);
-		if (err == -1) // free all
-			return (-1);
 	}
-	return (0);
+	return (status);
+	//     echo -n '<   "qwerty"   >'     4qwerty4     '<   qwerty   >''<   "qwerty"   >'    4qwerty4    '<   qwerty   >' >> file.txt | grep -lE "main"
 }

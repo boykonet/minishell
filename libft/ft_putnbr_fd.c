@@ -1,20 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init_fd.c                                          :+:      :+:    :+:   */
+/*   ft_putnbr_fd.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gkarina <gkarina@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/12/17 22:48:39 by gkarina           #+#    #+#             */
-/*   Updated: 2020/12/17 22:48:39 by gkarina          ###   ########.fr       */
+/*   Created: 2020/05/11 17:36:43 by gkarina           #+#    #+#             */
+/*   Updated: 2020/05/11 17:36:43 by gkarina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "libft.h"
 
-void		init_fd(t_fd *fd)
+void	ft_putnbr_fd(int n, int fd)
 {
-	fd->name_in = NULL;
-	fd->name_out = NULL;
-	fd->name_err = NULL;
+	if (n == -2147483648)
+	{
+		write(fd, "-2", 2);
+		n = 147483648;
+	}
+	if (n < 0)
+	{
+		ft_putchar_fd('-', fd);
+		n = n * (-1);
+	}
+	if ((n / 10) > 0)
+		ft_putnbr_fd(n / 10, fd);
+	ft_putchar_fd(n % 10 + '0', fd);
 }

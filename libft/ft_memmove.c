@@ -1,20 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init_fd.c                                          :+:      :+:    :+:   */
+/*   ft_memmove.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gkarina <gkarina@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/12/17 22:48:39 by gkarina           #+#    #+#             */
-/*   Updated: 2020/12/17 22:48:39 by gkarina          ###   ########.fr       */
+/*   Created: 2020/05/01 20:42:36 by gkarina           #+#    #+#             */
+/*   Updated: 2020/05/01 20:42:36 by gkarina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "libft.h"
 
-void		init_fd(t_fd *fd)
+void	*ft_memmove(void *dst, const void *src, size_t len)
 {
-	fd->name_in = NULL;
-	fd->name_out = NULL;
-	fd->name_err = NULL;
+	unsigned char		*d;
+	const unsigned char	*s;
+
+	d = (unsigned char*)dst;
+	s = (const unsigned char*)src;
+	if (d == NULL || s == NULL)
+		return (NULL);
+	if (len == 0)
+		return (dst);
+	if (d == s)
+		return (dst);
+	else if (d > s)
+	{
+		while (len)
+		{
+			len--;
+			d[len] = s[len];
+		}
+	}
+	else
+		ft_memcpy(d, s, len);
+	return (dst);
 }
