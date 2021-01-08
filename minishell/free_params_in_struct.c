@@ -14,26 +14,32 @@
 
 void		free_params(t_params *params)
 {
+	if (params->cmd)
+		free(params->cmd);
 	if (params->args)
-		ft_lstclear(&params->args, &del_content);
-	if (params->command)
-		free(params->command);
-	if (params->flags)
-		free(params->flags);
-	if (params->redir)
-		free(params->redir);
-	if (params->name_fd)
-		free(params->name_fd);
+		free_string(params->args);
+	if (params->redir_in)
+		free(params->redir_in);
+	if (params->redir_out)
+		free(params->redir_out);
+	if (params->redir_err)
+		free(params->redir_err);
+//	if (params->name_in)
+//		free(params->name_in);
+//	if (params->name_out)
+//		free(params->name_out);
+//	if (params->name_err)
+//		free(params->name_err);
 }
 
 void		free_fd(t_fd *fd)
 {
-	if (fd->in)
-		free(fd->in);
-	if (fd->out)
-		free(fd->out);
-	if (fd->err)
-		free(fd->err);
+	if (fd->name_in)
+		free(fd->name_in);
+	if (fd->name_out)
+		free(fd->name_out);
+	if (fd->name_err)
+		free(fd->name_err);
 }
 
 void		free_string(char **str)

@@ -12,41 +12,6 @@
 
 #include "../minishell.h"
 
-
-void		free_string(char **str)
-{
-	int		i;
-
-	i = 0;
-	while (str[i])
-	{
-		if (str[i])
-			free(str[i]);
-		i++;
-	}
-	free(str);
-}
-
-void		free_params(t_params *params)
-{
-	if (params->cmd)
-		free(params->cmd);
-	if (params->args)
-		free_string(&params->args);
-	if (params->redir_in)
-		free(params->redir_in);
-	if (params->redir_out)
-		free(params->redir_out);
-	if (params->redir_err)
-		free(params->redir_err);
-	if (params->name_in)
-		free(params->name_in);
-	if (params->name_out)
-		free(params->name_out);
-	if (params->name_err)
-		free(params->name_err);
-}
-
 size_t		number_of_lines(char **arr)
 {
 	size_t	count;
@@ -59,7 +24,6 @@ size_t		number_of_lines(char **arr)
 
 void		wait_line(char *str)
 {
-/* chochu chtoby bylo tak: ~/minishell/minishell$*/
 //	char	*curr_location;
 //	int		i;
 
@@ -78,10 +42,10 @@ int				main(int argc, char **argv, char **envp)
 	t_params	params;
 	t_fd		fd;
 	t_list		*tokens;
-	t_list 		*cmd_args;
+	t_list		*curr;
 	static int	status;
 	char		*line;
-	char 		*curr;
+	char 		*curr_symb;
 
 	if (!(env = copy_envp_to_struct(envp)))
 		return (-1);
@@ -92,29 +56,34 @@ int				main(int argc, char **argv, char **envp)
 
 		if ((get_next_line(0, &line)) < 0)
 			return (-1);
-		curr = line;
-		while (*curr)
+		curr_symb = line;
+		while (*curr_symb)
 		{
 			tokens = NULL;
-			init_params(&params);
-			init_fd(&fd);
 
-			tokens = lexer(&curr, env);
-			if (*curr == ';')
-				curr++;
-			while (tokens)
+			tokens = lexer(&curr_symb, env);
+			if (*curr_symb == ';')
+				curr_symb++;
+//			while (tokens)
+//			{
+//				printf("%s\n", tokens->content);
+//				tokens = tokens->next;
+//			}
+//			printf("\nvishel\n\n");
+			curr = tokens;
+			while (curr)
 			{
-				printf("%s\n", tokens->content);
-				tokens = tokens->next;
+				init_params(&params);
+				init_fd(&fd);
+				parser(&curr, &params, &fd, &status);
+//				if (!(ft_strncmp(tokens->content, "|", 1)))
+//				{
+//					pipe = 0;
+//				}
+//				builtins(&params, ch, &status);
+				free_params(&params);
+				free_fd(&fd);
 			}
-			printf("\nvishel\n\n");
-
-//			cmd_args = parser(tokens, &fd);
-//
-//			builtins(&params, ch);
-
-			free_params(&params);
-			free_fd(&fd);
 			ft_lstclear(&tokens, del_content);
 		}
 		free(line);

@@ -12,7 +12,7 @@
 
 #include "../minishell.h"
 
-void		builtins(t_params *params, t_env *env)
+void		builtins(t_params *params, t_env *env, int *status)
 {
 	char	*str;
 	char	*home;
@@ -21,17 +21,17 @@ void		builtins(t_params *params, t_env *env)
 
 	str = NULL;
 	find_data_in_env(env, "PWD", &pwd_curr, 0);
-	find_env_in_structs(env, "OLDPWD", &old_pwd, 0);
-	find_env_in_structs(env, "HOME", &home, 0);
+	find_data_in_env(env, "OLDPWD", &old_pwd, 0);
+	find_data_in_env(env, "HOME", &home, 0);
 	if (!pwd_curr || !old_pwd || !home)
 		return ;
-	if (!ft_strncmp(params->command, "echo", 4))
+	if (!ft_strncmp(params->cmd, "echo", ft_strlen(params->cmd)))
 		ft_echo(&params->args, env, return_value);
 
-	else if (!ft_strncmp(params->command, "pwd", 3))
+	else if (!ft_strncmp(params->cmd, "pwd", ft_strlen(params->cmd)))
 		str = ft_pwd(str);
 
-	else if (!ft_strncmp(params->command, "cd", 2))
+	else if (!ft_strncmp(params->cmd, "cd", ft_strlen(params->cmd)))
 		return_value = ft_cd((params->args)->content, &home, &pwd_curr, &old_pwd);
 
 	/* else if (!ft_strncmp(str->command, "export", 6)) */

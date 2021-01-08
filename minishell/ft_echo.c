@@ -76,26 +76,3 @@ void		ft_echo(t_list **args, t_env *env, int return_value)
 		curr = curr->next;
 	}
 }
-//
-//int			main(int argc, char **argv, char **envp)
-//{
-//	t_env		*env;
-//	t_list		*list;
-//
-//	if (!(env = copy_envp_to_struct(envp)))
-//		return (-1);
-//	list = ft_lstnew(ft_strdup("abc$?abc$?$PATHqwerty$?abc"));
-//	list->next = ft_lstnew(ft_strdup("\'   abc$?abc$?bcde$?$PATH   \'"));
-//	list->next->next = ft_lstnew(ft_strdup("\"     abc$?abc$?bcde$?$PATHqwerty     \""));
-//	list->next->next->next = ft_lstnew(ft_strdup("abc$?abc$?bcde$?qwerty$PATH"));
-//	list->next->next->next->next = ft_lstnew(ft_strdup("$PATHqwerty"));
-//	list->next->next->next->next->next = ft_lstnew(ft_strdup(""));
-//	list->next->next->next->next->next->next = ft_lstnew(ft_strdup("$PATH$HOME"));
-//	ft_echo(&list, env, 0);
-//	while (list)
-//	{
-//		printf("<%s>\n", list->content);
-//		list = list->next;
-//	}
-//
-//}

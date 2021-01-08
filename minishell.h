@@ -33,13 +33,13 @@ typedef struct		s_env
 typedef struct		s_params
 {
 	char			*cmd;
-	char 			*args;
+	char 			**args;
 	char			*redir_in;
 	char 			*redir_out;
 	char 			*redir_err;
-	char			*name_in;
-	char 			*name_out;
-	char 			*name_err;
+//	char			*name_in;
+//	char 			*name_out;
+//	char 			*name_err;
 }					t_params;
 
 typedef struct		s_fd
@@ -50,13 +50,14 @@ typedef struct		s_fd
 }					t_fd;
 
 int					ft_cd(char *args, char **home, char **pwd_curr, char **old_pwd);
+char				*ft_pwd(char *pwd);
+void				ft_echo(t_list **args, t_env *env, int return_value);
 void				builtins(t_params *params, char **home, char **pwd_curr, char **old_pwd);
 void				del_content(void *content);
 void				find_data_in_env(t_env *env, char *needle, char **result, int serial_num);
-char				*ft_pwd(char *pwd);
-void				init_fd(t_fd *fd);
+void 				init_fd(t_fd *fd);
 void				init_params(t_params *params);
-t_list				*parser(t_list *tokens, t_fd *fd);
+void				*parser(t_list *tokens, t_params *params, t_fd *fd, int *status);
 void				write_str(char *str, int fd, int flag);
 t_env				*ft_lstnew_env(void *name, void *value);
 t_env				*copy_envp_to_struct(char **envp);
