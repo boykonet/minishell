@@ -34,9 +34,9 @@ typedef struct		s_params
 {
 	char			*cmd;
 	char 			**args;
-	char			*redir_in;
-	char 			*redir_out;
-	char 			*redir_err;
+//	char			*redir_in;
+//	char 			*redir_out;
+//	char 			*redir_err;
 //	char			*name_in;
 //	char 			*name_out;
 //	char 			*name_err;
@@ -44,9 +44,15 @@ typedef struct		s_params
 
 typedef struct		s_fd
 {
-	char			*name_in;	/* 0 */
-	char			*name_out;	/* 1 */
-	char			*name_err;	/* 2 */
+	char			*redir_in;
+	char 			*redir_out;
+	char 			*redir_err;
+	char			*name_in;
+	char			*name_out;
+	char			*name_err;
+	int 			in;
+	int 			out;
+	int 			err;
 }					t_fd;
 
 int					ft_cd(char *args, char **home, char **pwd_curr, char **old_pwd);
@@ -57,7 +63,7 @@ void				del_content(void *content);
 void				find_data_in_env(t_env *env, char *needle, char **result, int serial_num);
 void 				init_fd(t_fd *fd);
 void				init_params(t_params *params);
-void				*parser(t_list *tokens, t_params *params, t_fd *fd, int *status);
+void				*parser(t_list **tokens, t_params *params, t_fd *fd, int *status);
 void				write_str(char *str, int fd, int flag);
 t_env				*ft_lstnew_env(void *name, void *value);
 t_env				*copy_envp_to_struct(char **envp);
@@ -66,5 +72,7 @@ void				free_params(t_params *params);
 void				free_string(char **str);
 int					add_fd(char *in, char *redir);
 t_list				*lexer(char **line, t_env *env);
+//int 				redirects(t_list **curr);
+int					add_fd(char *file, char *redir);
 
 #endif

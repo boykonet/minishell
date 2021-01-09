@@ -81,6 +81,7 @@ int				main(int argc, char **argv, char **envp)
 //					pipe = 0;
 //				}
 //				builtins(&params, ch, &status);
+				close(fd.out);
 				free_params(&params);
 				free_fd(&fd);
 			}

@@ -16,7 +16,7 @@ int			add_fd(char *file, char *redir)
 {
 	int		fd;
 
-	fd = 1;
+	fd = -2;
 	if (!ft_strncmp(redir, ">>", ft_strlen(redir)) || \
 			!ft_strncmp(redir, "1>>", ft_strlen(redir)) || \
 			!ft_strncmp(redir, "2>>", ft_strlen(redir)))

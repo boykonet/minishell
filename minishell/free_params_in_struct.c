@@ -18,12 +18,12 @@ void		free_params(t_params *params)
 		free(params->cmd);
 	if (params->args)
 		free_string(params->args);
-	if (params->redir_in)
-		free(params->redir_in);
-	if (params->redir_out)
-		free(params->redir_out);
-	if (params->redir_err)
-		free(params->redir_err);
+//	if (params->redir_in)
+//		free(params->redir_in);
+//	if (params->redir_out)
+//		free(params->redir_out);
+//	if (params->redir_err)
+//		free(params->redir_err);
 //	if (params->name_in)
 //		free(params->name_in);
 //	if (params->name_out)
@@ -34,6 +34,12 @@ void		free_params(t_params *params)
 
 void		free_fd(t_fd *fd)
 {
+	if (fd->redir_in)
+		free(fd->redir_in);
+	if (fd->redir_out)
+		free(fd->redir_out);
+	if (fd->redir_err)
+		free(fd->redir_err);
 	if (fd->name_in)
 		free(fd->name_in);
 	if (fd->name_out)
