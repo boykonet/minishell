@@ -12,17 +12,17 @@
 
 #include "../minishell.h"
 
-int 		redirects(t_list **curr)
+int 			redirects(char *redir)
 {
-	if (!ft_strncmp((*curr)->content, "<", ft_strlen((*curr)->content)) || \
-		!ft_strncmp((*curr)->content, ">", ft_strlen((*curr)->content)) || \
-		!ft_strncmp((*curr)->content, ">>", ft_strlen((*curr)->content)) || \
-		!ft_strncmp((*curr)->content, "1>", ft_strlen((*curr)->content)) || \
-		!ft_strncmp((*curr)->content, "1>>", ft_strlen((*curr)->content)) ||
-		!ft_strncmp((*curr)->content, "2>", ft_strlen((*curr)->content)) || \
-		!ft_strncmp((*curr)->content, "2>>", ft_strlen((*curr)->content)))
-	{
+	if (!ft_strncmp(redir, "<", ft_strlen(redir)))
+		return (0);
+	else if (!ft_strncmp(redir, ">", ft_strlen(redir)) || \
+				!ft_strncmp(redir, ">>", ft_strlen(redir)) || \
+				!ft_strncmp(redir, "1>", ft_strlen(redir)) || \
+				!ft_strncmp(redir, "1>>", ft_strlen(redir)))
 		return (1);
-	}
-	return (0);
+	else if (!ft_strncmp(redir, "2>", ft_strlen(redir)) || \
+				!ft_strncmp(redir, "2>>", ft_strlen(redir)))
+		return (2);
+	return (-1);
 }

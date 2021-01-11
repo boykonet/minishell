@@ -12,14 +12,115 @@
 
 #include "../minishell.h"
 
-int			check_tokens(char *str)
-{
-	if (!ft_strncmp(str, "|", 1))
-		return (1);
-	else if (!ft_strncmp(str, ";", 1))
-		return (2);
-	return (0);
-}
+//char		*to_tokens(t_env *env, char **line, int *quote)
+//{
+//	char	buff[2];
+//	char	*res;
+//	char	*tmp;
+//	int 	escaped_quote;
+//
+//	tmp = NULL;
+//	res = ft_strdup("");
+//	ft_memset(buff, '\0', 2);
+//	if (*(*line) != ' ' && *(*line))
+//	{
+//		escaped_quote = 0;
+//		tmp = res;
+//		if (*(*line) == '\\')
+//		{
+//			if ((*(*line + 1)) == '\'' && *quote == 1)
+//				escaped_quote = 1;
+//			else if ((*(*line + 1)) == '\"' && *quote == 2)
+//				escaped_quote = 2;
+//			(*line)++;
+//		}
+//		if (*(*line) == '$' && *quote != 1)
+//			res = ft_strjoin(res, expand_env_arg(line, env));
+//		else
+//		{
+//			if (*(*line) == '\\' && *quote == 0)
+//				(*line)++;
+//			buff[0] = *(*line);
+//			res = ft_strjoin(res, buff);
+//			(*line)++;
+//		}
+//		free(tmp);
+//		if (!res)
+//			return (NULL);
+//		if ((*(*line) == '\'' && *quote == 1 && !escaped_quote) || (*(*line) == '\"' && *quote == 2 && !escaped_quote))
+//		{
+//			(*line)++;
+//			*quote = 0;
+//		}
+//	}
+//	return (res);
+//}
+
+/* функция, которая обрабатывает слова, вызывается внутри функции, которая обрабатывает скобочки и если скобочек нет */
+
+//char			*read_tokens(char **line, t_env *env)
+//{
+//	char		*result;
+//	char		*curr;
+//	char 		*tmp;
+//	int			quote;
+//	int 		count_quote;
+//
+//	result = ft_strdup("");
+//	quote = 0;
+//	count_quote = 0;
+//	if (*(*line) == '\'' || *(*line) == '\"')
+//		quote = *(*line) == '\'' ? 1 : 2;
+//	if (quote > 0)
+//	{
+//		while (*(*line) != ' ' && *(*line))
+//		{
+//			if ((*(*line) == '\'' && quote == 1) || (*(*line) == '\"' && quote == 2))
+//				(*line)++;
+//			while (quote > 0 && *(*line) != '\0')
+//			{
+//				tmp = result;
+//				if (*(*line) == ' ')
+//				{
+//					curr = (*line);
+//					while (*(*line) == ' ' && *(*line))
+//						(*line)++;
+//					if (!(curr = ft_substr(curr, 0, (*line) - curr)))
+//					{
+//						free(tmp);
+//						return (NULL);
+//					}
+//					result = ft_strjoin(result, curr);
+//					free(curr);
+//				}
+//				else
+//				{
+//					if (!(curr = to_tokens(env, line, &quote)))
+//					{
+//						free(tmp);
+//						return (NULL);
+//					}
+//					result = ft_strjoin(result, curr);
+//					free(curr);
+//				}
+//				free(tmp);
+//				if (!result)
+//					return (NULL);
+//			}
+//			if (*(*line) == '\'' || *(*line) == '\"')
+//				quote = *(*line) == '\'' ? 1 : 2;
+//			else
+//				break ;
+//		}
+//	}
+//	else
+//	{
+//		tmp = result;
+//		result = to_tokens(env, line, &quote);
+//		free(tmp);
+//	}
+//	return (result);
+//}
 
 char		*expand_env_arg(char **line, t_env *env)
 {
@@ -27,6 +128,7 @@ char		*expand_env_arg(char **line, t_env *env)
 	char 	*res;
 	char 	*curr;
 
+	res = NULL;
 	if (*(*line) == '$' && (*(*line + 1) == ' ' || *(*line + 1) == '$' || *(*line + 1) == '\0'))
 	{
 		res = ft_strdup("$");
@@ -41,6 +143,10 @@ char		*expand_env_arg(char **line, t_env *env)
 		if (!(arg = ft_substr((*line), 0, curr - (*line))))
 			return (NULL);
 		find_data_in_env(env, arg, &res, 0);
+		if (!res)
+			res = ft_strdup("");
+		else
+			res = ft_strdup(res);
 		free(arg);
 		if (!res)
 			return (NULL);
@@ -54,116 +160,6 @@ char		*remove_spaces(char *line)
 	while (*line == ' ')
 		line++;
 	return (line);
-}
-
-char		*to_tokens(t_env *env, char **line, int *quote)
-{
-	char	buff[2];
-	char	*res;
-	char	*tmp;
-	int 	escaped_quote;
-
-	tmp = NULL;
-	res = ft_strdup("");
-	ft_memset(buff, '\0', 2);
-	if (*(*line) != ' ' && *(*line))
-	{
-		escaped_quote = 0;
-		tmp = res;
-		if (*(*line) == '\\')
-		{
-			if ((*(*line + 1)) == '\'' && *quote == 1)
-				escaped_quote = 1;
-			else if ((*(*line + 1)) == '\"' && *quote == 2)
-				escaped_quote = 2;
-			(*line)++;
-		}
-		if (*(*line) == '$' && *quote != 1)
-			res = ft_strjoin(res, expand_env_arg(line, env));
-		else
-		{
-			if (*(*line) == '\\' && *quote == 0)
-				(*line)++;
-			buff[0] = *(*line);
-			res = ft_strjoin(res, buff);
-			(*line)++;
-		}
-		free(tmp);
-		if (!res)
-			return (NULL);
-		if ((*(*line) == '\'' && *quote == 1 && !escaped_quote) || (*(*line) == '\"' && *quote == 2 && !escaped_quote))
-		{
-			(*line)++;
-			*quote = 0;
-		}
-	}
-	return (res);
-}
-
-/* функция, которая обрабатывает слова, вызывается внутри функции, которая обрабатывает скобочки и если скобочек нет */
-
-char			*read_tokens(char **line, t_env *env)
-{
-	char		*result;
-	char		*curr;
-	char 		*tmp;
-	int			quote;
-	int 		count_quote;
-
-	result = ft_strdup("");
-	quote = 0;
-	count_quote = 0;
-	if (*(*line) == '\'' || *(*line) == '\"')
-		quote = *(*line) == '\'' ? 1 : 2;
-	if (quote > 0)
-	{
-		while (*(*line) != ' ' && *(*line))
-		{
-			if ((*(*line) == '\'' && quote == 1) || (*(*line) == '\"' && quote == 2))
-				(*line)++;
-			while (quote > 0 && *(*line) != '\0')
-			{
-				tmp = result;
-				if (*(*line) == ' ')
-				{
-					curr = (*line);
-					while (*(*line) == ' ' && *(*line))
-						(*line)++;
-					if (!(curr = ft_substr(curr, 0, (*line) - curr)))
-					{
-						free(tmp);
-						return (NULL);
-					}
-					result = ft_strjoin(result, curr);
-					free(curr);
-				}
-				else
-				{
-					if (!(curr = to_tokens(env, line, &quote)))
-					{
-						free(tmp);
-						return (NULL);
-					}
-					result = ft_strjoin(result, curr);
-					free(curr);
-				}
-				free(tmp);
-				if (!result)
-					return (NULL);
-			}
-			if (*(*line) == '\'' || *(*line) == '\"')
-				quote = *(*line) == '\'' ? 1 : 2;
-			else
-				break ;
-		}
-	}
-	else
-	{
-		tmp = result;
-		result = to_tokens(env, line, &quote);
-		free(tmp);
-	}
-	return (result);
 }
 
 char		*append_to_array(char *src, char symb)
@@ -184,59 +180,83 @@ char		*append_to_array(char *src, char symb)
 	return (dst);
 }
 
-char		*handling_tokens_with_quotes(char **line, t_env *env)
+char		*tokens_with_single_quotes(char **line)
 {
-	char 	*res;
-	char 	*tmp;
+	char 	*token;
 	char 	*curr;
-	int 	quote;
-	int 	count_quote;
-	int 	escaped_quote;
 
-	quote = *(*line) == '\'' ? 1 : 2;
-	count_quote = 0;
-	res = ft_strdup("");
+	curr = (*line);
+	curr++;
+	while (*curr)
+	{
+		if (*curr == '\'')
+			break ;
+		curr++;
+	}
+	token = ft_substr((*line), 1, curr - (*line) - 1);
+	(*line) = ++curr;
+	return (token);
+}
+
+char		*tokens_with_double_quotes(char **line, t_env *env)
+{
+	char 	*token;
+	char	*tmp;
+	char 	*curr;
+	int 	spec_char;
+
+	token = ft_strdup("");
+	(*line)++;
 	while (*(*line))
 	{
-		tmp = res;
-		escaped_quote = 0;
-		if (*(*line) == '\\' && ((*(*line + 1) == '\'') || (*(*line + 1) == '\"')))
+		tmp = token;
+		spec_char = 0;
+		if (*(*line) == '\\')
 		{
-			if (*(*line + 1) == '\'' && quote == 1)
-				escaped_quote = 1;
-			else if (*(*line + 1) == '\"' && quote == 2)
-				escaped_quote = 2;
-			(*line)++;
+			if (*(*line + 1) == '\"' || *(*line + 1) == '$')
+			{
+				(*line)++;
+				spec_char = 1;
+			}
 		}
-		if ((*(*line) == '\'' && quote == 1 && !escaped_quote) || (*(*line) == '\"' && quote == 2 && !escaped_quote))
-			count_quote = count_quote == 0 ? 1 : 2;
-		if (count_quote == 2)
+		if (*(*line) == '\"' && (*(*line + 1) == ' ' || *(*line + 1) == '\0') && !spec_char)
 		{
 			(*line)++;
 			break ;
 		}
-		else if (count_quote == 1 && ((*(*line) == '\'' && quote == 1 && !escaped_quote) || (*(*line) == '\"' && quote == 2 && !escaped_quote)))
-			(*line)++;
-		if (*(*line) == '$' && quote == 2)
+		if (*(*line) == '$' && !spec_char)
 		{
-			(*line)++;
 			if (!(curr = expand_env_arg(line, env)))
 			{
 				free(tmp);
 				return (NULL);
 			}
-			res = ft_strjoin(res, curr);
+			token = ft_strjoin(token, curr);
 			free(curr);
-			free(tmp);
 		}
-		else if (!(*(*line) == '\'' && quote == 1 && !escaped_quote) && \
-				!(*(*line) == '\"' && quote == 2 && !escaped_quote))
-		{
-			res = append_to_array(res, *(*line));
-			(*line)++;
-			free(tmp);
-		}
-		if (!res)
+		else
+			token = append_to_array(token, *(*line));
+		free(tmp);
+		if (!(token))
+			return (NULL);
+		(*line)++;
+	}
+	return (token);
+}
+
+char		*handling_tokens_with_quotes(char **line, t_env *env)
+{
+	char 	*res;
+
+	res = NULL;
+	if (*(*line) == '\'')
+	{
+		if (!(res = tokens_with_single_quotes(line)))
+			return (NULL);
+	}
+	else if (*(*line) == '\"')
+	{
+		if (!(res = tokens_with_double_quotes(line, env)))
 			return (NULL);
 	}
 	return (res);
@@ -247,12 +267,19 @@ char 		*return_token(char **line, t_env *env)
 	char 	*res;
 	char 	*tmp;
 	char 	*curr;
+	int 	spec_char;
 
 	res = ft_strdup("");
 	while (*(*line))
 	{
 		tmp = res;
-		if (*(*line) == '\'' || *(*line) == '\"')
+		spec_char = 0;
+		if (*(*line) == '\\')
+		{
+			(*line)++;
+			spec_char = 1;
+		}
+		if ((*(*line) == '\'' || *(*line) == '\"') && !spec_char)
 		{
 			curr = handling_tokens_with_quotes(line, env);
 			res = ft_strjoin(res, curr);
@@ -261,9 +288,9 @@ char 		*return_token(char **line, t_env *env)
 		}
 		else
 		{
-			if (*(*line) == ' ')
+			if (*(*line) == ' ' || *(*line) == ';')
 				break ;
-			if (*(*line) == '$')
+			if (*(*line) == '$' && !spec_char)
 			{
 				if (!(curr = expand_env_arg(line, env)))
 				{

@@ -39,10 +39,9 @@ void		wait_line(char *str)
 int				main(int argc, char **argv, char **envp)
 {
 	t_env		*env;
-	t_params	params;
-	t_fd		fd;
+//	t_list		*params;
+//	t_list		*fd;
 	t_list		*tokens;
-	t_list		*curr;
 	static int	status;
 	char		*line;
 	char 		*curr_symb;
@@ -54,7 +53,7 @@ int				main(int argc, char **argv, char **envp)
 		line = NULL;
 		wait_line("minishell$ ");
 
-		if ((get_next_line(0, &line)) < 0)
+		if ((getcharacter(0, &line)) < 0)
 			return (-1);
 		curr_symb = line;
 		while (*curr_symb)
@@ -64,27 +63,24 @@ int				main(int argc, char **argv, char **envp)
 			tokens = lexer(&curr_symb, env);
 			if (*curr_symb == ';')
 				curr_symb++;
-//			while (tokens)
-//			{
-//				printf("%s\n", tokens->content);
-//				tokens = tokens->next;
-//			}
-//			printf("\nvishel\n\n");
-			curr = tokens;
-			while (curr)
+			while (tokens)
 			{
-				init_params(&params);
-				init_fd(&fd);
-				parser(&curr, &params, &fd, &status);
-//				if (!(ft_strncmp(tokens->content, "|", 1)))
-//				{
-//					pipe = 0;
-//				}
-//				builtins(&params, ch, &status);
-				close(fd.out);
-				free_params(&params);
-				free_fd(&fd);
+				printf("%s\n", tokens->content);
+				tokens = tokens->next;
 			}
+			printf("\nvishel\n\n");
+//			curr = tokens;
+//			while (curr)
+//			{
+//				init_params(&params);
+//				init_fd(&fd);
+//			parser(&tokens, params, fd, &status);
+//				builtins(&params, ch, &status);
+//			ft_lstclear(&params, &free_params);
+//			ft_lstclear(&fd, &free_fd);
+//			free_params(&params);
+//			free_fd(&fd);
+//			}
 			ft_lstclear(&tokens, del_content);
 		}
 		free(line);

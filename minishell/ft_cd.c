@@ -29,44 +29,33 @@ void		change_pwd(char **pwd_curr, char **old_pwd, char *pwd)
 	/* printf("%s\n", *pwd_curr); */
 }
 
-int			ft_cd(char *args, char **home, char **pwd_curr, char **old_pwd)
+int			ft_cd(char **args, t_env *env, int *status)
 {
 	char	*pwd;
 	char	*str;
-	char	*start;
-	char	*end;
-	int		a;
 
-	pwd = NULL;
 	str = NULL;
-	start = NULL;
-	end = NULL;
-	if (!ft_strncmp(args, "~", 1) || *args == '\0')
+	if (!ft_strncmp(args[0], "~", ft_strlen(args[0])) || *args[0] == '\0')
 	{
-		start = ft_strchr(*home, '/');
-		end = ft_strrchr(*home, '\"');
-		str = ft_substr(start, 0, end - start);
+		find_data_in_env(env, "HOME", &str, 0);
+		str = ft_substr(str, 0, ft_strrchr(str, '\0') - str);
 	}
-	else if (!ft_strncmp(args, "-", 1))
+	else if (!ft_strncmp(args[0], "-", ft_strlen(args[0])))
 	{
-		start = ft_strchr(*old_pwd, '/');
-		end = ft_strrchr(*old_pwd, '\"');
-		str = ft_substr(start, 0, end - start);
+		find_data_in_env(env, "OLDPWD", &str, 0);
+		str = ft_substr(str, 0, ft_strrchr(str, '\0') - str);
 	}
 	else
-		str = ft_strdup(args);
-
-	/* printf("%s\n", str); */
-	/* a = chdir(str); */
-	if ((a = chdir(args) < 0))
+		str = ft_strdup(args[0]);
+	if ((chdir(str) < 0))
+	{
+		free(str);
 		return (-1);
-	/* printf("a = [%d]\n", a); */
-	/* printf("%d\n", errno); */
-	/* printf("%s\n", strerror(errno)); */
+	}
+	free(str);
 	if (!(pwd = ft_pwd(pwd)))
 		return (-1);
 	change_pwd(pwd_curr, old_pwd, pwd);
 	free(pwd);
-	free(str);
 	return (0);
 }

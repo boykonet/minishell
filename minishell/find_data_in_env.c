@@ -1,6 +1,6 @@
 
 
-/* 0 for name, 1 for value*/
+/* 0 return value have name in needle, 1 return name have value in needle*/
 
 #include "../minishell.h"
 
@@ -9,6 +9,7 @@ void		find_data_in_env(t_env *env, char *needle, char **result, \
 {
 	char	*val;
 
+	val = NULL;
 	while (env)
 	{
 		if (serial_num == 0)
@@ -20,9 +21,9 @@ void		find_data_in_env(t_env *env, char *needle, char **result, \
 		env = env->next;
 	}
 	if (!env)
-		*result = ft_strdup("");
+		*result = NULL;
 	else if (serial_num == 0)
-		*result = ft_strdup(env->value);
+		*result = env->value;
 	else if (serial_num == 1)
-		*result = ft_strdup(env->name);
+		*result = env->name;
 }

@@ -8,7 +8,7 @@ int		main(int argc, char **argv, char **envp)
 
 	cmd = argv[1];
 	in_name = argv[2];
-	in = open(in_name, O_RDONLY);
+	in = open(in_name, O_RDONLY); // in = 3;
 	dup2(in, 0);
 	close(in);
 

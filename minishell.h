@@ -72,7 +72,8 @@ void				free_params(t_params *params);
 void				free_string(char **str);
 int					add_fd(char *in, char *redir);
 t_list				*lexer(char **line, t_env *env);
-//int 				redirects(t_list **curr);
+int 				redirects(char *redir);
 int					add_fd(char *file, char *redir);
+int					getcharacter(int fd, char **line);
 
 #endif

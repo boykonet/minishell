@@ -46,6 +46,13 @@ void		free_fd(t_fd *fd)
 		free(fd->name_out);
 	if (fd->name_err)
 		free(fd->name_err);
+
+	if (fd->in > 2)
+		close(fd->in);
+	if (fd->out > 2)
+		close(fd->out);
+	if (fd->err > 2)
+		close(fd->err);
 }
 
 void		free_string(char **str)

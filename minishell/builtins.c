@@ -15,24 +15,16 @@
 void		builtins(t_params *params, t_env *env, int *status)
 {
 	char	*str;
-	char	*home;
-	char	*pwd_curr;
-	char	*old_pwd;
 
 	str = NULL;
-	find_data_in_env(env, "PWD", &pwd_curr, 0);
-	find_data_in_env(env, "OLDPWD", &old_pwd, 0);
-	find_data_in_env(env, "HOME", &home, 0);
-	if (!pwd_curr || !old_pwd || !home)
-		return ;
 	if (!ft_strncmp(params->cmd, "echo", ft_strlen(params->cmd)))
-		ft_echo(&params->args, env, return_value);
+		ft_echo(params->args, env, status);
 
 	else if (!ft_strncmp(params->cmd, "pwd", ft_strlen(params->cmd)))
 		str = ft_pwd(str);
 
 	else if (!ft_strncmp(params->cmd, "cd", ft_strlen(params->cmd)))
-		return_value = ft_cd((params->args)->content, &home, &pwd_curr, &old_pwd);
+		return_value = ft_cd(params->args, env, status);
 
 	/* else if (!ft_strncmp(str->command, "export", 6)) */
 	/* 	ft_export(); */

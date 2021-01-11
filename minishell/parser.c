@@ -26,21 +26,6 @@ int 			copying_redir_fd(t_list **curr, char **name_redir, char **name_fd, int *f
 	return (1);
 }
 
-int 			redirects(char *redir)
-{
-	if (!ft_strncmp(redir, "<", ft_strlen(redir)))
-		return (0);
-	else if (!ft_strncmp(redir, ">", ft_strlen(redir)) || \
-				!ft_strncmp(redir, ">>", ft_strlen(redir)) || \
-				!ft_strncmp(redir, "1>", ft_strlen(redir)) || \
-				!ft_strncmp(redir, "1>>", ft_strlen(redir)))
-		return (1);
-	else if (!ft_strncmp(redir, "2>", ft_strlen(redir)) || \
-				!ft_strncmp(redir, "2>>", ft_strlen(redir)))
-		return (2);
-	return (-1);
-}
-
 int 			check_redir(t_list **curr, t_params *params, t_fd *fd)
 {
 	char 			*redir;
@@ -128,6 +113,7 @@ void 			*parser(t_list **tokens, t_params *params, t_fd *fd, int *status)
 				curr = curr->next;
 			continue ;
 		}
+		curr = curr->next;
 		count++;
 	}
 	if (!(params->args = ft_calloc(count + 1, sizeof(char*))))

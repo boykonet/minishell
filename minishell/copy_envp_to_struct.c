@@ -2,8 +2,6 @@
 
 void		*init_name_value(char *str, char *separator, char **name, char **value)
 {
-	char	*tmp;
-
 	if (!(*name = ft_substr(str, 0, separator - str)))
 		return (NULL);
 	if (!(*value = ft_substr(separator, 1, ft_strlen(separator + 1))))
