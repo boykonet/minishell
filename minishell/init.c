@@ -12,27 +12,26 @@
 
 #include "../minishell.h"
 
-void		init_params(t_params *params)
+t_params	*init_params(t_params *params)
 {
 	params->cmd = NULL;
 	params->args = NULL;
-//	params->redir_in = NULL;
-//	params->redir_out = NULL;
-//	params->redir_err = NULL;
-//	params->name_in = NULL;
-//	params->name_out = NULL;
-//	params->name_err = NULL;
+	params->in = 0;
+	params->out = 1;
+	params->err = 2;
+	params->next = NULL;
+	return (params);
 }
-
-void		init_fd(t_fd *fd)
-{
-	fd->redir_in = NULL;
-	fd->redir_out = NULL;
-	fd->redir_err = NULL;
-	fd->name_in = NULL;
-	fd->name_out = NULL;
-	fd->name_err = NULL;
-	fd->in = 0;
-	fd->out = 1;
-	fd->err = 2;
-}
+//
+//void		init_fd(t_fd *fd)
+//{
+//	fd->redir_in = NULL;
+//	fd->redir_out = NULL;
+//	fd->redir_err = NULL;
+//	fd->name_in = NULL;
+//	fd->name_out = NULL;
+//	fd->name_err = NULL;
+//	fd->in = 0;
+//	fd->out = 1;
+//	fd->err = 2;
+//}

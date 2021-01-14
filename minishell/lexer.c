@@ -12,116 +12,6 @@
 
 #include "../minishell.h"
 
-//char		*to_tokens(t_env *env, char **line, int *quote)
-//{
-//	char	buff[2];
-//	char	*res;
-//	char	*tmp;
-//	int 	escaped_quote;
-//
-//	tmp = NULL;
-//	res = ft_strdup("");
-//	ft_memset(buff, '\0', 2);
-//	if (*(*line) != ' ' && *(*line))
-//	{
-//		escaped_quote = 0;
-//		tmp = res;
-//		if (*(*line) == '\\')
-//		{
-//			if ((*(*line + 1)) == '\'' && *quote == 1)
-//				escaped_quote = 1;
-//			else if ((*(*line + 1)) == '\"' && *quote == 2)
-//				escaped_quote = 2;
-//			(*line)++;
-//		}
-//		if (*(*line) == '$' && *quote != 1)
-//			res = ft_strjoin(res, expand_env_arg(line, env));
-//		else
-//		{
-//			if (*(*line) == '\\' && *quote == 0)
-//				(*line)++;
-//			buff[0] = *(*line);
-//			res = ft_strjoin(res, buff);
-//			(*line)++;
-//		}
-//		free(tmp);
-//		if (!res)
-//			return (NULL);
-//		if ((*(*line) == '\'' && *quote == 1 && !escaped_quote) || (*(*line) == '\"' && *quote == 2 && !escaped_quote))
-//		{
-//			(*line)++;
-//			*quote = 0;
-//		}
-//	}
-//	return (res);
-//}
-
-/* функция, которая обрабатывает слова, вызывается внутри функции, которая обрабатывает скобочки и если скобочек нет */
-
-//char			*read_tokens(char **line, t_env *env)
-//{
-//	char		*result;
-//	char		*curr;
-//	char 		*tmp;
-//	int			quote;
-//	int 		count_quote;
-//
-//	result = ft_strdup("");
-//	quote = 0;
-//	count_quote = 0;
-//	if (*(*line) == '\'' || *(*line) == '\"')
-//		quote = *(*line) == '\'' ? 1 : 2;
-//	if (quote > 0)
-//	{
-//		while (*(*line) != ' ' && *(*line))
-//		{
-//			if ((*(*line) == '\'' && quote == 1) || (*(*line) == '\"' && quote == 2))
-//				(*line)++;
-//			while (quote > 0 && *(*line) != '\0')
-//			{
-//				tmp = result;
-//				if (*(*line) == ' ')
-//				{
-//					curr = (*line);
-//					while (*(*line) == ' ' && *(*line))
-//						(*line)++;
-//					if (!(curr = ft_substr(curr, 0, (*line) - curr)))
-//					{
-//						free(tmp);
-//						return (NULL);
-//					}
-//					result = ft_strjoin(result, curr);
-//					free(curr);
-//				}
-//				else
-//				{
-//					if (!(curr = to_tokens(env, line, &quote)))
-//					{
-//						free(tmp);
-//						return (NULL);
-//					}
-//					result = ft_strjoin(result, curr);
-//					free(curr);
-//				}
-//				free(tmp);
-//				if (!result)
-//					return (NULL);
-//			}
-//			if (*(*line) == '\'' || *(*line) == '\"')
-//				quote = *(*line) == '\'' ? 1 : 2;
-//			else
-//				break ;
-//		}
-//	}
-//	else
-//	{
-//		tmp = result;
-//		result = to_tokens(env, line, &quote);
-//		free(tmp);
-//	}
-//	return (result);
-//}
-
 char		*expand_env_arg(char **line, t_env *env)
 {
 	char	*arg;
@@ -129,7 +19,7 @@ char		*expand_env_arg(char **line, t_env *env)
 	char 	*curr;
 
 	res = NULL;
-	if (*(*line) == '$' && (*(*line + 1) == ' ' || *(*line + 1) == '$' || *(*line + 1) == '\0'))
+	if (*(*line) == '$' && (*(*line + 1) == ' ' || *(*line + 1) == '$' || *(*line + 1) == '\\' || *(*line + 1) == '\0'))
 	{
 		res = ft_strdup("$");
 		(*line)++;
@@ -218,8 +108,11 @@ char		*tokens_with_double_quotes(char **line, t_env *env)
 				(*line)++;
 				spec_char = 1;
 			}
+			else if (*(*line + 1) == '!')
+				spec_char = 1;
 		}
-		if (*(*line) == '\"' && (*(*line + 1) == ' ' || *(*line + 1) == '\0') && !spec_char)
+		if (*(*line) == '\"' && (*(*line + 1) == ' ' || *(*line + 1) == '\0' \
+			|| *(*line + 1) == '\"' || *(*line + 1) == '\'') && !spec_char)
 		{
 			(*line)++;
 			break ;
@@ -262,7 +155,7 @@ char		*handling_tokens_with_quotes(char **line, t_env *env)
 	return (res);
 }
 
-char 		*return_token(char **line, t_env *env)
+char 		*return_token(char **line, t_params **params, t_env *env)
 {
 	char 	*res;
 	char 	*tmp;
@@ -272,78 +165,187 @@ char 		*return_token(char **line, t_env *env)
 	res = ft_strdup("");
 	while (*(*line))
 	{
-		tmp = res;
-		spec_char = 0;
-		if (*(*line) == '\\')
+		if (!(*(*line) == '>' || *(*line) == '<'))
 		{
-			(*line)++;
-			spec_char = 1;
-		}
-		if ((*(*line) == '\'' || *(*line) == '\"') && !spec_char)
-		{
-			curr = handling_tokens_with_quotes(line, env);
-			res = ft_strjoin(res, curr);
-			free(tmp);
-			free(curr);
-		}
-		else
-		{
-			if (*(*line) == ' ' || *(*line) == ';')
-				break ;
-			if (*(*line) == '$' && !spec_char)
+			tmp = res;
+			spec_char = 0;
+			if (*(*line) == '\\')
 			{
-				if (!(curr = expand_env_arg(line, env)))
-				{
-					free(tmp);
-					return (NULL);
-				}
+				(*line)++;
+				spec_char = 1;
+			}
+			if ((*(*line) == '\'' || *(*line) == '\"') && !spec_char)
+			{
+				curr = handling_tokens_with_quotes(line, env);
+				res = ft_strjoin(res, curr);
+				free(tmp);
+				free(curr);
 			}
 			else
 			{
-				if (!(curr = ft_calloc(2, sizeof(char))))
+				if (*(*line) == ' ' || *(*line) == ';')
+					break;
+				if (*(*line) == '$' && !spec_char)
 				{
-					free(tmp);
-					return (NULL);
+					if (!(curr = expand_env_arg(line, env)))
+					{
+						free(tmp);
+						return (NULL);
+					}
 				}
-				if (*(*line) == '\\')
-					(*line)++;
-				curr[0] = *(*line)++;
+				else
+				{
+					if (!(curr = ft_calloc(2, sizeof(char))))
+					{
+						free(tmp);
+						return (NULL);
+					}
+					if (*(*line) == '\\')
+						(*line)++;
+					curr[0] = *(*line)++;
+				}
+				res = ft_strjoin(res, curr);
+				free(tmp);
+				free(curr);
 			}
-			res = ft_strjoin(res, curr);
-			free(tmp);
-			free(curr);
+			if (!res)
+				return (NULL);
 		}
-		if (!res)
-			return (NULL);
+		else
+		{
+			if (check_redir(line) == 0)
+				redir(line, &((*params)->in));
+			else if (check_redir(line) == 1)
+				redir(line, &((*params)->out));
+			else if (check_redir(line) == 2)
+				redir(line, &((*params)->err));
+		}
+
 	}
 	return (res);
 }
 
-t_list		*lexer(char **line, t_env *env)
+int 		check_redir(char **line)
 {
-	t_list	*tokens;
-	t_list	*curr;
-	char	*str;
+	char 	*curr_str;
+	char 	*str;
+	char	symb;
+	int 	r;
+
+	r = -1;
+	if ((*(*line) == '<' || *(*line) == '>' || \
+	(*(*line) == '1' && *(*line + 1) == '>') || \
+	(*(*line) == '2' && *(*line + 1) == '>')))
+	{
+		curr_str = (*line);
+		symb = *(*line);
+		while (*curr_str && *curr_str == symb && *curr_str != ' ')
+			curr_str++;
+		str = ft_substr((*line), 0, curr_str - (*line));
+		r = redirects(str);
+		free(str);
+	}
+	return (r);
+}
+
+t_params	*params_new(void)
+{
+	t_params	*params;
+
+	if (!(params = malloc(sizeof(t_params))))
+		return (NULL);
+	params = init_params(params);
+	return (params);
+}
+
+void 			params_free(t_params **params, void (*del)(t_params *))
+{
+	t_params	*curr;
+
+	while ((*params) != NULL)
+	{
+		curr = (*params)->next;
+		if (del)
+			(*del)((*params));
+		free((*params));
+		(*params) = curr;
+	}
+}
+
+t_params		*lex(char **line, t_env *env)
+{
+	t_params	*res;
+	t_list		*lst;
+	char		*str;
 
 	(*line) = remove_spaces((*line));
-	if (!(str = return_token(line, env)))
+	if (!(res = params_new()))
 		return (NULL);
-	if (!(tokens = ft_lstnew(str)))
+	if (*(*line) == '\0' || *(*line) == '|' || *(*line) == ';')
+		return (res);
+	if (!(res->cmd = return_token(line, &res, env)))
+	{
+		params_free(&res, free_params);
 		return (NULL);
-	curr = tokens;
+	}
 	while (*(*line))
 	{
 		(*line) = remove_spaces((*line));
-		if (*(*line) == '\0' || *(*line) == ';')
+		if (*(*line) == '\0' || *(*line) == '|' || *(*line) == ';')
 			break ;
-		if (!(str = return_token(line, env)))
+		if (!(str = return_token(line, &res, env)))
 			return (NULL);
-		if (!(curr->next = ft_lstnew(str)))
+		if (!(res->args = ft_lstnew(str)))
 		{
-			ft_lstclear(&tokens, &del_content);
-			return (0);
+			return (NULL);
 		}
-		curr = curr->next;
+		lst = res->args;
+		while (*(*line))
+		{
+			(*line) = remove_spaces((*line));
+			if (*(*line) == '\0' || *(*line) == '|' || *(*line) == ';')
+				break ;
+			if (!(str = return_token(line, &res, env)))
+				return (NULL);
+			if (!(lst->next = ft_lstnew(str)))
+			{
+				return (NULL);
+			}
+			lst = lst->next;
+		}
 	}
-	return (tokens);
+	return (res);
+}
+
+int 			lexer(char **line, t_params **params, t_env *env)
+{
+	t_params 	*curr;
+	int 		status;
+
+	status = 0;
+	while (*(*line))
+	{
+		(*params) = lex(line, env);
+		if (*(*line) == ';')
+			break ;
+		if (*(*line) == '|')
+			(*line)++;
+		curr = (*params);
+		while (*(*line) && *(*line) != ';')
+		{
+			if (!(curr->next = lex(line, env)))
+			{
+				params_free(params, free_params);
+				return (-1);
+			}
+			if (*(*line) == ';')
+				return (status);
+			if (*(*line) == '|')
+				(*line)++;
+			curr = curr->next;
+		}
+	}
+	return (status);
+	//			if (*(*line) == ';' && *(*line + 1) == ';')
+//				error_handling(NULL, ";;", );
 }

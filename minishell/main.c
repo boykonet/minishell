@@ -39,13 +39,12 @@ void		wait_line(char *str)
 int				main(int argc, char **argv, char **envp)
 {
 	t_env		*env;
-//	t_list		*params;
-//	t_list		*fd;
-	t_list		*tokens;
+	t_params	*params;
 	static int	status;
 	char		*line;
 	char 		*curr_symb;
 
+	status = 0;
 	if (!(env = copy_envp_to_struct(envp)))
 		return (-1);
 	while (TRUE)
@@ -58,30 +57,32 @@ int				main(int argc, char **argv, char **envp)
 		curr_symb = line;
 		while (*curr_symb)
 		{
-			tokens = NULL;
-
-			tokens = lexer(&curr_symb, env);
+			params = NULL;
+			status = lexer(&curr_symb, &params, env);
+			if (status > 0)
+				break ;
 			if (*curr_symb == ';')
 				curr_symb++;
-			while (tokens)
+			while (params)
 			{
-				printf("%s\n", tokens->content);
-				tokens = tokens->next;
+				printf("%s\n", params->cmd);
+				while (params->args)
+				{
+					printf("%s\n", (params->args)->content);
+					params->args = (params->args)->next;
+				}
+				params = params->next;
 			}
-			printf("\nvishel\n\n");
-//			curr = tokens;
-//			while (curr)
+//			while (tokens)
 //			{
-//				init_params(&params);
-//				init_fd(&fd);
+//				printf("%s\n", tokens->content);
+//				tokens = tokens->next;
+//			}
+//			printf("\nvishel\n\n");
+//			curr = tokens;
 //			parser(&tokens, params, fd, &status);
 //				builtins(&params, ch, &status);
-//			ft_lstclear(&params, &free_params);
-//			ft_lstclear(&fd, &free_fd);
-//			free_params(&params);
-//			free_fd(&fd);
-//			}
-			ft_lstclear(&tokens, del_content);
+			params_free(&params, free_params);
 		}
 		free(line);
 	}

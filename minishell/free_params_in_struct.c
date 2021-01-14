@@ -17,7 +17,13 @@ void		free_params(t_params *params)
 	if (params->cmd)
 		free(params->cmd);
 	if (params->args)
-		free_string(params->args);
+		ft_lstclear(&params->args, del_content);
+	if (params->in > 2)
+		close(params->in);
+	if (params->out > 2)
+		close(params->out);
+	if (params->err > 2)
+		close(params->err);
 //	if (params->redir_in)
 //		free(params->redir_in);
 //	if (params->redir_out)
@@ -32,28 +38,28 @@ void		free_params(t_params *params)
 //		free(params->name_err);
 }
 
-void		free_fd(t_fd *fd)
-{
-	if (fd->redir_in)
-		free(fd->redir_in);
-	if (fd->redir_out)
-		free(fd->redir_out);
-	if (fd->redir_err)
-		free(fd->redir_err);
-	if (fd->name_in)
-		free(fd->name_in);
-	if (fd->name_out)
-		free(fd->name_out);
-	if (fd->name_err)
-		free(fd->name_err);
-
-	if (fd->in > 2)
-		close(fd->in);
-	if (fd->out > 2)
-		close(fd->out);
-	if (fd->err > 2)
-		close(fd->err);
-}
+//void		free_fd(t_fd *fd)
+//{
+//	if (fd->redir_in)
+//		free(fd->redir_in);
+//	if (fd->redir_out)
+//		free(fd->redir_out);
+//	if (fd->redir_err)
+//		free(fd->redir_err);
+//	if (fd->name_in)
+//		free(fd->name_in);
+//	if (fd->name_out)
+//		free(fd->name_out);
+//	if (fd->name_err)
+//		free(fd->name_err);
+//
+//	if (fd->in > 2)
+//		close(fd->in);
+//	if (fd->out > 2)
+//		close(fd->out);
+//	if (fd->err > 2)
+//		close(fd->err);
+//}
 
 void		free_string(char **str)
 {

@@ -13,39 +13,32 @@
 #include <errno.h>
 #include <string.h>
 #include <stdio.h>
+#include "../minishell.h"
 
-/* -minishell: cd: ,: No such file or directory */
--bash: fhfhfh.txt: No such file or directory
-		cat: ttt.txt: No such file or directory
-		grep: minishell: Is a directory
-
-void		error_handling(char *cmd, char *str, int spec, int err)
+int 		error_handling(char *cmd, char *arg, int fd, int status)
 {
-	if (spec > 0)
-		write(err, "-minishell: ", 12);
-	else
-		write(err, cmd, ft_strlen(cmd));
-	if (spec == 1 && str)
+	if (!ft_strncmp(arg, "cat", ft_strlen(arg)))
+		write(fd, "-minishell: ", 12);
+	if (status == 258 && arg)
 	{
-		write(err, "syntax error near unexpected token `", 36);
-		write(err, str, ft_strlen(str));
-		wtite(err, "'\n", 2);
+		write(fd, "syntax error near unexpected token `", 36);
+		write(fd, arg, ft_strlen(arg));
+		write(fd, "'\n", 2);
 	}
-	else if (spec == 2 && str)
+	else if (status == 127 && arg)
 	{
-		write(err, str, ft_strlen(str));
-		write(err, ": command not found\n", 20);
+		write(fd, arg, ft_strlen(arg));
+		write(fd, ": command not found\n", 20);
 	}
-	else if (spec == 3 && str)
+	else if (status == 1 && arg)
 	{
 		if (cmd)
 		{
-			write(err, cmd, ft_strlen(cmd));
-			write(err, ": ", 2);
+			write(fd, cmd, ft_strlen(cmd));
+			write(fd, ": ", 2);
 		}
-		write(err, str, ft_strlen(str));
-		write(err, ": No such file or directory\n", 28);
+		write(fd, arg, ft_strlen(arg));
+		write(fd, ": No such file or directory\n", 28);
 	}
-	else if ()
-
+	return (status);
 }
