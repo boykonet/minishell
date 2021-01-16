@@ -154,7 +154,7 @@ char		*handling_tokens_with_quotes(char **line, t_env *env)
 	return (res);
 }
 
-char 		*return_token(char **line, t_params **params, t_env *env)
+char 		*return_token(char **line, t_env *env)
 {
 	char 	*res;
 	char 	*tmp;
@@ -205,16 +205,6 @@ char 		*return_token(char **line, t_params **params, t_env *env)
 		}
 		if (!res)
 			return (NULL);
-//		else
-//		{
-//			if (check_redir(line) == 0)
-//				redir(line, &((*params)->in));
-//			else if (check_redir(line) == 1)
-//				redir(line, &((*params)->out));
-//			else if (check_redir(line) == 2)
-//				redir(line, &((*params)->err));
-//		}
-
 	}
 	return (res);
 }
@@ -252,28 +242,16 @@ t_params	*params_new(void)
 	return (params);
 }
 
-void 			params_free(t_params **params, void (*del)(t_params *))
-{
-	t_params	*curr;
-
-	while ((*params) != NULL)
-	{
-		curr = (*params)->next;
-		if (del)
-			(*del)((*params));
-		free((*params));
-		(*params) = curr;
-	}
-}
-
-int 		ccc(char **line, t_params **params, int *status)
+int 		ccc(char **line, t_params **params, t_env *env, int *status)
 {
 	if (check_redir(line) == 0)
-		redir(line, &((*params)->in), status);
+		redir(line, env, &((*params)->in), status);
 	else if (check_redir(line) == 1)
-		redir(line, &((*params)->out), status);
+		redir(line, env, &((*params)->out), status);
 	else if (check_redir(line) == 2)
-		redir(line, &((*params)->err), status);
+		redir(line, env, &((*params)->err), status);
+	if (status == 0)
+		return (1);
 	return (0);
 }
 
@@ -283,86 +261,77 @@ t_params		*lex(char **line, t_env *env, int *status)
 	t_list		*lst;
 	char		*str;
 
-	(*line) = remove_spaces((*line));
 	if (!(res = params_new()))
 		return (NULL);
-//	if (*(*line) == '\0' || *(*line) == '|' || *(*line) == ';')
-//		return (res);
-//	if (!(res->cmd = return_token(line, &res, env)))
-//	{
-//		params_free(&res, free_params);
-//		return (NULL);
-//	}
 	if (*(*line) && *(*line) != '|' && *(*line) != ';')
 	{
 		(*line) = remove_spaces((*line));
-//		if (*(*line) == '\0' || *(*line) == '|' || *(*line) == ';')
-//			break ;
 		while (*(*line) == '<' || *(*line) == '>')
-			ccc(line, &res, status);
-		if (!(str = return_token(line, &res, env)))
+			ccc(line, &res, env, status);
+		if (*status == 0 && !(str = return_token(line, env)))
+		{
+			params_free(&res, free_params);
 			return (NULL);
-		if (!(res->args = ft_lstnew(str)))
+		}
+		if (*status == 0 && !(res->args = ft_lstnew(str)))
 		{
 			params_free(&res, free_params);
 			return (NULL);
 		}
 		lst = res->args;
-		while (*(*line) && *(*line) != '|' && *(*line) != ';')
+		while (*status == 0 && *(*line) && *(*line) != '|' && *(*line) != ';')
 		{
 			str = NULL;
 			(*line) = remove_spaces((*line));
-//			if (*(*line) == '\0' || *(*line) == '|' || *(*line) == ';')
-//				break ;
 			if (*(*line) == '<' || *(*line) == '>')
-				ccc(line, &res, status);
+				ccc(line, &res, env, status);
 			else
 			{
-				if (!(str = return_token(line, &res, env)))
+				if (!(str = return_token(line, env)))
 				{
 					params_free(&res, free_params);
 					return (NULL);
 				}
 				if (!(lst->next = ft_lstnew(str)))
 				{
+					params_free(&res, free_params);
 					return (NULL);
 				}
 				lst = lst->next;
 			}
 		}
+		if (status > 0)
+		{
+			params_free(&res, free_params);
+			return (NULL);
+		}
 	}
 	return (res);
 }
 
-int 			lexer(char **line, t_params **params, t_env *env)
+int 			lexer(char **line, t_params **params, t_env *env, int *status)
 {
 	t_params 	*curr;
-	int 		status;
 
-	status = 0;
-	while (*(*line))
+	if (*(*line))
 	{
-		(*params) = lex(line, env, &status);
-//		if (*(*line) == ';')
-//			break ;
+		(*params) = lex(line, env, status);
 		if (*(*line) == '|')
 			(*line)++;
 		curr = (*params);
 		while (*(*line) && *(*line) != ';')
 		{
-			if (!(curr->next = lex(line, env, &status)))
+			if (!(curr->next = lex(line, env, status)))
 			{
 				params_free(params, free_params);
 				return (-1);
 			}
-//			if (*(*line) == ';')
-//				return (status);
 			if (*(*line) == '|')
 				(*line)++;
 			curr = curr->next;
 		}
 	}
-	return (status);
+	return (*status);
 	//			if (*(*line) == ';' && *(*line + 1) == ';')
 //				error_handling(NULL, ";;", );
 }

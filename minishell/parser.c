@@ -25,7 +25,7 @@ int 			check_unexpected_token(char *name_fd)
 	return (1);
 }
 
-int 			open_fd(char **line, int *fd, int *status)
+int 			open_fd(char **line, t_env *env, int *fd, int *status)
 {
 	char 		*redir;
 	char 		*curr;
@@ -41,17 +41,10 @@ int 			open_fd(char **line, int *fd, int *status)
 	(*line) = curr;
 	(*line) = remove_spaces((*line));
 	curr = (*line);
-	while (*curr && *curr != ' ')
-		curr++;
-	name_fd = ft_substr((*line), 0, curr - (*line));
-	if (!ft_strncmp(name_fd, "", ft_strlen(name_fd)))
-	{
-		*status = error_handling(NULL, "newline", "syntax error near unexpected token", 258);
-	}
-//	else if ()
-//	{
-//
-//	}
+	name_fd = return_token(line, env);
+//	name_fd = ft_substr((*line), 0, curr - (*line));
+	if (!ft_strncmp(name_fd, "", ft_strlen(name_fd)) || check_unexpected_token(name_fd))
+		*status = error_handling(NULL, "newline", "syntax error near unexpected token", 2);
 	else
 	{
 		if ((*fd = add_fd(name_fd, redir)) < 0)
@@ -60,17 +53,19 @@ int 			open_fd(char **line, int *fd, int *status)
 	(*line) = curr;
 	free(redir);
 	free(name_fd);
-	return (1);
+	if (status == 0)
+		return (1);
+	return (0);
 }
 
-int 			redir(char **line, int *fd, int *status)
+int 			redir(char **line, t_env *env, int *fd, int *status)
 {
 	if (*fd > 2)
 	{
 		if (close(*fd) < 0)
 			return (0);
 	}
-	if (!(open_fd(line, fd, status)))
+	if (!(open_fd(line, env, fd, status)))
 		return (0);
 	return (1);
 }

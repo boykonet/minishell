@@ -21,54 +21,39 @@ size_t		number_of_lines(char **arr)
 		count++;
 	return (count);
 }
-//
-//void		wait_line(char *str)
-//{
-////	char	*curr_location;
-////	int		i;
-//
-//	/* i = 0; */
-//	/* while (i < 2) */
-//	/* { */
-//
-//	/* } */
-////	write(1, curr_location, ft_strlen(curr_location));
-//	write(1, str, ft_strlen(str));
-//}
 
 int				main(int argc, char **argv, char **envp)
 {
-	t_env		*env;
-	t_params	*params;
+	t_data 		*data;
 	t_params	*d_p;
 	t_list		*list;
 	static int	status;
-	char		*line;
 	char 		*curr_symb;
 
 	status = 0;
-	if (!(env = copy_envp_to_struct(envp)))
+	data = init_data(data);
+	if (!(data->env = copy_envp_to_struct(envp)))
+	{
+		free_data(data);
 		return (-1);
+	}
 	while (TRUE)
 	{
-		line = NULL;
-//		wait_line("minishell$ ");
 		write(1, "minishell$ ", ft_strlen("minishell$ "));
-		if ((getcharacter(0, &line)) < 0)
+		if ((getcharacter(0, &data->line)) < 0)
 			return (-1);
-		curr_symb = line;
+		curr_symb = data->line;
 		while (*curr_symb)
 		{
-			params = NULL;
-			status = lexer(&curr_symb, &params, env);
+			data->params = NULL;
+			lexer(&curr_symb, &data->params, data->env, &status);
 			if (status > 0)
 				break ;
 			if (*curr_symb == ';')
 				curr_symb++;
-			d_p = params;
+			d_p = data->params;
 			while (d_p)
 			{
-				printf("%s\n", d_p->cmd);
 				list = d_p->args;
 				while (list)
 				{
@@ -77,12 +62,10 @@ int				main(int argc, char **argv, char **envp)
 				}
 				d_p = d_p->next;
 			}
-//			printf("\nvishel\n\n");
-//			curr = tokens;
 //				builtins(&params, ch, &status);
-			params_free(&params, free_params);
+			params_free(&data->params, free_params);
 		}
-		free(line);
+		free(data->line);
 	}
 	return (status);
 	//     echo -n '<   "qwerty"   >'     4qwerty4     '<   qwerty   >''<   "qwerty"   >'    4qwerty4    '<   qwerty   >' >> file.txt | grep -lE "main"

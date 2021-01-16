@@ -92,7 +92,7 @@ int			ft_cd(t_list *args, t_env **env, int *status)
 	str = ft_strdup(args->content);
 	if ((chdir(str) < 0))
 	{
-		error_handling("cd", str, 2, 1);
+		error_handling("cd", str, strerror(errno), 1);
 		free(str);
 		return (-1);
 	}

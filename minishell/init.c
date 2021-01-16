@@ -14,7 +14,6 @@
 
 t_params	*init_params(t_params *params)
 {
-	params->cmd = NULL;
 	params->args = NULL;
 	params->in = 0;
 	params->out = 1;
@@ -22,16 +21,13 @@ t_params	*init_params(t_params *params)
 	params->next = NULL;
 	return (params);
 }
-//
-//void		init_fd(t_fd *fd)
-//{
-//	fd->redir_in = NULL;
-//	fd->redir_out = NULL;
-//	fd->redir_err = NULL;
-//	fd->name_in = NULL;
-//	fd->name_out = NULL;
-//	fd->name_err = NULL;
-//	fd->in = 0;
-//	fd->out = 1;
-//	fd->err = 2;
-//}
+
+t_data 		*init_data(t_data *data)
+{
+	data->argc = 0;
+	data->argv = NULL;
+	data->env = NULL;
+	data->line = NULL;
+	data->params = NULL;
+	return (data);
+}

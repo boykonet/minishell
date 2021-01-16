@@ -30,7 +30,7 @@ t_list		*convert_array_to_struct(char **array)
 	{
 		if (!(curr->next = ft_lstnew(ft_strdup(array[i++]))))
 		{
-			ft_lstclear(&res, del_content);
+			ft_lstclear(&res, del_list_content);
 			return (NULL);
 		}
 		curr = curr->next;

@@ -12,23 +12,37 @@
 
 #include "../minishell.h"
 
-void		free_params(t_params *params)
+void 			env_free(t_env **env, void (*del)(t_env *))
 {
-	if (params->cmd)
-		free(params->cmd);
-	if (params->args)
-		ft_lstclear(&params->args, del_content);
-	if (params->in > 2)
-		close(params->in);
-	if (params->out > 2)
-		close(params->out);
-	if (params->err > 2)
-		close(params->err);
+	t_env		*curr;
+
+	while ((*env) != NULL)
+	{
+		curr = (*env)->next;
+		if (del)
+			(*del)((*env));
+		free((*env));
+		(*env) = curr;
+	}
 }
 
-void		free_string(char **str)
+void 			params_free(t_params **params, void (*del)(t_params *))
 {
-	int		i;
+	t_params	*curr;
+
+	while ((*params) != NULL)
+	{
+		curr = (*params)->next;
+		if (del)
+			(*del)((*params));
+		free((*params));
+		(*params) = curr;
+	}
+}
+
+void			free_string(char **str)
+{
+	int			i;
 
 	i = 0;
 	while (str[i])
@@ -38,4 +52,16 @@ void		free_string(char **str)
 		i++;
 	}
 	free(str);
+}
+
+void 			free_data(t_data *data)
+{
+	if (data->line)
+		free(data->line);
+	if (data->argv)
+		free_string(data->argv);
+	if (data->params)
+		params_free(&data->params, free_params);
+	if (data->env)
+		env_free(&data->env, del_env_content);
 }

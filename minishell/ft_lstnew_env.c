@@ -12,3 +12,13 @@ t_env		*ft_lstnew_env(void *name, void *value)
 	return (new);
 }
 
+t_params	*params_new(void)
+{
+	t_params	*params;
+
+	if (!(params = malloc(sizeof(t_params))))
+		return (NULL);
+	params = init_params(params);
+	return (params);
+}
+
