@@ -12,7 +12,7 @@
 
 #include "../minishell.h"
 
-char		*expand_env_arg(char **line, t_env *env)
+char		*expand_env_arg(char **line, t_env *env, int *status)
 {
 	char	*arg;
 	char 	*res;
@@ -23,6 +23,16 @@ char		*expand_env_arg(char **line, t_env *env)
 	{
 		res = ft_strdup("$");
 		(*line)++;
+	}
+	else if (*(*line) == '$' && *(*line + 1) == '?')
+	{
+		if (!(arg = ft_itoa(*status)))
+			return (NULL);
+		res = ft_strdup(arg);
+		free(arg);
+		if (!res)
+			return (NULL);
+		(*line) = *(line) + 2;
 	}
 	else
 	{
@@ -88,7 +98,7 @@ char		*tokens_with_single_quotes(char **line)
 	return (token);
 }
 
-char		*tokens_with_double_quotes(char **line, t_env *env)
+char		*tokens_with_double_quotes(char **line, t_env *env, int *status)
 {
 	char 	*token;
 	char	*tmp;
@@ -119,7 +129,7 @@ char		*tokens_with_double_quotes(char **line, t_env *env)
 		}
 		if (*(*line) == '$' && !spec_char)
 		{
-			if (!(curr = expand_env_arg(line, env)))
+			if (!(curr = expand_env_arg(line, env, status)))
 			{
 				free(tmp);
 				return (NULL);
@@ -136,7 +146,7 @@ char		*tokens_with_double_quotes(char **line, t_env *env)
 	return (token);
 }
 
-char		*handling_tokens_with_quotes(char **line, t_env *env)
+char		*handling_tokens_with_quotes(char **line, t_env *env, int *status)
 {
 	char 	*res;
 
@@ -148,13 +158,13 @@ char		*handling_tokens_with_quotes(char **line, t_env *env)
 	}
 	else if (*(*line) == '\"')
 	{
-		if (!(res = tokens_with_double_quotes(line, env)))
+		if (!(res = tokens_with_double_quotes(line, env, status)))
 			return (NULL);
 	}
 	return (res);
 }
 
-char 		*return_token(char **line, t_env *env)
+char 		*return_token(char **line, t_env *env, int *status)
 {
 	char 	*res;
 	char 	*tmp;
@@ -173,7 +183,7 @@ char 		*return_token(char **line, t_env *env)
 		}
 		if ((*(*line) == '\'' || *(*line) == '\"') && !spec_char)
 		{
-			curr = handling_tokens_with_quotes(line, env);
+			curr = handling_tokens_with_quotes(line, env, status);
 			res = ft_strjoin(res, curr);
 			free(tmp);
 			free(curr);
@@ -182,7 +192,7 @@ char 		*return_token(char **line, t_env *env)
 		{
 			if (*(*line) == '$' && !spec_char)
 			{
-				if (!(curr = expand_env_arg(line, env)))
+				if (!(curr = expand_env_arg(line, env, status)))
 				{
 					free(tmp);
 					return (NULL);
@@ -238,7 +248,7 @@ t_params	*params_new(void)
 
 	if (!(params = malloc(sizeof(t_params))))
 		return (NULL);
-	params = init_params(params);
+	init_params(&params);
 	return (params);
 }
 
@@ -268,14 +278,14 @@ t_params		*lex(char **line, t_env *env, int *status)
 		(*line) = remove_spaces((*line));
 		while (*(*line) == '<' || *(*line) == '>')
 			ccc(line, &res, env, status);
-		if (*status == 0 && !(str = return_token(line, env)))
+		if (*status == 0 && !(str = return_token(line, env, status)))
 		{
-			params_free(&res, free_params);
+			params_free(&res, del_params_content);
 			return (NULL);
 		}
 		if (*status == 0 && !(res->args = ft_lstnew(str)))
 		{
-			params_free(&res, free_params);
+			params_free(&res, del_params_content);
 			return (NULL);
 		}
 		lst = res->args;
@@ -287,22 +297,22 @@ t_params		*lex(char **line, t_env *env, int *status)
 				ccc(line, &res, env, status);
 			else
 			{
-				if (!(str = return_token(line, env)))
+				if (!(str = return_token(line, env, status)))
 				{
-					params_free(&res, free_params);
+					params_free(&res, del_params_content);
 					return (NULL);
 				}
 				if (!(lst->next = ft_lstnew(str)))
 				{
-					params_free(&res, free_params);
+					params_free(&res, del_params_content);
 					return (NULL);
 				}
 				lst = lst->next;
 			}
 		}
-		if (status > 0)
+		if (*status > 0)
 		{
-			params_free(&res, free_params);
+			params_free(&res, del_params_content);
 			return (NULL);
 		}
 	}
@@ -315,7 +325,8 @@ int 			lexer(char **line, t_params **params, t_env *env, int *status)
 
 	if (*(*line))
 	{
-		(*params) = lex(line, env, status);
+		if (!((*params) = lex(line, env, status)))
+			return (0);
 		if (*(*line) == '|')
 			(*line)++;
 		curr = (*params);
@@ -323,15 +334,15 @@ int 			lexer(char **line, t_params **params, t_env *env, int *status)
 		{
 			if (!(curr->next = lex(line, env, status)))
 			{
-				params_free(params, free_params);
-				return (-1);
+				params_free(params, del_params_content);
+				return (0);
 			}
 			if (*(*line) == '|')
 				(*line)++;
 			curr = curr->next;
 		}
 	}
-	return (*status);
+	return (1);
 	//			if (*(*line) == ';' && *(*line + 1) == ';')
 //				error_handling(NULL, ";;", );
 }

@@ -12,22 +12,20 @@
 
 #include "../minishell.h"
 
-t_params	*init_params(t_params *params)
+void		init_params(t_params **params)
 {
-	params->args = NULL;
-	params->in = 0;
-	params->out = 1;
-	params->err = 2;
-	params->next = NULL;
-	return (params);
+	(*params)->args = NULL;
+	(*params)->in = 0;
+	(*params)->out = 1;
+	(*params)->err = 2;
+	(*params)->next = NULL;
 }
 
-t_data 		*init_data(t_data *data)
+void		init_data(t_data *data)
 {
 	data->argc = 0;
 	data->argv = NULL;
 	data->env = NULL;
 	data->line = NULL;
 	data->params = NULL;
-	return (data);
 }

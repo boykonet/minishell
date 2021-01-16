@@ -61,7 +61,7 @@ void 			free_data(t_data *data)
 	if (data->argv)
 		free_string(data->argv);
 	if (data->params)
-		params_free(&data->params, free_params);
+		params_free(&data->params, del_params_content);
 	if (data->env)
 		env_free(&data->env, del_env_content);
 }

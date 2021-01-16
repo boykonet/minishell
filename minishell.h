@@ -82,21 +82,24 @@ char				*remove_spaces(char *line);
 int 				redir(char **line, t_env *env, int *fd, int *status);
 int 				open_fd(char **line, t_env *env, int *fd, int *status);
 void 				ft_lstadd_back_env(t_env **env, t_env *new);
-char 				*return_token(char **line, t_env *env);
+char 				*return_token(char **line, t_env *env, int *status);
 
-t_params 			*init_params(t_params *params);
-t_data 				*init_data(t_data *data);
+void	 			init_params(t_params **params);
+void				init_data(t_data *data);
 
 
-t_params			*params_new(void);
+t_params 			*new_params_element(void);
+
 
 void 				params_free(t_params **params, void (*del)(t_params *));
 void 				env_free(t_env **env, void (*del)(t_env *));
+
 
 void 				free_data(t_data *data);
 void				free_params(t_params *params);
 void				free_string(char **str);
 void 				free_env(t_env **env);
+
 
 void				del_list_content(void *content);
 void				del_params_content(t_params *params);

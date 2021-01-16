@@ -31,7 +31,8 @@ int				main(int argc, char **argv, char **envp)
 	char 		*curr_symb;
 
 	status = 0;
-	data = init_data(data);
+	data = malloc(sizeof(t_data));
+	init_data(data);
 	if (!(data->env = copy_envp_to_struct(envp)))
 	{
 		free_data(data);
@@ -63,8 +64,9 @@ int				main(int argc, char **argv, char **envp)
 				d_p = d_p->next;
 			}
 //				builtins(&params, ch, &status);
-			params_free(&data->params, free_params);
+			params_free(&data->params, del_params_content);
 		}
+		status = 0;
 		free(data->line);
 	}
 	return (status);

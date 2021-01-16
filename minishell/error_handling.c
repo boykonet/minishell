@@ -19,29 +19,29 @@ int 		error_handling(char *cmd, char *arg, char *error, int num)
 {
 	int 	status;
 	if (!cmd)
-		write(2, "-minishell: ", 12);
+		write(1, "-minishell: ", 12);
 	else
 	{
-		write(2, "-minishell: ", 12);
-		write(2, cmd, ft_strlen(cmd));
-		write(2, ": ", 2);
+		write(1, "-minishell: ", 12);
+		write(1, cmd, ft_strlen(cmd));
+		write(1, ": ", 2);
 	}
 	if (error)
 	{
 		if (arg && num == 1)
 		{
-			write(2, arg, ft_strlen(arg));
-			write(2, ": ", 2);
+			write(1, arg, ft_strlen(arg));
+			write(1, ": ", 2);
 		}
 		else if (num == 2)
 		{
-			write(2, error, ft_strlen(error));
-			write(2, " `", 2);
-			write(2, arg, ft_strlen(arg));
-			write(2, "'", 1);
+			write(1, error, ft_strlen(error));
+			write(1, " `", 2);
+			write(1, arg, ft_strlen(arg));
+			write(1, "'", 1);
 			status = 258;
 		}
 	}
-	write(2, "\n", 1);
+	write(1, "\n", 1);
 	return (status);
 }

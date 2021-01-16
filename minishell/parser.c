@@ -20,7 +20,9 @@ int 			check_unexpected_token(char *name_fd)
 	i = 0;
 	while (err[i])
 	{
-		return (0);
+		if (!ft_strncmp(err[i], name_fd, ft_strlen(name_fd)))
+			return (0);
+		i++;
 	}
 	return (1);
 }
@@ -41,7 +43,7 @@ int 			open_fd(char **line, t_env *env, int *fd, int *status)
 	(*line) = curr;
 	(*line) = remove_spaces((*line));
 	curr = (*line);
-	name_fd = return_token(line, env);
+	name_fd = return_token(line, env, status);
 //	name_fd = ft_substr((*line), 0, curr - (*line));
 	if (!ft_strncmp(name_fd, "", ft_strlen(name_fd)) || check_unexpected_token(name_fd))
 		*status = error_handling(NULL, "newline", "syntax error near unexpected token", 2);
