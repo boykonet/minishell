@@ -32,11 +32,11 @@ typedef struct		s_env
 	struct s_env	*next;
 }					t_env;
 
-typedef struct		s_data
+typedef struct		s_d
 {
 	int 			argc;
 	char 			**argv;
-}					t_data;
+}					t_d;
 
 typedef struct		s_params
 {

@@ -22,7 +22,7 @@ char		*dollar(t_env *env, char **tmp1)
 	while (*tmp2 != '$' && *tmp2 != '\0' && *tmp2 != ' ')
 		tmp2++;
 	str2 = ft_substr(*tmp1, 0, tmp2 - *tmp1);
-	find_data_in_env(env, str2, &str3, 0);
+	str3 = find_data_in_env(env, str2, 0);
 	free(str2);
 	if (!str3)
 		str2 = ft_strdup("");

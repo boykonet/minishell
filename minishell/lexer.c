@@ -162,7 +162,7 @@ char 		*return_token(char **line, t_params **params, t_env *env)
 	int 	spec_char;
 
 	res = ft_strdup("");
-	while (*(*line) && *(*line) != ' ' && *(*line) == ';')
+	while (*(*line) && *(*line) != ' ' && *(*line) != ';')
 	{
 		tmp = res;
 		spec_char = 0;
@@ -266,18 +266,18 @@ void 			params_free(t_params **params, void (*del)(t_params *))
 	}
 }
 
-int 		ccc(char **line, t_params **params)
+int 		ccc(char **line, t_params **params, int *status)
 {
 	if (check_redir(line) == 0)
-		redir(line, &((*params)->in));
+		redir(line, &((*params)->in), status);
 	else if (check_redir(line) == 1)
-		redir(line, &((*params)->out));
+		redir(line, &((*params)->out), status);
 	else if (check_redir(line) == 2)
-		redir(line, &((*params)->err));
+		redir(line, &((*params)->err), status);
 	return (0);
 }
 
-t_params		*lex(char **line, t_env *env)
+t_params		*lex(char **line, t_env *env, int *status)
 {
 	t_params	*res;
 	t_list		*lst;
@@ -299,7 +299,7 @@ t_params		*lex(char **line, t_env *env)
 //		if (*(*line) == '\0' || *(*line) == '|' || *(*line) == ';')
 //			break ;
 		while (*(*line) == '<' || *(*line) == '>')
-			ccc(line, &res);
+			ccc(line, &res, status);
 		if (!(str = return_token(line, &res, env)))
 			return (NULL);
 		if (!(res->args = ft_lstnew(str)))
@@ -315,7 +315,7 @@ t_params		*lex(char **line, t_env *env)
 //			if (*(*line) == '\0' || *(*line) == '|' || *(*line) == ';')
 //				break ;
 			if (*(*line) == '<' || *(*line) == '>')
-				ccc(line, &res);
+				ccc(line, &res, status);
 			else
 			{
 				if (!(str = return_token(line, &res, env)))
@@ -342,7 +342,7 @@ int 			lexer(char **line, t_params **params, t_env *env)
 	status = 0;
 	while (*(*line))
 	{
-		(*params) = lex(line, env);
+		(*params) = lex(line, env, &status);
 //		if (*(*line) == ';')
 //			break ;
 		if (*(*line) == '|')
@@ -350,7 +350,7 @@ int 			lexer(char **line, t_params **params, t_env *env)
 		curr = (*params);
 		while (*(*line) && *(*line) != ';')
 		{
-			if (!(curr->next = lex(line, env)))
+			if (!(curr->next = lex(line, env, &status)))
 			{
 				params_free(params, free_params);
 				return (-1);

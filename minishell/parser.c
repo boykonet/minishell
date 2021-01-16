@@ -36,7 +36,6 @@ int 			open_fd(char **line, int *fd, int *status)
 	curr = (*line);
 	symb = *(*line);
 	while (*curr && *curr == symb && *curr != ' ')
-	{
 		curr++;
 	redir = ft_substr((*line), 0, curr - (*line));
 	(*line) = curr;
@@ -49,10 +48,10 @@ int 			open_fd(char **line, int *fd, int *status)
 	{
 		*status = error_handling(NULL, "newline", "syntax error near unexpected token", 258);
 	}
-	else if ()
-	{
-
-	}
+//	else if ()
+//	{
+//
+//	}
 	else
 	{
 		if ((*fd = add_fd(name_fd, redir)) < 0)
@@ -71,7 +70,7 @@ int 			redir(char **line, int *fd, int *status)
 		if (close(*fd) < 0)
 			return (0);
 	}
-	if (!(open_fd(line, fd)))
+	if (!(open_fd(line, fd, status)))
 		return (0);
 	return (1);
 }
