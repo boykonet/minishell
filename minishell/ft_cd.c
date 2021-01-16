@@ -11,51 +11,113 @@
 /* ************************************************************************** */
 
 #include "../minishell.h"
-#include <errno.h>
-#include <string.h>
 
-void		change_pwd(char **pwd_curr, char **old_pwd, char *pwd)
+int 		change_pwd(t_env **env, char *str)
 {
-	char	*tmp;
+	t_env	*new;
+	t_env	*pwd;
+	t_env	*oldpwd;
+	char 	*tmp;
 
-	tmp = *old_pwd;
-	*old_pwd = ft_strdup(*pwd_curr);
-	/* printf("%s\n", *old_pwd); */
+	oldpwd = NULL;
+	pwd = NULL;
+	new = (*env);
+	while (new)
+	{
+		if (!ft_strncmp(new->name, "PWD", ft_strlen(new->name)))
+			pwd = new;
+		else if (!ft_strncmp(new->name, "OLDPWD", ft_strlen(new->name)))
+			oldpwd = new;
+		new = new->next;
+	}
+	if (oldpwd && !oldpwd->value)
+	{
+		oldpwd->value = ft_strdup(pwd->value);
+//	else if (oldpwd)
+	}
+	else
+	{
+		tmp = oldpwd->value;
+		oldpwd->value = pwd->value;
+		pwd->value = tmp;
+	}
+	tmp = pwd->value;
+	pwd->value = ft_strdup(str);
 	free(tmp);
-
-	tmp = *pwd_curr;
-	*pwd_curr = ft_strdup(pwd);
-	free(tmp);
-	/* printf("%s\n", *pwd_curr); */
+	return (1);
 }
 
-int			ft_cd(char **args, t_env *env, int *status)
+void 		ft_lstadd_back_env(t_env **env, t_env *new)
 {
-	char	*pwd;
+	t_env	*current;
+	t_env	*prev;
+
+	current = (*env);
+	prev = (*env);
+	if (current == NULL)
+		(*env) = new;
+	else
+	{
+		while (current != NULL)
+		{
+			prev = current;
+			current = current->next;
+		}
+		prev->next = new;
+	}
+}
+
+int			ft_cd(t_list *args, t_env **env, int *status)
+{
 	char	*str;
 
 	str = NULL;
-	if (!ft_strncmp(args[0], "~", ft_strlen(args[0])) || *args[0] == '\0')
-	{
-		find_data_in_env(env, "HOME", &str, 0);
-		str = ft_substr(str, 0, ft_strrchr(str, '\0') - str);
-	}
-	else if (!ft_strncmp(args[0], "-", ft_strlen(args[0])))
-	{
-		find_data_in_env(env, "OLDPWD", &str, 0);
-		str = ft_substr(str, 0, ft_strrchr(str, '\0') - str);
-	}
-	else
-		str = ft_strdup(args[0]);
+//	if (!ft_strncmp(args->content, "~", 1) || *(args->content) == '\0')
+//	{
+//		find_data_in_env(env, "HOME", &str, 0);
+//		str = ft_substr(str, 0, ft_strrchr(str, '\0') - str);
+//	}
+//	if (!ft_strncmp(args->content, "-", ft_strlen(args->content)))
+//	{
+//		find_data_in_env(*env, "OLDPWD", &str, 0);
+//		if (!str)
+//		{
+//			if (!(new = ft_lstnew_env("OLDPWD", )))
+//			ft_lstadd_back_env(env, new);
+//			return (0);
+//		}
+//		str = ft_substr(str, 0, ft_strrchr(str, '\0') - str);
+//	}
+//	else
+	str = ft_strdup(args->content);
 	if ((chdir(str) < 0))
 	{
+		error_handling("cd", str, 2, 1);
 		free(str);
 		return (-1);
 	}
 	free(str);
-	if (!(pwd = ft_pwd(pwd)))
-		return (-1);
-	change_pwd(pwd_curr, old_pwd, pwd);
-	free(pwd);
-	return (0);
+	str = ft_pwd(str);
+	change_pwd(env, str);
+	free(str);
+	return (1);
 }
+
+//int 		main(int argc, char **argv, char **envp)
+//{
+//	t_env	*env;
+//	t_list	*lst;
+//	int 	status;
+//
+//	status = 0;
+//	if (!(env = copy_envp_to_struct(envp)))
+//		return (-1);
+//	lst = ft_lstnew(ft_strdup(".."));
+//	ft_cd(lst, &env, &status);
+//	while (env)
+//	{
+//		printf("%s=%s\n", env->name, env->value);
+//		env = env->next;
+//	}
+//	return (0);
+//}

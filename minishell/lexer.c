@@ -32,7 +32,7 @@ char		*expand_env_arg(char **line, t_env *env)
 			curr++;
 		if (!(arg = ft_substr((*line), 0, curr - (*line))))
 			return (NULL);
-		find_data_in_env(env, arg, &res, 0);
+		res = find_data_in_env(env, arg, 0);
 		if (!res)
 			res = ft_strdup("");
 		else
@@ -128,11 +128,10 @@ char		*tokens_with_double_quotes(char **line, t_env *env)
 			free(curr);
 		}
 		else
-			token = append_to_array(token, *(*line));
+			token = append_to_array(token, *(*line)++);
 		free(tmp);
 		if (!(token))
 			return (NULL);
-		(*line)++;
 	}
 	return (token);
 }
@@ -163,63 +162,58 @@ char 		*return_token(char **line, t_params **params, t_env *env)
 	int 	spec_char;
 
 	res = ft_strdup("");
-	while (*(*line))
+	while (*(*line) && *(*line) != ' ' && *(*line) == ';')
 	{
-		if (!(*(*line) == '>' || *(*line) == '<'))
+		tmp = res;
+		spec_char = 0;
+		if (*(*line) == '\\')
 		{
-			tmp = res;
-			spec_char = 0;
-			if (*(*line) == '\\')
-			{
-				(*line)++;
-				spec_char = 1;
-			}
-			if ((*(*line) == '\'' || *(*line) == '\"') && !spec_char)
-			{
-				curr = handling_tokens_with_quotes(line, env);
-				res = ft_strjoin(res, curr);
-				free(tmp);
-				free(curr);
-			}
-			else
-			{
-				if (*(*line) == ' ' || *(*line) == ';')
-					break;
-				if (*(*line) == '$' && !spec_char)
-				{
-					if (!(curr = expand_env_arg(line, env)))
-					{
-						free(tmp);
-						return (NULL);
-					}
-				}
-				else
-				{
-					if (!(curr = ft_calloc(2, sizeof(char))))
-					{
-						free(tmp);
-						return (NULL);
-					}
-					if (*(*line) == '\\')
-						(*line)++;
-					curr[0] = *(*line)++;
-				}
-				res = ft_strjoin(res, curr);
-				free(tmp);
-				free(curr);
-			}
-			if (!res)
-				return (NULL);
+			(*line)++;
+			spec_char = 1;
+		}
+		if ((*(*line) == '\'' || *(*line) == '\"') && !spec_char)
+		{
+			curr = handling_tokens_with_quotes(line, env);
+			res = ft_strjoin(res, curr);
+			free(tmp);
+			free(curr);
 		}
 		else
 		{
-			if (check_redir(line) == 0)
-				redir(line, &((*params)->in));
-			else if (check_redir(line) == 1)
-				redir(line, &((*params)->out));
-			else if (check_redir(line) == 2)
-				redir(line, &((*params)->err));
+			if (*(*line) == '$' && !spec_char)
+			{
+				if (!(curr = expand_env_arg(line, env)))
+				{
+					free(tmp);
+					return (NULL);
+				}
+			}
+			else
+			{
+				if (!(curr = ft_calloc(2, sizeof(char))))
+				{
+					free(tmp);
+					return (NULL);
+				}
+				if (*(*line) == '\\')
+					(*line)++;
+				curr[0] = *(*line)++;
+			}
+			res = ft_strjoin(res, curr);
+			free(tmp);
+			free(curr);
 		}
+		if (!res)
+			return (NULL);
+//		else
+//		{
+//			if (check_redir(line) == 0)
+//				redir(line, &((*params)->in));
+//			else if (check_redir(line) == 1)
+//				redir(line, &((*params)->out));
+//			else if (check_redir(line) == 2)
+//				redir(line, &((*params)->err));
+//		}
 
 	}
 	return (res);
@@ -272,6 +266,17 @@ void 			params_free(t_params **params, void (*del)(t_params *))
 	}
 }
 
+int 		ccc(char **line, t_params **params)
+{
+	if (check_redir(line) == 0)
+		redir(line, &((*params)->in));
+	else if (check_redir(line) == 1)
+		redir(line, &((*params)->out));
+	else if (check_redir(line) == 2)
+		redir(line, &((*params)->err));
+	return (0);
+}
+
 t_params		*lex(char **line, t_env *env)
 {
 	t_params	*res;
@@ -281,37 +286,49 @@ t_params		*lex(char **line, t_env *env)
 	(*line) = remove_spaces((*line));
 	if (!(res = params_new()))
 		return (NULL);
-	if (*(*line) == '\0' || *(*line) == '|' || *(*line) == ';')
-		return (res);
-	if (!(res->cmd = return_token(line, &res, env)))
-	{
-		params_free(&res, free_params);
-		return (NULL);
-	}
-	while (*(*line))
+//	if (*(*line) == '\0' || *(*line) == '|' || *(*line) == ';')
+//		return (res);
+//	if (!(res->cmd = return_token(line, &res, env)))
+//	{
+//		params_free(&res, free_params);
+//		return (NULL);
+//	}
+	if (*(*line) && *(*line) != '|' && *(*line) != ';')
 	{
 		(*line) = remove_spaces((*line));
-		if (*(*line) == '\0' || *(*line) == '|' || *(*line) == ';')
-			break ;
+//		if (*(*line) == '\0' || *(*line) == '|' || *(*line) == ';')
+//			break ;
+		while (*(*line) == '<' || *(*line) == '>')
+			ccc(line, &res);
 		if (!(str = return_token(line, &res, env)))
 			return (NULL);
 		if (!(res->args = ft_lstnew(str)))
 		{
+			params_free(&res, free_params);
 			return (NULL);
 		}
 		lst = res->args;
-		while (*(*line))
+		while (*(*line) && *(*line) != '|' && *(*line) != ';')
 		{
+			str = NULL;
 			(*line) = remove_spaces((*line));
-			if (*(*line) == '\0' || *(*line) == '|' || *(*line) == ';')
-				break ;
-			if (!(str = return_token(line, &res, env)))
-				return (NULL);
-			if (!(lst->next = ft_lstnew(str)))
+//			if (*(*line) == '\0' || *(*line) == '|' || *(*line) == ';')
+//				break ;
+			if (*(*line) == '<' || *(*line) == '>')
+				ccc(line, &res);
+			else
 			{
-				return (NULL);
+				if (!(str = return_token(line, &res, env)))
+				{
+					params_free(&res, free_params);
+					return (NULL);
+				}
+				if (!(lst->next = ft_lstnew(str)))
+				{
+					return (NULL);
+				}
+				lst = lst->next;
 			}
-			lst = lst->next;
 		}
 	}
 	return (res);
@@ -326,8 +343,8 @@ int 			lexer(char **line, t_params **params, t_env *env)
 	while (*(*line))
 	{
 		(*params) = lex(line, env);
-		if (*(*line) == ';')
-			break ;
+//		if (*(*line) == ';')
+//			break ;
 		if (*(*line) == '|')
 			(*line)++;
 		curr = (*params);
@@ -338,8 +355,8 @@ int 			lexer(char **line, t_params **params, t_env *env)
 				params_free(params, free_params);
 				return (-1);
 			}
-			if (*(*line) == ';')
-				return (status);
+//			if (*(*line) == ';')
+//				return (status);
 			if (*(*line) == '|')
 				(*line)++;
 			curr = curr->next;

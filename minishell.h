@@ -17,6 +17,8 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <fcntl.h>
+# include <string.h>
+# include <errno.h>
 # include "./gnl/get_next_line.h"
 # include "./libft/libft.h"
 
@@ -29,6 +31,12 @@ typedef struct		s_env
 	char			*value;
 	struct s_env	*next;
 }					t_env;
+
+typedef struct		s_data
+{
+	int 			argc;
+	char 			**argv;
+}					t_data;
 
 typedef struct		s_params
 {
@@ -53,12 +61,12 @@ typedef struct		s_params
 //	int 			err;
 //}					t_fd;
 
-int					ft_cd(char *args, char **home, char **pwd_curr, char **old_pwd);
+int					ft_cd(t_list *args, t_env **env, int *status);
 char				*ft_pwd(char *pwd);
 void				ft_echo(t_list **args, t_env *env, int return_value);
-void				builtins(t_params *params, char **home, char **pwd_curr, char **old_pwd);
+void				builtins(t_params *params, t_env **env, int *status);
 void				del_content(void *content);
-void				find_data_in_env(t_env *env, char *needle, char **result, int serial_num);
+char				*find_data_in_env(t_env *env, char *needle, int serial_num);
 //void 				init_fd(t_fd *fd);
 t_params 			*init_params(t_params *params);
 //void				*parser(t_list **tokens, t_params *params, t_fd *fd, int *status);
@@ -73,12 +81,13 @@ int 				lexer(char **line, t_params **params, t_env *env);
 int 				redirects(char *redir);
 int					add_fd(char *file, char *redir);
 int					getcharacter(int fd, char **line);
-int 				error_handling(char *cmd, char *arg, int fd, int status);
+int 				error_handling(char *cmd, char *arg, char *error, int status);
 void 				params_free(t_params **params, void (*del)(t_params *));
 t_params			*params_new(void);
 int 				check_redir(char **line);
 char				*remove_spaces(char *line);
-int 				redir(char **line, int *fd);
-int 				open_fd(char **line, int *fd);
+int 				redir(char **line, int *fd, int *status);
+int 				open_fd(char **line, int *fd, int *status);
+void 				ft_lstadd_back_env(t_env **env, t_env *new);
 
 #endif

@@ -21,25 +21,27 @@ size_t		number_of_lines(char **arr)
 		count++;
 	return (count);
 }
-
-void		wait_line(char *str)
-{
-//	char	*curr_location;
-//	int		i;
-
-	/* i = 0; */
-	/* while (i < 2) */
-	/* { */
-
-	/* } */
-//	write(1, curr_location, ft_strlen(curr_location));
-	write(1, str, ft_strlen(str));
-}
+//
+//void		wait_line(char *str)
+//{
+////	char	*curr_location;
+////	int		i;
+//
+//	/* i = 0; */
+//	/* while (i < 2) */
+//	/* { */
+//
+//	/* } */
+////	write(1, curr_location, ft_strlen(curr_location));
+//	write(1, str, ft_strlen(str));
+//}
 
 int				main(int argc, char **argv, char **envp)
 {
 	t_env		*env;
 	t_params	*params;
+	t_params	*d_p;
+	t_list		*list;
 	static int	status;
 	char		*line;
 	char 		*curr_symb;
@@ -50,8 +52,8 @@ int				main(int argc, char **argv, char **envp)
 	while (TRUE)
 	{
 		line = NULL;
-		wait_line("minishell$ ");
-
+//		wait_line("minishell$ ");
+		write(1, "minishell$ ", ft_strlen("minishell$ "));
 		if ((getcharacter(0, &line)) < 0)
 			return (-1);
 		curr_symb = line;
@@ -63,24 +65,20 @@ int				main(int argc, char **argv, char **envp)
 				break ;
 			if (*curr_symb == ';')
 				curr_symb++;
-			while (params)
+			d_p = params;
+			while (d_p)
 			{
-				printf("%s\n", params->cmd);
-				while (params->args)
+				printf("%s\n", d_p->cmd);
+				list = d_p->args;
+				while (list)
 				{
-					printf("%s\n", (params->args)->content);
-					params->args = (params->args)->next;
+					printf("%s\n", list->content);
+					list = list->next;
 				}
-				params = params->next;
+				d_p = d_p->next;
 			}
-//			while (tokens)
-//			{
-//				printf("%s\n", tokens->content);
-//				tokens = tokens->next;
-//			}
 //			printf("\nvishel\n\n");
 //			curr = tokens;
-//			parser(&tokens, params, fd, &status);
 //				builtins(&params, ch, &status);
 			params_free(&params, free_params);
 		}

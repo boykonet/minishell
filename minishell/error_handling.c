@@ -15,30 +15,25 @@
 #include <stdio.h>
 #include "../minishell.h"
 
-int 		error_handling(char *cmd, char *arg, int fd, int status)
+int 		error_handling(char *cmd, char *arg, char *error, int status)
 {
-	if (!ft_strncmp(arg, "cat", ft_strlen(arg)))
-		write(fd, "-minishell: ", 12);
-	if (status == 258 && arg)
+	if (!cmd)
+		write(2, "-minishell: ", 12);
+	else
 	{
-		write(fd, "syntax error near unexpected token `", 36);
-		write(fd, arg, ft_strlen(arg));
-		write(fd, "'\n", 2);
+		write(2, "-minishell: ", 12);
+		write(2, "", ft_strlen(cmd));
 	}
-	else if (status == 127 && arg)
+	if (error)
 	{
-		write(fd, arg, ft_strlen(arg));
-		write(fd, ": command not found\n", 20);
-	}
-	else if (status == 1 && arg)
-	{
-		if (cmd)
+		if (arg)
 		{
-			write(fd, cmd, ft_strlen(cmd));
-			write(fd, ": ", 2);
+			write(2, arg, ft_strlen(arg));
+			write(2, ": ", 2);
 		}
-		write(fd, arg, ft_strlen(arg));
-		write(fd, ": No such file or directory\n", 28);
+		else
+			write(2, error, ft_strlen(error));
 	}
+	write(2, "\n", 1);
 	return (status);
 }

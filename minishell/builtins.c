@@ -12,19 +12,19 @@
 
 #include "../minishell.h"
 
-void		builtins(t_params *params, t_env *env, int *status)
+void		builtins(t_params *params, t_env **env, int *status)
 {
 	char	*str;
 
 	str = NULL;
-	if (!ft_strncmp(params->cmd, "echo", ft_strlen(params->cmd)))
-		ft_echo(params->args, env, status);
+//	if (!ft_strncmp(params->cmd, "echo", ft_strlen(params->cmd)))
+//		ft_echo(params->args, env, status);
 
-	else if (!ft_strncmp(params->cmd, "pwd", ft_strlen(params->cmd)))
+	if (!ft_strncmp(params->cmd, "pwd", ft_strlen(params->cmd)))
 		str = ft_pwd(str);
 
 	else if (!ft_strncmp(params->cmd, "cd", ft_strlen(params->cmd)))
-		return_value = ft_cd(params->args, env, status);
+		ft_cd(params->args, env, status);
 
 	/* else if (!ft_strncmp(str->command, "export", 6)) */
 	/* 	ft_export(); */

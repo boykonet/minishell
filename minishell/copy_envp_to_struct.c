@@ -32,5 +32,7 @@ t_env		*copy_envp_to_struct(char **envp)
 		if (!(init_name_value(envp[i], tmp, &curr->name, &curr->value)))
 			return (NULL);
 	}
+	if (!(curr->next = ft_lstnew_env(ft_strdup("OLDPWD"), NULL)))
+		return (NULL);
 	return (env);
 }

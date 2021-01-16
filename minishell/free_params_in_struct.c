@@ -24,42 +24,7 @@ void		free_params(t_params *params)
 		close(params->out);
 	if (params->err > 2)
 		close(params->err);
-//	if (params->redir_in)
-//		free(params->redir_in);
-//	if (params->redir_out)
-//		free(params->redir_out);
-//	if (params->redir_err)
-//		free(params->redir_err);
-//	if (params->name_in)
-//		free(params->name_in);
-//	if (params->name_out)
-//		free(params->name_out);
-//	if (params->name_err)
-//		free(params->name_err);
 }
-
-//void		free_fd(t_fd *fd)
-//{
-//	if (fd->redir_in)
-//		free(fd->redir_in);
-//	if (fd->redir_out)
-//		free(fd->redir_out);
-//	if (fd->redir_err)
-//		free(fd->redir_err);
-//	if (fd->name_in)
-//		free(fd->name_in);
-//	if (fd->name_out)
-//		free(fd->name_out);
-//	if (fd->name_err)
-//		free(fd->name_err);
-//
-//	if (fd->in > 2)
-//		close(fd->in);
-//	if (fd->out > 2)
-//		close(fd->out);
-//	if (fd->err > 2)
-//		close(fd->err);
-//}
 
 void		free_string(char **str)
 {

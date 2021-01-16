@@ -4,8 +4,7 @@
 
 #include "../minishell.h"
 
-void		find_data_in_env(t_env *env, char *needle, char **result, \
-			int serial_num)
+char		*find_data_in_env(t_env *env, char *needle, int serial_num)
 {
 	char	*val;
 
@@ -21,9 +20,8 @@ void		find_data_in_env(t_env *env, char *needle, char **result, \
 		env = env->next;
 	}
 	if (!env)
-		*result = NULL;
-	else if (serial_num == 0)
-		*result = env->value;
-	else if (serial_num == 1)
-		*result = env->name;
+		return (NULL);
+	if (serial_num == 0)
+		return (env->value);
+	return (env->name);
 }

@@ -12,7 +12,20 @@
 
 #include "../minishell.h"
 
-int 			open_fd(char **line, int *fd)
+int 			check_unexpected_token(char *name_fd)
+{
+	char 		*err[] = {">>", "<<", "((", "))", ";;", "<", ">", "(", ")", ";"};
+	int 		i;
+
+	i = 0;
+	while (err[i])
+	{
+		return (0);
+	}
+	return (1);
+}
+
+int 			open_fd(char **line, int *fd, int *status)
 {
 	char 		*redir;
 	char 		*curr;
@@ -23,6 +36,7 @@ int 			open_fd(char **line, int *fd)
 	curr = (*line);
 	symb = *(*line);
 	while (*curr && *curr == symb && *curr != ' ')
+	{
 		curr++;
 	redir = ft_substr((*line), 0, curr - (*line));
 	(*line) = curr;
@@ -31,14 +45,26 @@ int 			open_fd(char **line, int *fd)
 	while (*curr && *curr != ' ')
 		curr++;
 	name_fd = ft_substr((*line), 0, curr - (*line));
-	*fd = add_fd(name_fd, redir);
+	if (!ft_strncmp(name_fd, "", ft_strlen(name_fd)))
+	{
+		*status = error_handling(NULL, "newline", "syntax error near unexpected token", 258);
+	}
+	else if ()
+	{
+
+	}
+	else
+	{
+		if ((*fd = add_fd(name_fd, redir)) < 0)
+			*status = error_handling(NULL, NULL, strerror(errno), 1);
+	}
 	(*line) = curr;
 	free(redir);
 	free(name_fd);
 	return (1);
 }
 
-int 			redir(char **line, int *fd)
+int 			redir(char **line, int *fd, int *status)
 {
 	if (*fd > 2)
 	{
@@ -49,48 +75,3 @@ int 			redir(char **line, int *fd)
 		return (0);
 	return (1);
 }
-//
-//void 			*parser(t_list **tokens, t_params *params, t_fd *fd, int *status)
-//{
-//	t_list		*curr;
-//	size_t 		count;
-//
-//	count = 0;
-//	if (redirects((*tokens)->content) == -1)
-//	{
-//		if (!(params->cmd = ft_strdup((*tokens)->content)))
-//			return (NULL);
-//		(*tokens) = (*tokens)->next;
-//	}
-//	curr = (*tokens);
-//	while (curr && ft_strncmp(curr->content, "|", ft_strlen(curr->content)))
-//	{
-//		if (redirects(curr->content) > -1)
-//		{
-//			if (curr->next)
-//				curr = curr->next->next;
-//			else
-//				curr = curr->next;
-//			continue ;
-//		}
-//		curr = curr->next;
-//		count++;
-//	}
-//	if (!(params->args = ft_calloc(count + 1, sizeof(char*))))
-//		return (NULL);
-//	params->args[count] = NULL;
-//	count = 0;
-//	while ((*tokens) && ft_strncmp((*tokens)->content, "|", ft_strlen((*tokens)->content)))
-//	{
-//		if (redirects((*tokens)->content) > -1)
-//		{
-//			if (!check_redir(tokens, params, fd))
-//				return (NULL);
-//			continue ;
-//		}
-//		if (!(params->args[count++] = ft_strdup((*tokens)->content)))
-//			return (NULL);
-//		(*tokens) = (*tokens)->next;
-//	}
-//	return ((*tokens));
-//}
