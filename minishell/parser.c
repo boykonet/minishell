@@ -59,7 +59,7 @@ int 			redirect_and_name_fd(char **line, t_env *env, int *fd, int *status)
 		exit(errno);
 	curr = remove_spaces(curr);
 	(*line) = curr;
-	name_fd = shape_name_fd(line, &curr, env, status);
+	name_fd = shape_name_fd(line, curr, env, status);
 	if (!check_unexpected_token(&name_fd))
 		*status = error_handling(NULL, name_fd, "syntax error near unexpected token", 2);
 	else

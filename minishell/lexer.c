@@ -327,6 +327,4 @@ int 			lexer(char **line, t_params **params, t_env *env, int *status)
 		}
 	}
 	return (1);
-	//			if (*(*line) == ';' && *(*line + 1) == ';')
-//				error_handling(NULL, ";;", );
 }
