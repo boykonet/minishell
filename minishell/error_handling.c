@@ -18,6 +18,8 @@
 int 		error_handling(char *cmd, char *arg, char *error, int num)
 {
 	int 	status;
+
+	status = 0;
 	if (!cmd)
 		write(1, "-minishell: ", 12);
 	else
@@ -32,8 +34,10 @@ int 		error_handling(char *cmd, char *arg, char *error, int num)
 		{
 			write(1, arg, ft_strlen(arg));
 			write(1, ": ", 2);
+			write(1, error, ft_strlen(error));
+			status = 1;
 		}
-		else if (num == 2)
+		else if (arg && num == 2)
 		{
 			write(1, error, ft_strlen(error));
 			write(1, " `", 2);

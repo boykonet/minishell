@@ -70,25 +70,25 @@ char				*find_data_in_env(t_env *env, char *needle, int serial_num);
 void				write_str(char *str, int fd, int flag);
 t_env				*ft_lstnew_env(void *name, void *value);
 t_env				*copy_envp_to_struct(char **envp);
-int					add_fd(char *in, char *redir);
+int					open_fd(char *in, char *redir);
 int 				lexer(char **line, t_params **params, t_env *env, int *status);
-int 				redirects(char *redir);
+int 				number_of_redirect(char *redir);
 int					add_fd(char *file, char *redir);
 int					getcharacter(int fd, char **line);
 int 				error_handling(char *cmd, char *arg, char *error, int status);
-t_params			*params_new(void);
 int 				check_redir(char **line);
 char				*remove_spaces(char *line);
-int 				redir(char **line, t_env *env, int *fd, int *status);
-int 				open_fd(char **line, t_env *env, int *fd, int *status);
+int 				reopen_fd(char **line, t_env *env, int *fd, int *status);
+int 				redirect_and_name_fd(char **line, t_env *env, int *fd, int *status);
 void 				ft_lstadd_back_env(t_env **env, t_env *new);
 char 				*return_token(char **line, t_env *env, int *status);
 
-void	 			init_params(t_params **params);
-void				init_data(t_data *data);
-
 
 t_params 			*new_params_element(void);
+
+
+void	 			init_params(t_params **params);
+void				init_data(t_data *data);
 
 
 void 				params_free(t_params **params, void (*del)(t_params *));

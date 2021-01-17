@@ -12,7 +12,7 @@
 
 #include "../minishell.h"
 
-int 			redirects(char *redir)
+int 			number_of_redirect(char *redir)
 {
 	if (!ft_strncmp(redir, "<", ft_strlen(redir)))
 		return (0);

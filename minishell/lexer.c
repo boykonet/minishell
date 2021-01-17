@@ -19,20 +19,22 @@ char		*expand_env_arg(char **line, t_env *env, int *status)
 	char 	*curr;
 
 	res = NULL;
-	if (*(*line) == '$' && (*(*line + 1) == ' ' || *(*line + 1) == '$' || *(*line + 1) == '\\' || *(*line + 1) == '\0'))
+	if (*(*line) == '$' && (*(*line + 1) == ' ' || *(*line + 1) == '$' || \
+		*(*line + 1) == '\\' || *(*line + 1) == '\0'))
 	{
-		res = ft_strdup("$");
+		if (!(res = ft_strdup("$")))
+			exit(errno);
 		(*line)++;
 	}
-	else if (*(*line) == '$' && *(*line + 1) == '?')
+	else if (!ft_strncmp(*line, "$?", 2))
 	{
 		if (!(arg = ft_itoa(*status)))
-			return (NULL);
+			exit(errno);
 		res = ft_strdup(arg);
 		free(arg);
-		if (!res)
-			return (NULL);
 		(*line) = *(line) + 2;
+		if (!res)
+			exit(errno);
 	}
 	else
 	{
@@ -41,16 +43,16 @@ char		*expand_env_arg(char **line, t_env *env, int *status)
 		while (*curr && (ft_isalnum(*curr) || *curr == '_'))
 			curr++;
 		if (!(arg = ft_substr((*line), 0, curr - (*line))))
-			return (NULL);
+			exit(errno);
 		res = find_data_in_env(env, arg, 0);
 		if (!res)
 			res = ft_strdup("");
 		else
 			res = ft_strdup(res);
 		free(arg);
-		if (!res)
-			return (NULL);
 		(*line) = curr;
+		if (!res)
+			exit(errno);
 	}
 	return (res);
 }
@@ -69,7 +71,7 @@ char		*append_to_array(char *src, char symb)
 
 	i = 0;
 	if (!(dst = ft_calloc(ft_strlen(src) + 2, sizeof(char))))
-		return (NULL);
+		exit(errno);
 	while (src[i])
 	{
 		dst[i] = src[i];
@@ -95,6 +97,8 @@ char		*tokens_with_single_quotes(char **line)
 	}
 	token = ft_substr((*line), 1, curr - (*line) - 1);
 	(*line) = ++curr;
+	if (!token)
+		exit(errno);
 	return (token);
 }
 
@@ -105,7 +109,8 @@ char		*tokens_with_double_quotes(char **line, t_env *env, int *status)
 	char 	*curr;
 	int 	spec_char;
 
-	token = ft_strdup("");
+	if (!(token = ft_strdup("")))
+		exit(errno);
 	(*line)++;
 	while (*(*line))
 	{
@@ -129,19 +134,15 @@ char		*tokens_with_double_quotes(char **line, t_env *env, int *status)
 		}
 		if (*(*line) == '$' && !spec_char)
 		{
-			if (!(curr = expand_env_arg(line, env, status)))
-			{
-				free(tmp);
-				return (NULL);
-			}
+			curr = expand_env_arg(line, env, status);
 			token = ft_strjoin(token, curr);
 			free(curr);
+			if (!token)
+				exit(errno);
 		}
 		else
 			token = append_to_array(token, *(*line)++);
 		free(tmp);
-		if (!(token))
-			return (NULL);
 	}
 	return (token);
 }
@@ -152,15 +153,9 @@ char		*handling_tokens_with_quotes(char **line, t_env *env, int *status)
 
 	res = NULL;
 	if (*(*line) == '\'')
-	{
-		if (!(res = tokens_with_single_quotes(line)))
-			return (NULL);
-	}
+		res = tokens_with_single_quotes(line);
 	else if (*(*line) == '\"')
-	{
-		if (!(res = tokens_with_double_quotes(line, env, status)))
-			return (NULL);
-	}
+		res = tokens_with_double_quotes(line, env, status);
 	return (res);
 }
 
@@ -171,7 +166,8 @@ char 		*return_token(char **line, t_env *env, int *status)
 	char 	*curr;
 	int 	spec_char;
 
-	res = ft_strdup("");
+	if (!(res = ft_strdup("")))
+		exit(errno);
 	while (*(*line) && *(*line) != ' ' && *(*line) != ';')
 	{
 		tmp = res;
@@ -191,19 +187,13 @@ char 		*return_token(char **line, t_env *env, int *status)
 		else
 		{
 			if (*(*line) == '$' && !spec_char)
-			{
-				if (!(curr = expand_env_arg(line, env, status)))
-				{
-					free(tmp);
-					return (NULL);
-				}
-			}
+				curr = expand_env_arg(line, env, status);
 			else
 			{
 				if (!(curr = ft_calloc(2, sizeof(char))))
 				{
 					free(tmp);
-					return (NULL);
+					exit(errno);
 				}
 				if (*(*line) == '\\')
 					(*line)++;
@@ -214,7 +204,7 @@ char 		*return_token(char **line, t_env *env, int *status)
 			free(curr);
 		}
 		if (!res)
-			return (NULL);
+			exit(errno);
 	}
 	return (res);
 }
@@ -227,42 +217,50 @@ int 		check_redir(char **line)
 	int 	r;
 
 	r = -1;
-	if ((*(*line) == '<' || *(*line) == '>' || \
-	(*(*line) == '1' && *(*line + 1) == '>') || \
-	(*(*line) == '2' && *(*line + 1) == '>')))
+	if (*(*line) == '<' || *(*line) == '>')
 	{
 		curr_str = (*line);
 		symb = *(*line);
 		while (*curr_str && *curr_str == symb && *curr_str != ' ')
 			curr_str++;
-		str = ft_substr((*line), 0, curr_str - (*line));
-		r = redirects(str);
+		if (!(str = ft_substr((*line), 0, curr_str - (*line))))
+			exit(errno);
+		r = number_of_redirect(str);
 		free(str);
 	}
 	return (r);
 }
 
-t_params	*params_new(void)
+t_params	*new_params_element(void)
 {
 	t_params	*params;
 
 	if (!(params = malloc(sizeof(t_params))))
-		return (NULL);
+		exit(errno);
 	init_params(&params);
 	return (params);
 }
 
-int 		ccc(char **line, t_params **params, t_env *env, int *status)
+int 		open_and_close_fd(char **line, t_params **params, t_env *env, int *status)
 {
 	if (check_redir(line) == 0)
-		redir(line, env, &((*params)->in), status);
+		reopen_fd(line, env, &((*params)->in), status);
 	else if (check_redir(line) == 1)
-		redir(line, env, &((*params)->out), status);
+		reopen_fd(line, env, &((*params)->out), status);
 	else if (check_redir(line) == 2)
-		redir(line, env, &((*params)->err), status);
-	if (status == 0)
+		reopen_fd(line, env, &((*params)->err), status);
+	if (*status == 0)
 		return (1);
 	return (0);
+}
+
+void			write_token_to_list(char **line, t_list **list, t_env *env, int *status)
+{
+	char 		*str;
+
+	str = return_token(line, env, status);
+	if (!((*list) = ft_lstnew(str)))
+		exit(errno);
 }
 
 t_params		*lex(char **line, t_env *env, int *status)
@@ -271,42 +269,28 @@ t_params		*lex(char **line, t_env *env, int *status)
 	t_list		*lst;
 	char		*str;
 
-	if (!(res = params_new()))
-		return (NULL);
+	res = new_params_element();
 	if (*(*line) && *(*line) != '|' && *(*line) != ';')
 	{
 		(*line) = remove_spaces((*line));
 		while (*(*line) == '<' || *(*line) == '>')
-			ccc(line, &res, env, status);
-		if (*status == 0 && !(str = return_token(line, env, status)))
+			open_and_close_fd(line, &res, env, status);
+		if (*status > 0)
 		{
 			params_free(&res, del_params_content);
 			return (NULL);
 		}
-		if (*status == 0 && !(res->args = ft_lstnew(str)))
-		{
-			params_free(&res, del_params_content);
-			return (NULL);
-		}
+		write_token_to_list(line, &res->args, env, status);
 		lst = res->args;
 		while (*status == 0 && *(*line) && *(*line) != '|' && *(*line) != ';')
 		{
 			str = NULL;
 			(*line) = remove_spaces((*line));
 			if (*(*line) == '<' || *(*line) == '>')
-				ccc(line, &res, env, status);
+				open_and_close_fd(line, &res, env, status);
 			else
 			{
-				if (!(str = return_token(line, env, status)))
-				{
-					params_free(&res, del_params_content);
-					return (NULL);
-				}
-				if (!(lst->next = ft_lstnew(str)))
-				{
-					params_free(&res, del_params_content);
-					return (NULL);
-				}
+				write_token_to_list(line, &lst->next, env, status);
 				lst = lst->next;
 			}
 		}

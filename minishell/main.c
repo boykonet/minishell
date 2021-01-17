@@ -31,13 +31,10 @@ int				main(int argc, char **argv, char **envp)
 	char 		*curr_symb;
 
 	status = 0;
-	data = malloc(sizeof(t_data));
+	if (!(data = malloc(sizeof(t_data))))
+		exit(errno);
 	init_data(data);
-	if (!(data->env = copy_envp_to_struct(envp)))
-	{
-		free_data(data);
-		return (-1);
-	}
+	data->env = copy_envp_to_struct(envp);
 	while (TRUE)
 	{
 		write(1, "minishell$ ", ft_strlen("minishell$ "));
@@ -47,11 +44,15 @@ int				main(int argc, char **argv, char **envp)
 		while (*curr_symb)
 		{
 			data->params = NULL;
-			lexer(&curr_symb, &data->params, data->env, &status);
-			if (status > 0)
+			if (!(lexer(&curr_symb, &data->params, data->env, &status)))
 				break ;
-			if (*curr_symb == ';')
+			if (*curr_symb == ';' && *(curr_symb + 1) != *curr_symb)
 				curr_symb++;
+			else if (*curr_symb == ';' && *(curr_symb + 1) == *curr_symb)
+			{
+				error_handling(NULL, ";;", "syntax error near unexpected token", 2);
+				break ;
+			}
 			d_p = data->params;
 			while (d_p)
 			{

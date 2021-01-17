@@ -1,73 +1,87 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   parser.c                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: gkarina <gkarina@student.21-school.ru>     +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/11/21 00:11:07 by gkarina           #+#    #+#             */
-/*   Updated: 2020/11/21 00:11:07 by gkarina          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
 #include "../minishell.h"
 
-int 			check_unexpected_token(char *name_fd)
+int 			check_unexpected_token(char **name_fd)
 {
-	char 		*err[] = {">>", "<<", "((", "))", ";;", "<", ">", "(", ")", ";"};
+	char 		*err[] = {">>", "<<", ";;", "||", "<", ">", "(", ")", ";", "|", "", NULL};
+	char 		*tmp;
 	int 		i;
 
 	i = 0;
+	tmp = *name_fd;
 	while (err[i])
 	{
-		if (!ft_strncmp(err[i], name_fd, ft_strlen(name_fd)))
+		if (**name_fd == *err[i] && !ft_strncmp(err[i], *name_fd, ft_strlen(err[i])))
+		{
+			if (!ft_strncmp(*name_fd, "", ft_strlen(*name_fd)))
+				*name_fd = ft_strdup("newline");
+			else
+				*name_fd = ft_strdup(err[i]);
+			free(tmp);
+			if (!*name_fd)
+				exit(errno);
 			return (0);
+		}
 		i++;
 	}
 	return (1);
 }
 
-int 			open_fd(char **line, t_env *env, int *fd, int *status)
+char 			*shape_name_fd(char **line, char *curr, t_env *env, int *status)
+{
+	char 		symb;
+	char 		*name_fd;
+
+	symb = *(*line);
+	if (*curr == ';' || *curr == '|')
+	{
+		while (*curr && *curr == symb && *curr != ' ')
+			curr++;
+		if (!(name_fd = ft_substr((*line), 0, curr - *(line))))
+			exit(errno);
+	}
+	else
+		name_fd = return_token(line, env, status);
+	(*line) = curr;
+	return (name_fd);
+}
+
+int 			redirect_and_name_fd(char **line, t_env *env, int *fd, int *status)
 {
 	char 		*redir;
 	char 		*curr;
 	char 		*name_fd;
-	char 		symb;
 
-	(*line) = remove_spaces((*line));
 	curr = (*line);
-	symb = *(*line);
-	while (*curr && *curr == symb && *curr != ' ')
+	while (*curr && *curr == *(*line) && *curr != ' ')
 		curr++;
-	redir = ft_substr((*line), 0, curr - (*line));
+	if (!(redir = ft_substr((*line), 0, curr - (*line))))
+		exit(errno);
+	curr = remove_spaces(curr);
 	(*line) = curr;
-	(*line) = remove_spaces((*line));
-	curr = (*line);
-	name_fd = return_token(line, env, status);
-//	name_fd = ft_substr((*line), 0, curr - (*line));
-	if (!ft_strncmp(name_fd, "", ft_strlen(name_fd)) || check_unexpected_token(name_fd))
-		*status = error_handling(NULL, "newline", "syntax error near unexpected token", 2);
+	name_fd = shape_name_fd(line, &curr, env, status);
+	if (!check_unexpected_token(&name_fd))
+		*status = error_handling(NULL, name_fd, "syntax error near unexpected token", 2);
 	else
 	{
-		if ((*fd = add_fd(name_fd, redir)) < 0)
-			*status = error_handling(NULL, NULL, strerror(errno), 1);
+		if ((*fd = open_fd(name_fd, redir)) < 0)
+			*status = error_handling(NULL, name_fd, strerror(errno), 1);
 	}
-	(*line) = curr;
 	free(redir);
 	free(name_fd);
-	if (status == 0)
+	if (*status == 0)
 		return (1);
 	return (0);
 }
 
-int 			redir(char **line, t_env *env, int *fd, int *status)
+int 			reopen_fd(char **line, t_env *env, int *fd, int *status)
 {
 	if (*fd > 2)
 	{
 		if (close(*fd) < 0)
 			return (0);
 	}
-	if (!(open_fd(line, env, fd, status)))
+	if (!(redirect_and_name_fd(line, env, fd, status)))
 		return (0);
 	return (1);
 }
