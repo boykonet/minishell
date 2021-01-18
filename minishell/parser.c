@@ -39,14 +39,14 @@ char 			*shape_name_fd(char **line, char *curr, t_env *env, int *status)
 			curr++;
 		if (!(name_fd = ft_substr((*line), 0, curr - *(line))))
 			exit(errno);
+		(*line) = curr;
 	}
 	else
 		name_fd = return_token(line, env, status);
-	(*line) = curr;
 	return (name_fd);
 }
 
-int 			redirect_and_name_fd(char **line, t_env *env, int *fd, int *status)
+void			redirect_and_name_fd(char **line, t_env *env, int *fd, int *status)
 {
 	char 		*redir;
 	char 		*curr;
@@ -61,27 +61,43 @@ int 			redirect_and_name_fd(char **line, t_env *env, int *fd, int *status)
 	(*line) = curr;
 	name_fd = shape_name_fd(line, curr, env, status);
 	if (!check_unexpected_token(&name_fd))
-		*status = error_handling(NULL, name_fd, "syntax error near unexpected token", 2);
+	{
+		ft_printf("-minishell: syntax error near unexpected token `%s'\n", name_fd);
+		*status = 258;
+	}
 	else
 	{
 		if ((*fd = open_fd(name_fd, redir)) < 0)
-			*status = error_handling(NULL, name_fd, strerror(errno), 1);
+		{
+			ft_printf("-minishell: %s: %s\n", name_fd, strerror(errno));
+			*status = 1;
+		}
 	}
 	free(redir);
 	free(name_fd);
-	if (*status == 0)
-		return (1);
-	return (0);
 }
 
-int 			reopen_fd(char **line, t_env *env, int *fd, int *status)
+int				reopen_fd(char **line, t_env *env, int *fd, int *status)
 {
 	if (*fd > 2)
 	{
 		if (close(*fd) < 0)
 			return (0);
 	}
-	if (!(redirect_and_name_fd(line, env, fd, status)))
-		return (0);
+	redirect_and_name_fd(line, env, fd, status);
 	return (1);
+}
+
+int 		open_and_close_fd(char **line, t_params **params, t_env *env, int *status)
+{
+	int 	res;
+
+	res = 1;
+	if (check_redir(line) == 0)
+		res = reopen_fd(line, env, &((*params)->in), status);
+	else if (check_redir(line) == 1)
+		res = reopen_fd(line, env, &((*params)->out), status);
+	else if (check_redir(line) == 2)
+		res = reopen_fd(line, env, &((*params)->err), status);
+	return (res);
 }

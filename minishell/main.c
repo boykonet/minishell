@@ -22,16 +22,51 @@ size_t		number_of_lines(char **arr)
 	return (count);
 }
 
-int				main(int argc, char **argv, char **envp)
+int				bla(t_d **data, int *status)
 {
-	t_data 		*data;
+	char 		*curr_symb;
 	t_params	*d_p;
 	t_list		*list;
+
+	curr_symb = (*data)->line;
+	while (*curr_symb)
+	{
+		(*data)->params = NULL;
+		lexer(&curr_symb, &(*data)->params, (*data)->env, status);
+		if (status > 0)
+			return (0);
+		if (*curr_symb == ';' && *(curr_symb + 1) != *curr_symb)
+			curr_symb++;
+		else if (*curr_symb == ';' && *(curr_symb + 1) == *curr_symb)
+		{
+			ft_printf("-minishell: syntax error near unexpected token `%s'", ";;");
+			*status = 258;
+			return (0);
+		}
+		d_p = (*data)->params;
+		while (d_p)
+		{
+			list = d_p->args;
+			while (list)
+			{
+				printf("%s\n", list->content);
+				list = list->next;
+			}
+			d_p = d_p->next;
+		}
+//				builtins(&params, ch, &status);
+		params_free(&(*data)->params, del_params_content);
+	}
+	return (1);
+}
+
+int				main(int argc, char **argv, char **envp)
+{
+	t_d 		*data;
 	static int	status;
-	char 		*curr_symb;
 
 	status = 0;
-	if (!(data = malloc(sizeof(t_data))))
+	if (!(data = malloc(sizeof(t_d))))
 		exit(errno);
 	init_data(data);
 	data->env = copy_envp_to_struct(envp);
@@ -40,33 +75,8 @@ int				main(int argc, char **argv, char **envp)
 		write(1, "minishell$ ", ft_strlen("minishell$ "));
 		if ((getcharacter(0, &data->line)) < 0)
 			return (-1);
-		curr_symb = data->line;
-		while (*curr_symb)
-		{
-			data->params = NULL;
-			if (!(lexer(&curr_symb, &data->params, data->env, &status)))
-				break ;
-			if (*curr_symb == ';' && *(curr_symb + 1) != *curr_symb)
-				curr_symb++;
-			else if (*curr_symb == ';' && *(curr_symb + 1) == *curr_symb)
-			{
-				error_handling(NULL, ";;", "syntax error near unexpected token", 2);
-				break ;
-			}
-			d_p = data->params;
-			while (d_p)
-			{
-				list = d_p->args;
-				while (list)
-				{
-					printf("%s\n", list->content);
-					list = list->next;
-				}
-				d_p = d_p->next;
-			}
-//				builtins(&params, ch, &status);
-			params_free(&data->params, del_params_content);
-		}
+		if (!bla(&data, &status))
+			continue ;
 		status = 0;
 		free(data->line);
 	}

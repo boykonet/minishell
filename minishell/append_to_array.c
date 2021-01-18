@@ -1,31 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init.c                                             :+:      :+:    :+:   */
+/*   append_to_array.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gkarina <gkarina@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/01/08 20:02:04 by gkarina           #+#    #+#             */
-/*   Updated: 2021/01/08 20:02:04 by gkarina          ###   ########.fr       */
+/*   Created: 2021/01/18 22:34:35 by gkarina           #+#    #+#             */
+/*   Updated: 2021/01/18 22:34:35 by gkarina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void		init_params(t_params **params)
+char		*append_to_array(char *src, char symb)
 {
-	(*params)->args = NULL;
-	(*params)->in = 0;
-	(*params)->out = 1;
-	(*params)->err = 2;
-	(*params)->next = NULL;
-}
+	char 	*dst;
+	int 	i;
 
-void		init_data(t_d *data)
-{
-	data->argc = 0;
-	data->argv = NULL;
-	data->env = NULL;
-	data->line = NULL;
-	data->params = NULL;
+	i = 0;
+	if (!(dst = ft_calloc(ft_strlen(src) + 2, sizeof(char))))
+		exit(errno);
+	while (src[i])
+	{
+		dst[i] = src[i];
+		i++;
+	}
+	dst[i] = symb;
+	dst[++i] = '\0';
+	return (dst);
 }

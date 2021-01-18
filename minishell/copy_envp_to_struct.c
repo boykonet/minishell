@@ -1,12 +1,11 @@
 #include "../minishell.h"
 
-void		*init_name_value(char *str, char *separator, char **name, char **value)
+void			init_name_value(char *str, char *separator, char **name, char **value)
 {
 	*name = ft_substr(str, 0, separator - str);
 	*value = ft_substr(separator, 1, ft_strlen(separator + 1));
 	if (!(*name) || !(*value))
 		exit(errno);
-	return (separator);
 }
 
 t_env		*copy_envp_to_struct(char **envp)

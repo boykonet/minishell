@@ -54,7 +54,7 @@ void			free_string(char **str)
 	free(str);
 }
 
-void 			free_data(t_data *data)
+void 			free_data(t_d *data)
 {
 	if (data->line)
 		free(data->line);

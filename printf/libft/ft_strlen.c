@@ -1,31 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init.c                                             :+:      :+:    :+:   */
+/*   ft_strlen.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gkarina <gkarina@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/01/08 20:02:04 by gkarina           #+#    #+#             */
-/*   Updated: 2021/01/08 20:02:04 by gkarina          ###   ########.fr       */
+/*   Created: 2020/05/02 00:08:37 by gkarina           #+#    #+#             */
+/*   Updated: 2020/05/02 00:08:37 by gkarina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "libft.h"
 
-void		init_params(t_params **params)
+size_t	ft_strlen(const char *s)
 {
-	(*params)->args = NULL;
-	(*params)->in = 0;
-	(*params)->out = 1;
-	(*params)->err = 2;
-	(*params)->next = NULL;
-}
+	int		i;
 
-void		init_data(t_d *data)
-{
-	data->argc = 0;
-	data->argv = NULL;
-	data->env = NULL;
-	data->line = NULL;
-	data->params = NULL;
+	i = 0;
+	if (s == NULL || *s == '\0')
+		return (0);
+	while (s[i] != '\0')
+		i++;
+	return (i);
 }

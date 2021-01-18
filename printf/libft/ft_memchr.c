@@ -1,31 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init.c                                             :+:      :+:    :+:   */
+/*   ft_memchr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gkarina <gkarina@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/01/08 20:02:04 by gkarina           #+#    #+#             */
-/*   Updated: 2021/01/08 20:02:04 by gkarina          ###   ########.fr       */
+/*   Created: 2020/05/01 23:57:23 by gkarina           #+#    #+#             */
+/*   Updated: 2020/05/01 23:57:23 by gkarina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "libft.h"
 
-void		init_params(t_params **params)
+void	*ft_memchr(const void *s, int c, size_t n)
 {
-	(*params)->args = NULL;
-	(*params)->in = 0;
-	(*params)->out = 1;
-	(*params)->err = 2;
-	(*params)->next = NULL;
-}
+	unsigned char		ch;
+	unsigned char		*str;
 
-void		init_data(t_d *data)
-{
-	data->argc = 0;
-	data->argv = NULL;
-	data->env = NULL;
-	data->line = NULL;
-	data->params = NULL;
+	ch = (unsigned char)c;
+	str = (unsigned char*)s;
+	if (s == NULL)
+		return (NULL);
+	while (n--)
+	{
+		if (*str == ch)
+			return (str);
+		str++;
+	}
+	return (NULL);
 }

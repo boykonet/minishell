@@ -1,31 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init.c                                             :+:      :+:    :+:   */
+/*   ft_putstr_fd.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gkarina <gkarina@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/01/08 20:02:04 by gkarina           #+#    #+#             */
-/*   Updated: 2021/01/08 20:02:04 by gkarina          ###   ########.fr       */
+/*   Created: 2020/05/11 13:23:20 by gkarina           #+#    #+#             */
+/*   Updated: 2020/05/11 13:23:20 by gkarina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "libft.h"
 
-void		init_params(t_params **params)
+void	ft_putstr_fd(char *s, int fd)
 {
-	(*params)->args = NULL;
-	(*params)->in = 0;
-	(*params)->out = 1;
-	(*params)->err = 2;
-	(*params)->next = NULL;
-}
+	int		len;
 
-void		init_data(t_d *data)
-{
-	data->argc = 0;
-	data->argv = NULL;
-	data->env = NULL;
-	data->line = NULL;
-	data->params = NULL;
+	if (s != NULL && *s != '\0')
+	{
+		len = ft_strlen(s);
+		write(fd, s, len);
+	}
 }

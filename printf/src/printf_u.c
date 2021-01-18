@@ -1,31 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init.c                                             :+:      :+:    :+:   */
+/*   printf_u.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gkarina <gkarina@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/01/08 20:02:04 by gkarina           #+#    #+#             */
-/*   Updated: 2021/01/08 20:02:04 by gkarina          ###   ########.fr       */
+/*   Created: 2020/07/28 16:33:08 by gkarina           #+#    #+#             */
+/*   Updated: 2020/07/28 16:33:08 by gkarina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "../libftprintf.h"
 
-void		init_params(t_params **params)
+static int			get_data_u(t_data *data, va_list ap)
 {
-	(*params)->args = NULL;
-	(*params)->in = 0;
-	(*params)->out = 1;
-	(*params)->err = 2;
-	(*params)->next = NULL;
+	unsigned int	var;
+
+	var = (unsigned int)va_arg(ap, int);
+	if ((data->var = ft_itoa_base(var, 10)) == NULL)
+		return (-1);
+	return (0);
 }
 
-void		init_data(t_d *data)
+int					printf_u(t_data *data, va_list ap, char *s)
 {
-	data->argc = 0;
-	data->argv = NULL;
-	data->env = NULL;
-	data->line = NULL;
-	data->params = NULL;
+	if ((printf_spec(data, ap, *s, &get_data_u)) == -1)
+		return (-1);
+	return (0);
 }

@@ -1,31 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init.c                                             :+:      :+:    :+:   */
+/*   fill_array.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gkarina <gkarina@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/01/08 20:02:04 by gkarina           #+#    #+#             */
-/*   Updated: 2021/01/08 20:02:04 by gkarina          ###   ########.fr       */
+/*   Created: 2020/07/28 16:35:54 by gkarina           #+#    #+#             */
+/*   Updated: 2020/07/28 16:35:54 by gkarina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "../libftprintf.h"
 
-void		init_params(t_params **params)
+void		fill_array(t_data *data, char *str, int len_str, int diff_num)
 {
-	(*params)->args = NULL;
-	(*params)->in = 0;
-	(*params)->out = 1;
-	(*params)->err = 2;
-	(*params)->next = NULL;
-}
-
-void		init_data(t_d *data)
-{
-	data->argc = 0;
-	data->argv = NULL;
-	data->env = NULL;
-	data->line = NULL;
-	data->params = NULL;
+	if ((ft_strchr("cpiduxX%", *data->buff)))
+		fill_c_p_i_d_u_x_x_big_prc(data, str, len_str, diff_num);
+	else if ((ft_strchr("s", *data->buff)))
+		fill_spec(data, str, len_str, diff_num);
+	free(str);
 }

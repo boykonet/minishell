@@ -1,31 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init.c                                             :+:      :+:    :+:   */
+/*   ft_strmapi.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gkarina <gkarina@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/01/08 20:02:04 by gkarina           #+#    #+#             */
-/*   Updated: 2021/01/08 20:02:04 by gkarina          ###   ########.fr       */
+/*   Created: 2020/05/10 21:12:15 by gkarina           #+#    #+#             */
+/*   Updated: 2020/05/10 21:12:15 by gkarina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "libft.h"
 
-void		init_params(t_params **params)
+char	*ft_strmapi(char const *s, char (*f)(unsigned int, char))
 {
-	(*params)->args = NULL;
-	(*params)->in = 0;
-	(*params)->out = 1;
-	(*params)->err = 2;
-	(*params)->next = NULL;
-}
+	char	*dst;
+	size_t	len;
+	size_t	count;
 
-void		init_data(t_d *data)
-{
-	data->argc = 0;
-	data->argv = NULL;
-	data->env = NULL;
-	data->line = NULL;
-	data->params = NULL;
+	if (!s || !f)
+		return (NULL);
+	len = ft_strlen(s);
+	if ((dst = (char*)malloc(sizeof(char) * (len + 1))) == NULL)
+		return (NULL);
+	count = 0;
+	while (count < len)
+	{
+		dst[count] = f(count, s[count]);
+		count++;
+	}
+	dst[count] = '\0';
+	return (dst);
 }

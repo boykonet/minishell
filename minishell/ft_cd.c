@@ -92,8 +92,9 @@ int			ft_cd(t_list *args, t_env **env, int *status)
 	str = ft_strdup(args->content);
 	if ((chdir(str) < 0))
 	{
-		error_handling("cd", str, strerror(errno), 1);
+		ft_printf("-minishell: cd: %s: %s", str, strerror(errno));
 		free(str);
+		*status = 1;
 		return (-1);
 	}
 	free(str);

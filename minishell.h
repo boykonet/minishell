@@ -20,6 +20,7 @@
 # include <string.h>
 # include <errno.h>
 # include "./libft/libft.h"
+# include "./printf/libftprintf.h"
 
 # define TRUE	1
 # define FALSE	0
@@ -40,14 +41,14 @@ typedef struct		s_params
 	struct s_params	*next;
 }					t_params;
 
-typedef struct		s_data
+typedef struct		s_d
 {
 	t_params		*params;
 	t_env			*env;
 	char 			**argv;
 	char 			*line;
 	int 			argc;
-}					t_data;
+}					t_d;
 
 //typedef struct		s_fd
 //{
@@ -65,37 +66,43 @@ typedef struct		s_data
 int					ft_cd(t_list *args, t_env **env, int *status);
 char				*ft_pwd(char *pwd);
 void				ft_echo(t_list **args, t_env *env, int return_value);
+
 void				builtins(t_params *params, t_env **env, int *status);
 char				*find_data_in_env(t_env *env, char *needle, int serial_num);
 void				write_str(char *str, int fd, int flag);
-t_env				*ft_lstnew_env(void *name, void *value);
 t_env				*copy_envp_to_struct(char **envp);
 int					open_fd(char *in, char *redir);
 int 				lexer(char **line, t_params **params, t_env *env, int *status);
 int 				number_of_redirect(char *redir);
-int					add_fd(char *file, char *redir);
 int					getcharacter(int fd, char **line);
-int 				error_handling(char *cmd, char *arg, char *error, int status);
+//int 				error_handling(char *error, int status);
 int 				check_redir(char **line);
 char				*remove_spaces(char *line);
-int 				reopen_fd(char **line, t_env *env, int *fd, int *status);
-int 				redirect_and_name_fd(char **line, t_env *env, int *fd, int *status);
+//int					reopen_fd(char **line, t_env *env, int *fd, int *status);
+void				redirect_and_name_fd(char **line, t_env *env, int *fd, int *status);
 void 				ft_lstadd_back_env(t_env **env, t_env *new);
 char 				*return_token(char **line, t_env *env, int *status);
+char				*handling_tokens_with_quotes(char **line, t_env *env, int *status);
+
+int 				open_and_close_fd(char **line, t_params **params, t_env *env, int *status);
+
+char				*expand_env_arg(char **line, t_env *env, int *status);
+char				*append_to_array(char *src, char symb);
 
 
 t_params 			*new_params_element(void);
+t_env				*ft_lstnew_env(void *name, void *value);
 
 
 void	 			init_params(t_params **params);
-void				init_data(t_data *data);
+void				init_data(t_d *data);
 
 
 void 				params_free(t_params **params, void (*del)(t_params *));
 void 				env_free(t_env **env, void (*del)(t_env *));
 
 
-void 				free_data(t_data *data);
+void 				free_data(t_d *data);
 void				free_params(t_params *params);
 void				free_string(char **str);
 void 				free_env(t_env **env);
