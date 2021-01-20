@@ -12,10 +12,16 @@
 
 #include "../minishell.h"
 
-char		*ft_pwd(char *pwd)
+int			ft_pwd(char **pwd)
 {
-	pwd = getcwd(NULL, 0);
-	return (pwd);
+	if (!(*pwd = getcwd(NULL, 0)))
+	{
+		ft_printf("-minishell: pwd: %s\n", strerror(errno));
+		return (errno);
+	}
+	write(1, *pwd, ft_strlen(*pwd));
+	write(1, "\n", 1);
+	return (0);
 }
 
 /* int		main(int argc, char **argv, char **envp) */

@@ -32,14 +32,13 @@ int				bla(t_d **data, int *status)
 	while (*curr_symb)
 	{
 		(*data)->params = NULL;
-		lexer(&curr_symb, &(*data)->params, (*data)->env, status);
-		if (status > 0)
+		if (!lexer(&curr_symb, &(*data)->params, (*data)->env, status))
 			return (0);
 		if (*curr_symb == ';' && *(curr_symb + 1) != *curr_symb)
 			curr_symb++;
 		else if (*curr_symb == ';' && *(curr_symb + 1) == *curr_symb)
 		{
-			ft_printf("-minishell: syntax error near unexpected token `%s'", ";;");
+			ft_printf("-minishell: syntax error near unexpected token `%s'\n", ";;");
 			*status = 258;
 			return (0);
 		}
@@ -54,7 +53,7 @@ int				bla(t_d **data, int *status)
 			}
 			d_p = d_p->next;
 		}
-//				builtins(&params, ch, &status);
+		builtins((*data)->params, &(*data)->env, status);
 		params_free(&(*data)->params, del_params_content);
 	}
 	return (1);
@@ -77,7 +76,6 @@ int				main(int argc, char **argv, char **envp)
 			return (-1);
 		if (!bla(&data, &status))
 			continue ;
-		status = 0;
 		free(data->line);
 	}
 	return (status);

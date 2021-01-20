@@ -11,7 +11,8 @@ int 			check_unexpected_token(char **name_fd)
 	tmp = *name_fd;
 	while (err[i])
 	{
-		if (**name_fd == *err[i] && !ft_strncmp(err[i], *name_fd, ft_strlen(err[i])))
+		if (**name_fd == *err[i] && !ft_strncmp(err[i], *name_fd, ft_strlen(err[i])) && \
+		!ft_isalpha(*(*name_fd + ft_strlen(err[i]))))
 		{
 			if (!ft_strncmp(*name_fd, "", ft_strlen(*name_fd)))
 				*name_fd = ft_strdup("newline");
@@ -46,13 +47,15 @@ char 			*shape_name_fd(char **line, char *curr, t_env *env, int *status)
 	return (name_fd);
 }
 
-void			redirect_and_name_fd(char **line, t_env *env, int *fd, int *status)
+int				redirect_and_name_fd(char **line, t_env *env, int *fd, int *status)
 {
 	char 		*redir;
 	char 		*curr;
 	char 		*name_fd;
+	int 		flag;
 
 	curr = (*line);
+	flag = 1;
 	while (*curr && *curr == *(*line) && *curr != ' ')
 		curr++;
 	if (!(redir = ft_substr((*line), 0, curr - (*line))))
@@ -64,6 +67,7 @@ void			redirect_and_name_fd(char **line, t_env *env, int *fd, int *status)
 	{
 		ft_printf("-minishell: syntax error near unexpected token `%s'\n", name_fd);
 		*status = 258;
+		flag = 0;
 	}
 	else
 	{
@@ -71,10 +75,14 @@ void			redirect_and_name_fd(char **line, t_env *env, int *fd, int *status)
 		{
 			ft_printf("-minishell: %s: %s\n", name_fd, strerror(errno));
 			*status = 1;
+			flag = 0;
 		}
 	}
 	free(redir);
 	free(name_fd);
+	if (*status > 0 && !flag)
+		return (0);
+	return (1);
 }
 
 int				reopen_fd(char **line, t_env *env, int *fd, int *status)
@@ -82,15 +90,20 @@ int				reopen_fd(char **line, t_env *env, int *fd, int *status)
 	if (*fd > 2)
 	{
 		if (close(*fd) < 0)
+		{
+			ft_printf("-minishell: %s\n", strerror(errno));
+			*status = errno;
 			return (0);
+		}
 	}
-	redirect_and_name_fd(line, env, fd, status);
+	if (!redirect_and_name_fd(line, env, fd, status))
+		return (0);
 	return (1);
 }
 
-int 		open_and_close_fd(char **line, t_params **params, t_env *env, int *status)
+int 			open_and_close_fd(char **line, t_params **params, t_env *env, int *status)
 {
-	int 	res;
+	int 		res;
 
 	res = 1;
 	if (check_redir(line) == 0)

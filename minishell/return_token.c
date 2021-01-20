@@ -23,7 +23,7 @@ char 		*token_without_quotes(char **line, t_env *env, int *spec_char, int *statu
 	{
 		if (!(curr = ft_calloc(2, sizeof(char))))
 			return (NULL);
-		if (*(*line) == '\\')
+		if (*(*line) == '\\' && !*spec_char)
 			(*line)++;
 		curr[0] = *(*line)++;
 	}

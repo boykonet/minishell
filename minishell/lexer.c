@@ -19,19 +19,19 @@ char		*expand_env_arg(char **line, t_env *env, int *status)
 	char 	*curr;
 
 	res = NULL;
-	if (*(*line) == '$' && (*(*line + 1) == ' ' || *(*line + 1) == '$' || \
-		*(*line + 1) == '\\' || *(*line + 1) == '\0'))
-	{
-		if (!(res = ft_strdup("$")))
-			exit(errno);
-		(*line)++;
-	}
-	else if (!ft_strncmp(*line, "$?", 2))
+	if (!ft_strncmp(*line, "$?", 2))
 	{
 		res = ft_itoa(*status);
 		(*line) = *(line) + 2;
 		if (!res)
 			exit(errno);
+	}
+	else if (*(*line) == '$' && (!ft_isalnum(*(*line + 1)) || *(*line + 1) == '\\')/*(*(*line + 1) == ' ' || *(*line + 1) == '$' || \
+		*(*line + 1) == '\\' || *(*line + 1) == '\0')*/)
+	{
+		if (!(res = ft_strdup("$")))
+			exit(errno);
+		(*line)++;
 	}
 	else
 	{
@@ -101,37 +101,38 @@ t_params		*lex(char **line, t_env *env, int *status)
 	if (*(*line) && *(*line) != '|' && *(*line) != ';')
 	{
 		(*line) = remove_spaces((*line));
-		while (*(*line) == '<' || *(*line) == '>')
+		while (res && (*(*line) == '<' || *(*line) == '>'))
 		{
 			if (!open_and_close_fd(line, &res, env, status))
+				params_free(&res, del_params_content);
+		}
+		if (res)
+		{
+			(*line) = remove_spaces((*line));
+			write_token_to_list(line, &res->args, env, status);
+			if (!check_unexpected_token((char**)&(res->args)->content))
 			{
+				ft_printf("-minishell: syntax error near unexpected token `%s'\n", res->args->content);
+				*status = 258;
 				params_free(&res, del_params_content);
 				return (NULL);
 			}
+			lst = res->args;
 		}
-		write_token_to_list(line, &res->args, env, status);
-		lst = res->args;
-		while (*(*line) && *(*line) != '|' && *(*line) != ';')
+		while (res && (*(*line) && *(*line) != '|' && *(*line) != ';'))
 		{
 			(*line) = remove_spaces((*line));
 			if (*(*line) == '<' || *(*line) == '>')
 			{
 				if (!open_and_close_fd(line, &res, env, status))
-				{
 					params_free(&res, del_params_content);
-					return (NULL);
-				}
 			}
 			else if (*(*line) && *(*line) != '|' && *(*line) != ';')
 			{
+				(*line) = remove_spaces((*line));
 				write_token_to_list(line, &lst->next, env, status);
 				lst = lst->next;
 			}
-		}
-		if (*status > 0)
-		{
-			params_free(&res, del_params_content);
-			return (NULL);
 		}
 	}
 	return (res);
@@ -144,18 +145,22 @@ int 			lexer(char **line, t_params **params, t_env *env, int *status)
 	if (*(*line))
 	{
 		(*params) = lex(line, env, status);
+		if (*status > 0 && !(*params))
+			return (0);
 		if (*(*line) == '|')
 			(*line)++;
 		curr = (*params);
-		while (*(*line) && *(*line) != ';')
+		while (curr && *(*line) && *(*line) != ';')
 		{
-			if (*status > 0)
-				return (0);
 			curr->next = lex(line, env, status);
+			if (*status > 0 && !curr->next)
+				return (0);
 			if (*(*line) == '|')
 				(*line)++;
 			curr = curr->next;
 		}
+		if (*status > 0 && (*params))
+			*status = 0;
 	}
 	return (1);
 }

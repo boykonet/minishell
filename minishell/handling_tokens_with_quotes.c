@@ -37,7 +37,7 @@ int 		validate_token_with_double_quotes(char **line, int *spec_char)
 	*spec_char = 0;
 	if (*(*line) == '\\')
 	{
-		if (*(*line + 1) == '\"' || *(*line + 1) == '$')
+		if (*(*line + 1) == '\"' || *(*line + 1) == '$' || *(*line + 1) == '\\')
 		{
 			(*line)++;
 			*spec_char = 1;
