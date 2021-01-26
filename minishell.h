@@ -21,9 +21,12 @@
 # include <errno.h>
 # include "./libft/libft.h"
 # include "./printf/libftprintf.h"
+# include <dirent.h>
+# include <sys/types.h>
+# include <sys/wait.h>
+# include <signal.h>
 
 # define TRUE	1
-# define FALSE	0
 
 typedef struct		s_env
 {
@@ -54,6 +57,9 @@ int					ft_cd(t_list *args, t_env **env);
 int					ft_pwd(char **pwd);
 int					ft_echo(t_list *args, int fd);
 int                 ft_exit(void);
+
+t_list		        *convert_array_to_struct(char **array);
+char	        	**convert_struct_to_array(t_list *lst);
 
 int                 builtins(t_params *params, t_env **env, int *status);
 char				*find_data_in_env(t_env *env, char *needle, int serial_num);
@@ -100,5 +106,10 @@ void 				free_env(t_env **env);
 void				del_list_content(void *content);
 void				del_params_content(t_params *params);
 void 				del_env_content(t_env *env);
+
+int		            pipes(t_params *params, t_env *env);
+
+char				*find_path(char *cmd, char *path);
+size_t				number_of_lines(char **arr);
 
 #endif

@@ -12,16 +12,6 @@
 
 #include "../minishell.h"
 
-size_t		number_of_lines(char **arr)
-{
-	size_t	count;
-
-	count = 0;
-	while (arr[count])
-		count++;
-	return (count);
-}
-
 char 			**copy_array(char **src)
 {
 	char 		**res;
@@ -74,6 +64,8 @@ int				bla(t_d **data, int *status)
 //			}
 //			d_p = d_p->next;
 //		}
+		if ((*data)->params->next)
+			pipes((*data)->params, (*data)->env);
 		if (!builtins((*data)->params, &(*data)->env, status))
 		{
 			free_data(*data);

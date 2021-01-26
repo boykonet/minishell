@@ -34,6 +34,10 @@ add_executable(minishell
         minishell/getcharacter.c
         minishell/ft_cd.c
         minishell/ft_lstadd_back_env.c
+        minishell/pipes.c
+        minishell/find_path.c
+        minishell/convert_from_to.c
+        minishell/number_of_lines.c
 
         minishell/handling_tokens_with_quotes.c
         minishell/return_token.c
