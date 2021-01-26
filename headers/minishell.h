@@ -19,8 +19,8 @@
 # include <fcntl.h>
 # include <string.h>
 # include <errno.h>
-# include "./libft/libft.h"
-# include "./printf/libftprintf.h"
+# include "./libs/libft/libft.h"
+# include "./libs/printf/libftprintf.h"
 # include <dirent.h>
 # include <sys/types.h>
 # include <sys/wait.h>
@@ -54,10 +54,10 @@ typedef struct		s_d
 	int 			argc;
 }					t_d;
 
-int					ft_cd(t_list *args, t_env **env);
-int					ft_pwd(char **pwd);
-int					ft_echo(t_list *args, int fd);
-int                 ft_exit(void);
+//int					ft_cd(t_list *args, t_env **env);
+//int					ft_pwd(char **pwd);
+//int					ft_echo(t_list *args, int fd);
+//int                 ft_exit(void);
 
 t_list		        *convert_array_to_struct(char **array);
 char	        	**convert_struct_to_array(t_list *lst);
@@ -68,21 +68,21 @@ void				write_str(char *str, int fd, int flag);
 t_env				*copy_envp_to_struct(char **envp);
 char 				**copy_array(char **src);
 
-int					open_fd(char *in, char *redir);
-int 				parser(char **line, t_params **params, t_env *env, int *status);
-int 				number_of_redirect(char *redir);
+//int					open_fd(char *in, char *redir);
+//int 				parser(char **line, t_params **params, t_env *env, int *status);
+//int 				number_of_redirect(char *redir);
 int					getcharacter(int fd, char **line);
 int 				check_redir(char **line);
 char				*remove_spaces(char *line);
-int					redirect_and_name_fd(char **line, t_env *env, int *fd, int *status);
+//int					redirect_and_name_fd(char **line, t_env *env, int *fd, int *status);
 void 				ft_lstadd_back_env(t_env **env, t_env *new);
-char 				*return_token(char **line, t_env *env, int *status);
+//char 				*return_token(char **line, t_env *env, int *status);
 char				*handling_tokens_with_quotes(char **line, t_env *env, int *status);
 
-int 				open_and_close_fd(char **line, t_params **params, t_env *env, int *status);
+//int 				open_and_close_fd(char **line, t_params **params, t_env *env, int *status);
 
 char				*expand_env_arg(char **line, t_env *env, int *status);
-char				*append_to_array(char *src, char symb);
+//char				*append_to_array(char *src, char symb);
 int 				check_unexpected_token(char **name_fd);
 
 

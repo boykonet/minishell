@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "../headers/parser.h"
 
 int 			check_unexpected_token(char **name_fd)
 {

@@ -1,7 +1,6 @@
 NAME = minishell
 
 MINISRCS = 	        srcs/expand_env_arg.c \
-                    srcs/open_fd.c \
                     srcs/builtins.c \
                     srcs/copy_envp_to_struct.c \
                     srcs/del_content.c \
@@ -13,8 +12,6 @@ MINISRCS = 	        srcs/expand_env_arg.c \
                     srcs/create_new_elements.c \
                     srcs/ft_pwd.c \
                     srcs/init.c \
-                    srcs/open_and_close_fd.c \
-                    srcs/parser.c \
                     srcs/redirects.c \
                     srcs/del_content.c \
                     srcs/getcharacter.c \
@@ -28,11 +25,14 @@ MINISRCS = 	        srcs/expand_env_arg.c \
                     srcs/return_token.c \
                     srcs/append_to_array.c \
                     srcs/functions.c \
-                    srcs/check_redir.c
+                    srcs/check_redir.c \
+                    parser/parser.c \
+                    parser/open_and_close_fd.c \
+                    parser/open_fd.c
 
 CFLAGS = -Wall -Wextra -Werror
 
-SRCS =  ./srcs/main.c $(MINISRCS)
+SRCS =  ./other/main.c $(MINISRCS)
 
 MINIOBJS = $(MINISRCS:%.c=%.o)
 
@@ -47,7 +47,7 @@ CC = gcc
 all: $(NAME)
 
 $(NAME): $(OBJS) libft.a libftprintf.a libminishell.a $(INCLUDES)
-	$(CC) $(CFLAGS) -L. -lft -lftprintf -lminishell -o $@ ./srcs/main.c
+	$(CC) $(CFLAGS) -L. -lft -lftprintf -lminishell -o $@ ./other/main.c
 
 libft.a:
 	$(MAKE) bonus -C ./libft CC=$(CC)

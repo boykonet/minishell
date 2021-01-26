@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "../headers/parser.h"
 
 int			open_fd(char *file, char *redir)
 {

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "../headers/parser.h"
 
 void			write_token_to_list(char **line, t_list **list, \
 									t_env *env, int *status)
