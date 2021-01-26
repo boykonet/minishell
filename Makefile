@@ -69,7 +69,10 @@ clean:
 	$(MAKE) clean -C ./printf
 	rm -rf $(OBJS)
 
-fclean: clean
+fclean:
+	$(MAKE) fclean -C ./printf
+	$(MAKE) fclean -C ./libft
+	rm -rf $(OBJS)
 	rm -rf $(NAME) libft.a libftprintf.a libminishell.a
 
 re:

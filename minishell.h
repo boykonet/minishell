@@ -108,7 +108,7 @@ void				del_list_content(void *content);
 void				del_params_content(t_params *params);
 void 				del_env_content(t_env *env);
 
-int		            pipes(t_params *params, t_env *env);
+int		            pipes(t_params *params, t_env **env, int *status);
 
 char				*find_path(char *cmd, char *path);
 size_t				number_of_lines(char **arr);

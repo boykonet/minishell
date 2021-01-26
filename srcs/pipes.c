@@ -1,6 +1,21 @@
 #include "../minishell.h"
 
-int		pipes(t_params *params, t_env *env)
+int 	check_command(char *cmd)
+{
+	char 	*arr[] = {"echo", "pwd", "cd", "env", "export", "unset", "exit", NULL};
+	int 	count;
+
+	count = 0;
+	while (arr[count])
+	{
+		if (!ft_strncmp(arr[count], cmd, ft_strlen(cmd)))
+			return (0);
+		count++;
+	}
+	return (1);
+}
+
+int		pipes(t_params *params, t_env **env, int *status)
 {
 	int		pipefd[2];
 	int		origfd[2];
@@ -32,8 +47,11 @@ int		pipes(t_params *params, t_env *env)
 			close(pipefd[1]);
 			/*если пайп последний то можно попробовать сделать dup2(origfd[1], 1)*/
 			args = convert_struct_to_array(params->args);
-			cmd = find_path(params->args->content, find_data_in_env(env, "PATH", 0));
-			a = execve(cmd, args, NULL);
+			cmd = find_path(params->args->content, find_data_in_env(*env, "PATH", 0));
+			if (!check_command(params->args->content))
+				builtins(params, env, status);
+			else
+				a = execve(cmd, args, NULL);
 			free(cmd);
 			free_string(args);
 			exit(0);

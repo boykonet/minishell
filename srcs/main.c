@@ -44,7 +44,7 @@ int				bla(t_d **data, int *status)
 //			d_p = d_p->next;
 //		}
 		if ((*data)->params->next)
-			pipes((*data)->params, (*data)->env);
+			pipes((*data)->params, &(*data)->env, status);
 		if (!builtins((*data)->params, &(*data)->env, status))
 		{
 			free_data(*data);
