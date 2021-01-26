@@ -50,29 +50,16 @@ typedef struct		s_d
 	int 			argc;
 }					t_d;
 
-//typedef struct		s_fd
-//{
-//	char			*redir_in;
-//	char 			*redir_out;
-//	char 			*redir_err;
-//	char			*name_in;
-//	char			*name_out;
-//	char			*name_err;
-//	int 			in;
-//	int 			out;
-//	int 			err;
-//}					t_fd;
-
 int					ft_cd(t_list *args, t_env **env);
 int					ft_pwd(char **pwd);
-int					ft_echo(t_list *args);
+int					ft_echo(t_list *args, int fd);
 
 void				builtins(t_params *params, t_env **env, int *status);
 char				*find_data_in_env(t_env *env, char *needle, int serial_num);
 void				write_str(char *str, int fd, int flag);
 t_env				*copy_envp_to_struct(char **envp);
 int					open_fd(char *in, char *redir);
-int 				lexer(char **line, t_params **params, t_env *env, int *status);
+int 				parser(char **line, t_params **params, t_env *env, int *status);
 int 				number_of_redirect(char *redir);
 int					getcharacter(int fd, char **line);
 //int 				error_handling(char *error, int status);

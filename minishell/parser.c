@@ -1,116 +1,142 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   lexer.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gkarina <gkarina@student.21-school.ru>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/12/18 23:13:55 by gkarina           #+#    #+#             */
+/*   Updated: 2020/12/18 23:13:55 by gkarina          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../minishell.h"
 
-int 			check_unexpected_token(char **name_fd)
+char		*remove_spaces(char *line)
 {
-	char 		*err[] = {">>", "<<", ";;", "||", "<", ">", "(", ")", ";", "|", "", NULL};
-	char 		*tmp;
-	int 		i;
-
-	i = 0;
-	tmp = *name_fd;
-	while (err[i])
-	{
-		if (**name_fd == *err[i] && !ft_strncmp(err[i], *name_fd, ft_strlen(err[i])) && \
-		!ft_isalpha(*(*name_fd + ft_strlen(err[i]))))
-		{
-			if (!ft_strncmp(*name_fd, "", ft_strlen(*name_fd)))
-				*name_fd = ft_strdup("newline");
-			else
-				*name_fd = ft_strdup(err[i]);
-			free(tmp);
-			if (!*name_fd)
-				exit(errno);
-			return (0);
-		}
-		i++;
-	}
-	return (1);
+	while (*line == ' ')
+		line++;
+	return (line);
 }
 
-char 			*shape_name_fd(char **line, char *curr, t_env *env, int *status)
+int 		check_redir(char **line)
 {
-	char 		symb;
-	char 		*name_fd;
+	char 	*curr_str;
+	char 	*str;
+	char	symb;
+	int 	r;
 
-	symb = *(*line);
-	if (*curr == ';' || *curr == '|')
+	r = -1;
+	if (*(*line) == '<' || *(*line) == '>')
 	{
-		while (*curr && *curr == symb && *curr != ' ')
-			curr++;
-		if (!(name_fd = ft_substr((*line), 0, curr - *(line))))
+		curr_str = (*line);
+		symb = *(*line);
+		while (*curr_str && *curr_str == symb && *curr_str != ' ')
+			curr_str++;
+		if (!(str = ft_substr((*line), 0, curr_str - (*line))))
 			exit(errno);
-		(*line) = curr;
+		r = number_of_redirect(str);
+		free(str);
 	}
-	else
-		name_fd = return_token(line, env, status);
-	return (name_fd);
+	return (r);
 }
 
-int				redirect_and_name_fd(char **line, t_env *env, int *fd, int *status)
+void			write_token_to_list(char **line, t_list **list, \
+									t_env *env, int *status)
 {
-	char 		*redir;
-	char 		*curr;
-	char 		*name_fd;
-	int 		flag;
+	char 		*str;
 
-	curr = (*line);
-	flag = 1;
-	while (*curr && *curr == *(*line) && *curr != ' ')
-		curr++;
-	if (!(redir = ft_substr((*line), 0, curr - (*line))))
+	str = return_token(line, env, status);
+	if (!((*list) = ft_lstnew(str)))
 		exit(errno);
-	curr = remove_spaces(curr);
-	(*line) = curr;
-	name_fd = shape_name_fd(line, curr, env, status);
-	if (!check_unexpected_token(&name_fd))
-	{
-		ft_printf("-minishell: syntax error near unexpected token `%s'\n", name_fd);
-		*status = 258;
-		flag = 0;
-	}
-	else
-	{
-		if ((*fd = open_fd(name_fd, redir)) < 0)
-		{
-			ft_printf("-minishell: %s: %s\n", name_fd, strerror(errno));
-			*status = 1;
-			flag = 0;
-		}
-	}
-	free(redir);
-	free(name_fd);
-	if (*status > 0 && !flag)
-		return (0);
-	return (1);
 }
 
-int				reopen_fd(char **line, t_env *env, int *fd, int *status)
+t_params		*check_redir_line(char **line, t_env *env, \
+									t_params **res, int *status)
 {
-	if (*fd > 2)
-	{
-		if (close(*fd) < 0)
-		{
-			ft_printf("-minishell: %s\n", strerror(errno));
-			*status = errno;
-			return (0);
-		}
-	}
-	if (!redirect_and_name_fd(line, env, fd, status))
-		return (0);
-	return (1);
+	if (!open_and_close_fd(line, res, env, status))
+		params_free(res, del_params_content);
+	if (!*res)
+		return (NULL);
+	return (*res);
 }
 
-int 			open_and_close_fd(char **line, t_params **params, t_env *env, int *status)
+t_list			*first_elem_list(char **line, t_params **res, \
+								t_env *env, int *status)
 {
-	int 		res;
+	t_list 		*lst;
 
-	res = 1;
-	if (check_redir(line) == 0)
-		res = reopen_fd(line, env, &((*params)->in), status);
-	else if (check_redir(line) == 1)
-		res = reopen_fd(line, env, &((*params)->out), status);
-	else if (check_redir(line) == 2)
-		res = reopen_fd(line, env, &((*params)->err), status);
+	lst = NULL;
+	(*line) = remove_spaces((*line));
+	while (res && (*(*line) == '<' || *(*line) == '>'))
+		check_redir_line(line, env, res, status);
+	if (res)
+	{
+		(*line) = remove_spaces((*line));
+		write_token_to_list(line, &(*res)->args, env, status);
+		if (!check_unexpected_token((char**)&((*res)->args)->content))
+		{
+			ft_printf("-minishell: syntax error near unexpected "
+			 "token `%s'\n", (*res)->args->content);
+			*status = 258;
+			params_free(res, del_params_content);
+			return (NULL);
+		}
+		lst = (*res)->args;
+	}
+	return (lst);
+}
+
+t_params		*parsing(char **line, t_env *env, int *status)
+{
+	t_params	*res;
+	t_list		*lst;
+
+	res = new_params_element();
+	if (*(*line) && *(*line) != '|' && *(*line) != ';')
+	{
+		if (!(lst = first_elem_list(line, &res, env, status)))
+			if (!res)
+				return (NULL);
+		while (res && *(*line) && (*(*line) != '|' && *(*line) != ';'))
+		{
+			(*line) = remove_spaces((*line));
+			if (*(*line) == '<' || *(*line) == '>')
+				check_redir_line(line, env, &res, status);
+			else if (*(*line) && *(*line) != '|' && *(*line) != ';')
+			{
+				(*line) = remove_spaces((*line));
+				write_token_to_list(line, &lst->next, env, status);
+				lst = lst->next;
+			}
+		}
+	}
 	return (res);
+}
+
+int 			parser(char **line, t_params **params, t_env *env, int *status)
+{
+	t_params 	*curr;
+
+	if (*(*line))
+	{
+		(*params) = parsing(line, env, status);
+		if (*status > 0 && !(*params))
+			return (0);
+		if (*(*line) == '|')
+			(*line)++;
+		curr = (*params);
+		while (curr && *(*line) && *(*line) != ';')
+		{
+			curr->next = parsing(line, env, status);
+			if (*status > 0 && !curr->next)
+				return (0);
+			if (*(*line) == '|')
+				(*line)++;
+			curr = curr->next;
+		}
+		if (*status > 0 && (*params))
+			*status = 0;
+	}
+	return (1);
 }

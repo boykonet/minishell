@@ -22,6 +22,27 @@ size_t		number_of_lines(char **arr)
 	return (count);
 }
 
+char 			**copy_array(char **src)
+{
+	char 		**res;
+	int 		i;
+
+	i = number_of_lines(src);
+	if (!(res = ft_calloc(i + 1, sizeof(char*))))
+		exit(errno);
+	i = 0;
+	while (src[i])
+	{
+		if (!(res[i] = ft_strdup(src[i])))
+		{
+			free_string(res);
+			exit(errno);
+		}
+		i++;
+	}
+	return (res);
+}
+
 int				bla(t_d **data, int *status)
 {
 	char 		*curr_symb;
@@ -32,7 +53,7 @@ int				bla(t_d **data, int *status)
 	while (*curr_symb)
 	{
 		(*data)->params = NULL;
-		if (!lexer(&curr_symb, &(*data)->params, (*data)->env, status))
+		if (!parser(&curr_symb, &(*data)->params, (*data)->env, status))
 			return (0);
 		if (*curr_symb == ';' && *(curr_symb + 1) != *curr_symb)
 			curr_symb++;
@@ -42,17 +63,17 @@ int				bla(t_d **data, int *status)
 			*status = 258;
 			return (0);
 		}
-		d_p = (*data)->params;
-		while (d_p)
-		{
-			list = d_p->args;
-			while (list)
-			{
-				printf("%s\n", list->content);
-				list = list->next;
-			}
-			d_p = d_p->next;
-		}
+//		d_p = (*data)->params;
+//		while (d_p)
+//		{
+//			list = d_p->args;
+//			while (list)
+//			{
+//				printf("%s\n", list->content);
+//				list = list->next;
+//			}
+//			d_p = d_p->next;
+//		}
 		builtins((*data)->params, &(*data)->env, status);
 		params_free(&(*data)->params, del_params_content);
 	}
@@ -68,6 +89,8 @@ int				main(int argc, char **argv, char **envp)
 	if (!(data = malloc(sizeof(t_d))))
 		exit(errno);
 	init_data(data);
+	data->argc = argc;
+	data->argv = copy_array(argv);
 	data->env = copy_envp_to_struct(envp);
 	while (TRUE)
 	{
@@ -79,5 +102,4 @@ int				main(int argc, char **argv, char **envp)
 		free(data->line);
 	}
 	return (status);
-	//     echo -n '<   "qwerty"   >'     4qwerty4     '<   qwerty   >''<   "qwerty"   >'    4qwerty4    '<   qwerty   >' >> file.txt | grep -lE "main"
 }

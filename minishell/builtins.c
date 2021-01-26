@@ -18,11 +18,17 @@ void		builtins(t_params *params, t_env **env, int *status)
 
 	str = NULL;
 	if (!ft_strncmp(params->args->content, "echo", ft_strlen(params->args->content)))
-		*status = ft_echo(params->args->next);
+		*status = ft_echo(params->args->next, params->out);
 
-	if (!ft_strncmp(params->args->content, "pwd", ft_strlen(params->args->content)))
+	else if (!ft_strncmp(params->args->content, "pwd", ft_strlen(params->args->content)))
+	{
 		*status = ft_pwd(&str);
-
+		if (str)
+		{
+			ft_printf("%s\n", str);
+			free(str);
+		}
+	}
 	else if (!ft_strncmp(params->args->content, "cd", ft_strlen(params->args->content)))
 		*status = ft_cd(params->args->next, env);
 

@@ -17,13 +17,13 @@ char 		*token_without_quotes(char **line, t_env *env, int *spec_char, int *statu
 	char 	*curr;
 
 	curr = NULL;
-	if (*(*line) == '$' && !*spec_char)
+	if (*(*line) == '$' && !(*spec_char))
 		curr = expand_env_arg(line, env, status);
 	else
 	{
 		if (!(curr = ft_calloc(2, sizeof(char))))
 			return (NULL);
-		if (*(*line) == '\\' && !*spec_char)
+		if (*(*line) == '\\' && !(*spec_char))
 			(*line)++;
 		curr[0] = *(*line)++;
 	}

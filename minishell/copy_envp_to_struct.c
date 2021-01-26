@@ -27,6 +27,7 @@ t_env		*copy_envp_to_struct(char **envp)
 		tmp = ft_strchr(envp[i], '=');
 		init_name_value(envp[i], tmp, &curr->name, &curr->value);
 	}
-	curr->next = ft_lstnew_env(ft_strdup("OLDPWD"), NULL);
+	if (!find_data_in_env(env, "OLDPWD", 0))
+		curr->next = ft_lstnew_env(ft_strdup("OLDPWD"), ft_strdup(""));
 	return (env);
 }

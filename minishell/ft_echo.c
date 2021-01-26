@@ -12,24 +12,24 @@
 
 #include "../minishell.h"
 
-int			ft_echo(t_list *args)
+int			ft_echo(t_list *args, int fd)
 {
 	int 	flag;
 
 	flag = 0;
-	while (!ft_strncmp(args->content, "-n", ft_strlen(args->content)))
+	while (args && !ft_strncmp(args->content, "-n", 2))
 	{
 		flag = 1;
 		args = args->next;
 	}
 	while (args)
 	{
-		write(1, args->content, ft_strlen(args->content));
+		write(fd, args->content, ft_strlen(args->content));
 		if (args->next)
-			write(1, " ", 1);
+			write(fd, " ", 1);
 		args = args->next;
 	}
 	if (!flag)
-		write(1, "\n", 1);
+		write(fd, "\n", 1);
 	return (0);
 }

@@ -12,41 +12,6 @@
 
 #include "../minishell.h"
 
-int 		change_pwd(t_env **env, char *str)
-{
-	t_env	*new;
-	t_env	*pwd;
-	t_env	*oldpwd;
-	char 	*tmp;
-
-	oldpwd = NULL;
-	pwd = NULL;
-	new = (*env);
-	while (new)
-	{
-		if (!ft_strncmp(new->name, "PWD", ft_strlen(new->name)))
-			pwd = new;
-		else if (!ft_strncmp(new->name, "OLDPWD", ft_strlen(new->name)))
-			oldpwd = new;
-		new = new->next;
-	}
-	if (oldpwd && !oldpwd->value)
-	{
-		oldpwd->value = ft_strdup(pwd->value);
-//	else if (oldpwd)
-	}
-	else
-	{
-		tmp = oldpwd->value;
-		oldpwd->value = pwd->value;
-		pwd->value = tmp;
-	}
-	tmp = pwd->value;
-	pwd->value = ft_strdup(str);
-	free(tmp);
-	return (1);
-}
-
 void 		ft_lstadd_back_env(t_env **env, t_env *new)
 {
 	t_env	*current;
@@ -67,14 +32,73 @@ void 		ft_lstadd_back_env(t_env **env, t_env *new)
 	}
 }
 
-int			ft_cd(t_list *args, t_env **env)
+void		change_pwd(t_env **env, char *str)
+{
+	t_env	*new;
+	t_env	*pwd;
+	t_env	*oldpwd;
+	char 	*tmp;
+
+	oldpwd = NULL;
+	pwd = NULL;
+	new = (*env);
+	while (new)
+	{
+		if (!ft_strncmp(new->name, "PWD", ft_strlen(new->name)))
+			pwd = new;
+		else if (!ft_strncmp(new->name, "OLDPWD", ft_strlen(new->name)))
+			oldpwd = new;
+		new = new->next;
+	}
+	if (!pwd)
+	{
+		new = ft_lstnew_env(ft_strdup("PWD"), ft_strdup(""));
+		if (!new->name || !new->value)
+			exit(errno);
+		ft_lstadd_back_env(env, new);
+	}
+	if (!oldpwd)
+	{
+		new = ft_lstnew_env(ft_strdup("OLDPWD"), ft_strdup(""));
+		if (!new->name || !new->value)
+			exit(errno);
+		ft_lstadd_back_env(env, new);
+	}
+	if (pwd && oldpwd)
+	{
+		tmp = oldpwd->value;
+		oldpwd->value = pwd->value;
+		pwd->value = tmp;
+	}
+	if (pwd)
+	{
+		tmp = pwd->value;
+		if (!(pwd->value = ft_strdup(str)))
+			exit(errno);
+		free(tmp);
+	}
+}
+
+char 		*cd_minus(t_env **env)
+{
+	char 	*str;
+	char 	*res;
+
+	str = find_data_in_env(*env, "OLDPWD", 0);
+	if (!str)
+	{
+		ft_printf("-minishell: cd: OLDPWD not set\n");
+		return (NULL);
+	}
+	res = ft_substr(str, 0, ft_strrchr(str, '\0') - str);
+	return (res);
+}
+
+char 		*arg_for_cd(t_list *args, t_env **env)
 {
 	char 	*res;
 	char	*str;
-	t_env	*new;
 
-	str = NULL;
-	res = NULL;
 	if (!args || *(char*)args->content == '\0')
 	{
 		str = find_data_in_env(*env, "HOME", 0);
@@ -87,19 +111,25 @@ int			ft_cd(t_list *args, t_env **env)
 	}
 	else if (!ft_strncmp(args->content, "-", ft_strlen(args->content)))
 	{
-		str = find_data_in_env(*env, "OLDPWD", 0);
-		if (!str)
-		{
-			ft_printf("-minishell: cd: OLDPWD not set\n");
-			return (1);
-		}
-		res = ft_substr(str, 0, ft_strrchr(str, '\0') - str);
+		if (!(res = cd_minus(env)))
+			return (NULL);
 	}
 	else
 		res = ft_strdup(args->content);
+	if (!res)
+		exit(errno);
+	return (res);
+}
+
+int			ft_cd(t_list *args, t_env **env)
+{
+	char 	*res;
+
+	if (!(res = arg_for_cd(args, env)))
+		return (1);
 	if ((chdir(res) < 0))
 	{
-		ft_printf("cd: %s: %s\n", res, strerror(errno));
+		ft_printf("-minishell: cd: %s: %s\n", res, strerror(errno));
 		free(res);
 		return (1);
 	}
@@ -109,22 +139,3 @@ int			ft_cd(t_list *args, t_env **env)
 	free(res);
 	return (0);
 }
-
-//int 		main(int argc, char **argv, char **envp)
-//{
-//	t_env	*env;
-//	t_list	*lst;
-//	int 	status;
-//
-//	status = 0;
-//	if (!(env = copy_envp_to_struct(envp)))
-//		return (-1);
-//	lst = ft_lstnew(ft_strdup(".."));
-//	ft_cd(lst, &env, &status);
-//	while (env)
-//	{
-//		printf("%s=%s\n", env->name, env->value);
-//		env = env->next;
-//	}
-//	return (0);
-//}
