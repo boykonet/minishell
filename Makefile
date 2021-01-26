@@ -1,51 +1,53 @@
 NAME = minishell
 
-MINISRCS = 	        minishell/expand_env_arg.c \
-                    minishell/open_fd.c \
-                    minishell/builtins.c \
-                    minishell/copy_envp_to_struct.c \
-                    minishell/del_content.c \
-                    minishell/find_data_in_env.c \
-                    minishell/free_params_in_struct.c \
-                    minishell/ft_cd.c \
-                    minishell/ft_exit.c \
-                    minishell/ft_echo.c \
-                    minishell/create_new_elements.c \
-                    minishell/ft_pwd.c \
-                    minishell/init.c \
-                    minishell/open_and_close_fd.c \
-                    minishell/parser.c \
-                    minishell/redirects.c \
-                    minishell/del_content.c \
-                    minishell/getcharacter.c \
-                    minishell/ft_cd.c \
-                    minishell/ft_lstadd_back_env.c \
-                    minishell/pipes.c \
-                    minishell/find_path.c \
-                    minishell/convert_from_to.c \
-                    minishell/number_of_lines.c \
-                    minishell/handling_tokens_with_quotes.c \
-                    minishell/return_token.c \
-                    minishell/append_to_array.c
+MINISRCS = 	        srcs/expand_env_arg.c \
+                    srcs/open_fd.c \
+                    srcs/builtins.c \
+                    srcs/copy_envp_to_struct.c \
+                    srcs/del_content.c \
+                    srcs/find_data_in_env.c \
+                    srcs/free_params_in_struct.c \
+                    srcs/ft_cd.c \
+                    srcs/ft_exit.c \
+                    srcs/ft_echo.c \
+                    srcs/create_new_elements.c \
+                    srcs/ft_pwd.c \
+                    srcs/init.c \
+                    srcs/open_and_close_fd.c \
+                    srcs/parser.c \
+                    srcs/redirects.c \
+                    srcs/del_content.c \
+                    srcs/getcharacter.c \
+                    srcs/ft_cd.c \
+                    srcs/ft_lstadd_back_env.c \
+                    srcs/pipes.c \
+                    srcs/find_path.c \
+                    srcs/convert_from_to.c \
+                    srcs/number_of_lines.c \
+                    srcs/handling_tokens_with_quotes.c \
+                    srcs/return_token.c \
+                    srcs/append_to_array.c \
+                    srcs/functions.c \
+                    srcs/check_redir.c
 
 CFLAGS = -Wall -Wextra -Werror
 
-SRCS =  ./minishell/main.c $(MINISRCS)
+SRCS =  ./srcs/main.c $(MINISRCS)
 
 MINIOBJS = $(MINISRCS:%.c=%.o)
 
 OBJS = $(SRCS:%.c=%.o)
 
 INCLUDES = ./minishell.h \
-		   ./libft/libft.h
+		   ./libft/libft.h \
 		   ./printf/libftprintf.h
 
 CC = gcc
 
 all: $(NAME)
 
-$(NAME): $(OBJS) libft.a libftprintf.a $(INCLUDES)
-	$(CC) $(CFLAGS) -L. -lft -lftprintf -o $@ ./minishell/main.c
+$(NAME): $(OBJS) libft.a libftprintf.a libminishell.a $(INCLUDES)
+	$(CC) $(CFLAGS) -L. -lft -lftprintf -lminishell -o $@ ./srcs/main.c
 
 libft.a:
 	$(MAKE) bonus -C ./libft CC=$(CC)
@@ -54,6 +56,10 @@ libft.a:
 libftprintf.a:
 	$(MAKE) all -C ./printf CC=$(CC)
 	mv ./printf/libftprintf.a .
+
+libminishell.a: $(MINIOBJS)
+	ar rcs $@ $^
+	ranlib $@
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
@@ -64,7 +70,7 @@ clean:
 	rm -rf $(OBJS)
 
 fclean: clean
-	rm -rf $(NAME) libft.a libftprintf.a
+	rm -rf $(NAME) libft.a libftprintf.a libminishell.a
 
 re:
 	$(MAKE) fclean

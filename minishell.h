@@ -50,6 +50,7 @@ typedef struct		s_d
 	t_env			*env;
 	char 			**argv;
 	char 			*line;
+	int				orig_fd[2];
 	int 			argc;
 }					t_d;
 
@@ -65,14 +66,14 @@ int                 builtins(t_params *params, t_env **env, int *status);
 char				*find_data_in_env(t_env *env, char *needle, int serial_num);
 void				write_str(char *str, int fd, int flag);
 t_env				*copy_envp_to_struct(char **envp);
+char 				**copy_array(char **src);
+
 int					open_fd(char *in, char *redir);
 int 				parser(char **line, t_params **params, t_env *env, int *status);
 int 				number_of_redirect(char *redir);
 int					getcharacter(int fd, char **line);
-//int 				error_handling(char *error, int status);
 int 				check_redir(char **line);
 char				*remove_spaces(char *line);
-//int					reopen_fd(char **line, t_env *env, int *fd, int *status);
 int					redirect_and_name_fd(char **line, t_env *env, int *fd, int *status);
 void 				ft_lstadd_back_env(t_env **env, t_env *new);
 char 				*return_token(char **line, t_env *env, int *status);
