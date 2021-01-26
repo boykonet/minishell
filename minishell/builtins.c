@@ -12,7 +12,7 @@
 
 #include "../minishell.h"
 
-void		builtins(t_params *params, t_env **env, int *status)
+int         builtins(t_params *params, t_env **env, int *status)
 {
 	char	*str;
 
@@ -41,6 +41,10 @@ void		builtins(t_params *params, t_env **env, int *status)
 	/* else if (!ft_strncmp(str->command, "env", 3)) */
 	/* 	ft_env(); */
 
-	/* else if (!ft_strncmp(str->command, "exit", 4)) */
-	/* 	ft_exit(); */
+	else if (!ft_strncmp(params->args->content, "exit", ft_strlen(params->args->content)))
+	{
+		if (!ft_exit())
+			return (0);
+	}
+	return (1);
 }

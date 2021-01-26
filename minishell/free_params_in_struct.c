@@ -64,4 +64,5 @@ void 			free_data(t_d *data)
 		params_free(&data->params, del_params_content);
 	if (data->env)
 		env_free(&data->env, del_env_content);
+	free(data);
 }

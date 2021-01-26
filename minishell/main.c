@@ -46,22 +46,22 @@ char 			**copy_array(char **src)
 int				bla(t_d **data, int *status)
 {
 	char 		*curr_symb;
-	t_params	*d_p;
-	t_list		*list;
+//	t_params	*d_p;
+//	t_list		*list;
 
 	curr_symb = (*data)->line;
 	while (*curr_symb)
 	{
 		(*data)->params = NULL;
 		if (!parser(&curr_symb, &(*data)->params, (*data)->env, status))
-			return (0);
+			return (1);
 		if (*curr_symb == ';' && *(curr_symb + 1) != *curr_symb)
 			curr_symb++;
 		else if (*curr_symb == ';' && *(curr_symb + 1) == *curr_symb)
 		{
 			ft_printf("-minishell: syntax error near unexpected token `%s'\n", ";;");
 			*status = 258;
-			return (0);
+			return (1);
 		}
 //		d_p = (*data)->params;
 //		while (d_p)
@@ -74,16 +74,21 @@ int				bla(t_d **data, int *status)
 //			}
 //			d_p = d_p->next;
 //		}
-		builtins((*data)->params, &(*data)->env, status);
+		if (!builtins((*data)->params, &(*data)->env, status))
+		{
+			free_data(*data);
+			return (0);
+		}
 		params_free(&(*data)->params, del_params_content);
 	}
-	return (1);
+	return (2);
 }
 
 int				main(int argc, char **argv, char **envp)
 {
 	t_d 		*data;
 	static int	status;
+	int         a;
 
 	status = 0;
 	if (!(data = malloc(sizeof(t_d))))
@@ -96,10 +101,12 @@ int				main(int argc, char **argv, char **envp)
 	{
 		write(1, "minishell$ ", ft_strlen("minishell$ "));
 		if ((getcharacter(0, &data->line)) < 0)
-			return (-1);
-		if (!bla(&data, &status))
+			return (errno);
+		a = bla(&data, &status);
+		if (!a)
+			return (status);
+		else if (a == 1)
 			continue ;
 		free(data->line);
 	}
-	return (status);
 }

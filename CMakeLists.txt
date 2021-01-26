@@ -19,6 +19,7 @@ add_executable(minishell
         minishell/find_data_in_env.c
         minishell/free_params_in_struct.c
         minishell/ft_cd.c
+        minishell/ft_exit.c
         minishell/ft_echo.c
         minishell/create_new_elements.c
         minishell/ft_pwd.c
@@ -31,8 +32,8 @@ add_executable(minishell
 #        minishell/write_str.c
         minishell/del_content.c
         minishell/getcharacter.c
-        minishell/error_handling.c
         minishell/ft_cd.c
+        minishell/ft_lstadd_back_env.c
 
         minishell/handling_tokens_with_quotes.c
         minishell/return_token.c

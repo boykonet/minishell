@@ -53,8 +53,9 @@ typedef struct		s_d
 int					ft_cd(t_list *args, t_env **env);
 int					ft_pwd(char **pwd);
 int					ft_echo(t_list *args, int fd);
+int                 ft_exit(void);
 
-void				builtins(t_params *params, t_env **env, int *status);
+int                 builtins(t_params *params, t_env **env, int *status);
 char				*find_data_in_env(t_env *env, char *needle, int serial_num);
 void				write_str(char *str, int fd, int flag);
 t_env				*copy_envp_to_struct(char **envp);
