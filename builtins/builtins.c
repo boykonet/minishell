@@ -10,7 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "builtins.h"
+#include "minishell.h"
 
 int         builtins(t_params *params, t_env **env, int *status)
 {

@@ -1,4 +1,4 @@
-#include "../minishell.h"
+#include "other.h"
 
 void			init_name_value(char *str, char *separator, char **name, char **value)
 {

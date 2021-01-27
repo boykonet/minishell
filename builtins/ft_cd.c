@@ -10,7 +10,10 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "builtins.h"
+#include "other.h"
+#include "parser.h"
+#include "minishell.h"
 
 void		change_pwd(t_env **env, char *str)
 {

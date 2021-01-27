@@ -10,7 +10,10 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../headers/parser.h"
+#include "builtins.h"
+#include "other.h"
+#include "parser.h"
+#include "minishell.h"
 
 void			write_token_to_list(char **line, t_list **list, \
 									t_env *env, int *status)

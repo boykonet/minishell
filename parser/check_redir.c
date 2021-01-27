@@ -1,4 +1,7 @@
-#include "../minishell.h"
+#include "builtins.h"
+#include "other.h"
+#include "parser.h"
+#include "minishell.h"
 
 int 		check_redir(char **line)
 {

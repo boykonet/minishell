@@ -1,34 +1,31 @@
 NAME = minishell
 
-MINISRCS = 	        srcs/expand_env_arg.c \
-                    srcs/builtins.c \
-                    srcs/copy_envp_to_struct.c \
-                    srcs/del_content.c \
-                    srcs/find_data_in_env.c \
-                    srcs/free_params_in_struct.c \
-                    srcs/ft_cd.c \
-                    srcs/ft_exit.c \
-                    srcs/ft_echo.c \
-                    srcs/create_new_elements.c \
-                    srcs/ft_pwd.c \
-                    srcs/init.c \
-                    srcs/redirects.c \
-                    srcs/del_content.c \
-                    srcs/getcharacter.c \
-                    srcs/ft_cd.c \
-                    srcs/ft_lstadd_back_env.c \
-                    srcs/pipes.c \
-                    srcs/find_path.c \
-                    srcs/convert_from_to.c \
-                    srcs/number_of_lines.c \
-                    srcs/handling_tokens_with_quotes.c \
-                    srcs/return_token.c \
-                    srcs/append_to_array.c \
-                    srcs/functions.c \
-                    srcs/check_redir.c \
-                    parser/parser.c \
-                    parser/open_and_close_fd.c \
-                    parser/open_fd.c
+MINISRCS =	builtins/builtins.c \
+			builtins/find_path.c \
+			builtins/ft_cd.c \
+            builtins/ft_echo.c \
+            builtins/ft_exit.c \
+            builtins/ft_pwd.c \
+            builtins/pipes.c \
+            other/convert_from_to.c \
+			other/copy_envp_to_struct.c \
+			other/create_new_elements.c \
+			other/del_content.c \
+			other/find_data_in_env.c \
+            other/free_params_in_struct.c \
+            other/ft_lstadd_back_env.c \
+			other/functions.c \
+			other/getcharacter.c \
+			other/init.c \
+			parser/append_to_array.c \
+            parser/check_redir.c \
+            parser/expand_env_arg.c \
+            parser/handling_tokens_with_quotes.c \
+            parser/open_and_close_fd.c \
+            parser/open_fd.c \
+            parser/parser.c \
+			parser/number_of_redirect.c \
+			parser/return_token.c
 
 CFLAGS = -Wall -Wextra -Werror
 
@@ -38,40 +35,45 @@ MINIOBJS = $(MINISRCS:%.c=%.o)
 
 OBJS = $(SRCS:%.c=%.o)
 
-INCLUDES = ./minishell.h \
-		   ./libft/libft.h \
-		   ./printf/libftprintf.h
+HEADERS =	./headers/minishell.h \
+			./headers/builtins.h \
+			./headers/other.h \
+			./headers/parser.h \
+			./libs/libft/libft.h \
+			./libs/printf/libftprintf.h
+
+INCLUDEDIR = ./headers
 
 CC = gcc
 
 all: $(NAME)
 
-$(NAME): $(OBJS) libft.a libftprintf.a libminishell.a $(INCLUDES)
-	$(CC) $(CFLAGS) -L. -lft -lftprintf -lminishell -o $@ ./other/main.c
+$(NAME): $(OBJS) libft.a libftprintf.a libminishell.a $(HEADERS)
+	$(CC) $(CFLAGS) -L. -lft -lftprintf -lminishell -I $(INCLUDEDIR) -g -o $@ ./other/main.c
 
 libft.a:
-	$(MAKE) bonus -C ./libft CC=$(CC)
-	mv ./libft/libft.a .
+	$(MAKE) bonus -C ./libs/libft CC=$(CC)
+	mv ./libs/libft/libft.a .
 
 libftprintf.a:
-	$(MAKE) all -C ./printf CC=$(CC)
-	mv ./printf/libftprintf.a .
+	$(MAKE) all -C ./libs/printf CC=$(CC)
+	mv ./libs/printf/libftprintf.a .
 
 libminishell.a: $(MINIOBJS)
 	ar rcs $@ $^
 	ranlib $@
 
 %.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -I $(INCLUDEDIR) -g -c $< -o $@
 
 clean:
-	$(MAKE) clean -C ./libft
-	$(MAKE) clean -C ./printf
+	$(MAKE) clean -C ./libs/libft
+	$(MAKE) clean -C ./libs/printf
 	rm -rf $(OBJS)
 
 fclean:
-	$(MAKE) fclean -C ./printf
-	$(MAKE) fclean -C ./libft
+	$(MAKE) fclean -C ./libs/printf
+	$(MAKE) fclean -C ./libs/libft
 	rm -rf $(OBJS)
 	rm -rf $(NAME) libft.a libftprintf.a libminishell.a
 

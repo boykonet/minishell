@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "other.h"
 
 t_list		*convert_array_to_struct(char **array)
 {

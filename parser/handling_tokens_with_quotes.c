@@ -10,7 +10,10 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "builtins.h"
+#include "other.h"
+#include "parser.h"
+#include "minishell.h"
 
 char		*tokens_with_single_quotes(char **line)
 {

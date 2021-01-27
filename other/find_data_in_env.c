@@ -2,7 +2,7 @@
 
 /* 0 return value have name in needle, 1 return name have value in needle*/
 
-#include "../minishell.h"
+#include "other.h"
 
 char		*find_data_in_env(t_env *env, char *needle, int serial_num)
 {

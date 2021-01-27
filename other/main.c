@@ -10,7 +10,10 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "minishell.h"
+#include "parser.h"
+#include "builtins.h"
+#include "other.h"
 
 int				bla(t_d **data, int *status)
 {

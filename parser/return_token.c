@@ -10,7 +10,10 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "builtins.h"
+#include "other.h"
+#include "parser.h"
+#include "minishell.h"
 
 char 		*token_without_quotes(char **line, t_env *env, int *spec_char, int *status)
 {

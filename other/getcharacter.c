@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "other.h"
 
 int				getcharacter(int fd, char **line)
 {

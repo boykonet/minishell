@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "other.h"
 
 void 			env_free(t_env **env, void (*del)(t_env *))
 {
