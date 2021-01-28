@@ -10,17 +10,13 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "builtins.h"
-#include "other.h"
-#include "parser.h"
 #include "minishell.h"
 
-int				create_process(char *cmd)
+int				create_process(char **args, char *cmd)
 {
 	pid_t 			pid;
 	int 			status_code;
 	int 			wstatus;
-	char *const		parm_list[] = {"", NULL};
 
 	wstatus = 0;
 	status_code = 1;
@@ -31,7 +27,7 @@ int				create_process(char *cmd)
 	}
 	if (pid == 0)
 	{
-		execve(cmd, parm_list, NULL);
+		execve(cmd, args, NULL);
 		exit(EXIT_FAILURE);
 	}
 	else
@@ -51,20 +47,17 @@ char				*find_path(char *old_cmd, char *path)
 	DIR				*name;
 	struct dirent	*entry;
 	int				i;
-	int				j;
 	int				flag;
 
+	i = 0;
 	flag = 1;
-	j = 0;
 	dirs = NULL;
 	if (path)
 		dirs = ft_split(path, ':');
-	i = number_of_lines(dirs);
-	while (j < i)
+	while (path && dirs[i])
 	{
 		cmd = NULL;
-		name = NULL;
-		if (!(name = opendir(dirs[j])))
+		if (!(name = opendir(dirs[i])))
 			return (NULL);
 // The readdir() function returns a pointer
 // to a dirent structure, or NULL if an error occurs or end of the directory stream is reached. 
@@ -74,20 +67,22 @@ char				*find_path(char *old_cmd, char *path)
 // d_name - Это поле содержит имя файла с завершающим null.
 			if (!ft_strncmp(entry->d_name, old_cmd, ft_strlen(entry->d_name)))
 			{				
-				if (!(tmp = ft_strjoin(dirs[j], "/")))
+				if (!(tmp = ft_strjoin(dirs[i], "/")))
 					exit(errno);
 				if (!(cmd = ft_strjoin(tmp, old_cmd)))
 					exit(errno);
 				free(tmp);
-				if (!(flag = create_process(cmd)))
-					break ;
-				free(cmd);
+//				if (!(flag = create_process(cmd)))
+//					break ;
+//				free(cmd);
+				flag = 0;
+				break ;
 			}
 		}
 		closedir(name);
 		if (!flag)
 			return (cmd);
-		j++;
+		i++;
 	}
 	return (NULL);
 }

@@ -14,6 +14,7 @@ MINISRCS =	builtins/builtins.c \
 			other/find_data_in_env.c \
             other/free_params_in_struct.c \
             other/ft_lstadd_back_env.c \
+            other/ft_lstsize_env.c \
 			other/functions.c \
 			other/getcharacter.c \
 			other/init.c \

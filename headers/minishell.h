@@ -47,6 +47,8 @@ typedef struct		s_d
 	t_env			*env;
 	char 			**argv;
 	char 			*line;
+	char 			*folder;
+	char 			*user_name;
 	int 			argc;
 }					t_d;
 

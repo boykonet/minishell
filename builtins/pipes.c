@@ -1,6 +1,5 @@
 #include "builtins.h"
 #include "other.h"
-#include "parser.h"
 #include "minishell.h"
 
 int 	check_command(char *cmd)
@@ -25,13 +24,15 @@ int		pipes(t_params *params, t_env **env, int *status)
 	pid_t	childpid;
 	char    **args;
 	char 	**envp;
+	char	buff[4096];
 	int     a;
+	int 	len;
 	char    *cmd;
 
 	a = 0;
 	origfd[0] = dup(STDIN_FILENO);
 	origfd[1] = dup(STDOUT_FILENO);
-	envp = convert_struct_to_array(*env);
+	envp = convert_env_to_arr(*env);
 	while (params)
 	{
 		if (pipe(pipefd) == -1)
@@ -49,9 +50,8 @@ int		pipes(t_params *params, t_env **env, int *status)
 			dup2(pipefd[1], 1);
 			close(pipefd[0]);
 			close(pipefd[1]);
-			/*если пайп последний то можно попробовать сделать dup2(origfd[1], 1)*/
-			args = convert_struct_to_array(params->args);
 			cmd = find_path(params->args->content, find_data_in_env(*env, "PATH", 0));
+			args = convert_struct_to_array(params->args);
 			if (!check_command(params->args->content))
 				builtins(params, env, status);
 			else
@@ -70,6 +70,11 @@ int		pipes(t_params *params, t_env **env, int *status)
 		}
 		params = params->next;
 	}
+	len = read(0, buff, 4095);
+	buff[len] = '\0';
 	dup2(origfd[0], 0);
+	dup2(origfd[1], 1);
+//	ft_printf("\e[1;32m%s\e[0m", buff);
+	write(1, buff, ft_strlen(buff));
 	return (0);
 }

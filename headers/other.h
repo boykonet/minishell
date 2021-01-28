@@ -6,10 +6,12 @@
 
 t_list		        *convert_array_to_struct(char **array);
 char	        	**convert_struct_to_array(t_list *lst);
+char				**convert_env_to_arr(t_env *env);
 t_env				*copy_envp_to_struct(char **envp);
 
 t_params 			*new_params_element(void);
 t_env				*ft_lstnew_env(void *name, void *value);
+int					ft_lstsize_env(t_env *lst);
 
 void				del_list_content(void *content);
 void				del_params_content(t_params *params);

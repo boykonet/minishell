@@ -58,6 +58,10 @@ void 			free_data(t_d *data)
 {
 	if (data->line)
 		free(data->line);
+	if (data->folder)
+		free(data->folder);
+	if (data->user_name)
+		free(data->user_name);
 	if (data->argv)
 		free_string(data->argv);
 	if (data->params)

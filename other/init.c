@@ -27,5 +27,7 @@ void		init_data(t_d *data)
 	data->argv = NULL;
 	data->env = NULL;
 	data->line = NULL;
+	data->folder = NULL;
+	data->user_name = NULL;
 	data->params = NULL;
 }

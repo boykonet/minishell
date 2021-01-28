@@ -15,6 +15,34 @@
 #include "builtins.h"
 #include "other.h"
 
+void 			prompt_line(t_env *env, char **user_name, char **folder)
+{
+	char 		*line;
+
+	if ((line = find_data_in_env(env, "USER", 0)))
+	{
+		if (*user_name)
+			free(*user_name);
+		*user_name = ft_strdup(line);
+	}
+	if ((line = find_data_in_env(env, "PWD", 0)))
+	{
+		if (*folder)
+			free(*folder);
+		if ((ft_strncmp(find_data_in_env(env, "HOME", 0), line, ft_strlen(line))))
+			*folder = ft_strdup(ft_strrchr(line, '/'));
+		else
+			*folder = ft_strdup(line);
+	}
+	if (ft_strlen(*folder) == 1)
+		ft_printf("\e[1;36m%s\e[0m ", *folder);
+	else if (!(ft_strncmp(find_data_in_env(env, "HOME", 0), *folder, ft_strlen(*folder))))
+		ft_printf("\e[1;36m~\e[0m ");
+	else
+		ft_printf("\e[1;36m%s\e[0m ", *folder + 1);
+	ft_printf("\e[1;36m%s\e[0m$ ", *user_name);
+}
+
 int				bla(t_d **data, int *status)
 {
 	char 		*curr_symb;
@@ -48,10 +76,13 @@ int				bla(t_d **data, int *status)
 //		}
 		if ((*data)->params->next)
 			pipes((*data)->params, &(*data)->env, status);
-		if (!builtins((*data)->params, &(*data)->env, status))
+		else
 		{
-			free_data(*data);
-			return (0);
+			if (!builtins((*data)->params, &(*data)->env, status))
+			{
+				free_data(*data);
+				return (0);
+			}
 		}
 		params_free(&(*data)->params, del_params_content);
 	}
@@ -73,7 +104,7 @@ int				main(int argc, char **argv, char **envp)
 	data->env = copy_envp_to_struct(envp);
 	while (TRUE)
 	{
-		write(1, "minishell$ ", ft_strlen("minishell$ "));
+		prompt_line(data->env, &data->user_name, &data->folder);
 		if ((getcharacter(0, &data->line)) < 0)
 			return (errno);
 		a = bla(&data, &status);
