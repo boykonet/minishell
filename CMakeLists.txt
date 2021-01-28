@@ -5,7 +5,7 @@ set(CMAKE_C_STANDARD 11)
 
 include_directories(.)
 include_directories(gnl)
-set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -L. -lft -lftprintf")
+set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -I ../headers -L. -lft -lftprintf")
 
 add_executable(srcs
 #        gnl/get_next_line.c
@@ -28,6 +28,7 @@ add_executable(srcs
 		other/functions.c
 		other/getcharacter.c
 		other/init.c
+		other/main.c
 		parser/append_to_array.c
 		parser/check_redir.c
 		parser/expand_env_arg.c
@@ -38,4 +39,5 @@ add_executable(srcs
 		parser/number_of_redirect.c
 		parser/return_token.c
         headers/minishell.h
+
         )

@@ -1,6 +1,7 @@
 
 
 #include "other.h"
+#include "minishell.h"
 
 void		del_list_content(void *content)
 {

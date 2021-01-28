@@ -24,13 +24,14 @@ int		pipes(t_params *params, t_env **env, int *status)
 	int		origfd[2];
 	pid_t	childpid;
 	char    **args;
-//	char    buff[4096];
+	char 	**envp;
 	int     a;
 	char    *cmd;
 
 	a = 0;
 	origfd[0] = dup(STDIN_FILENO);
 	origfd[1] = dup(STDOUT_FILENO);
+	envp = convert_struct_to_array(*env);
 	while (params)
 	{
 		if (pipe(pipefd) == -1)
@@ -54,9 +55,10 @@ int		pipes(t_params *params, t_env **env, int *status)
 			if (!check_command(params->args->content))
 				builtins(params, env, status);
 			else
-				a = execve(cmd, args, NULL);
+				a = execve(cmd, args, envp);
 			free(cmd);
 			free_string(args);
+			free_string(envp);
 			exit(0);
 		}
 		else

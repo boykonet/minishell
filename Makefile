@@ -49,7 +49,7 @@ CC = gcc
 all: $(NAME)
 
 $(NAME): $(OBJS) libft.a libftprintf.a libminishell.a $(HEADERS)
-	$(CC) $(CFLAGS) -L. -lft -lftprintf -lminishell -I $(INCLUDEDIR) -g -o $@ ./other/main.c
+	$(CC) $(CFLAGS) -L. -I $(INCLUDEDIR) -g -o $@ ./other/main.c -lminishell -lftprintf -lft
 
 libft.a:
 	$(MAKE) bonus -C ./libs/libft CC=$(CC)
