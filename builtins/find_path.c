@@ -12,33 +12,6 @@
 
 #include "minishell.h"
 
-int				create_process(char **args, char *cmd)
-{
-	pid_t 			pid;
-	int 			status_code;
-	int 			wstatus;
-
-	wstatus = 0;
-	status_code = 1;
-	if ((pid = fork()) == -1)
-	{
-		ft_printf("-minishell: fork failed\n");
-		exit(EXIT_FAILURE);
-	}
-	if (pid == 0)
-	{
-		execve(cmd, args, NULL);
-		exit(EXIT_FAILURE);
-	}
-	else
-	{
-		waitpid(pid, &wstatus, WUNTRACED);
-		if (WIFEXITED(wstatus))
-			status_code = WEXITSTATUS(wstatus);
-	}
-	return (status_code);
-}
-
 char				*find_path(char *old_cmd, char *path)
 {
 	char			*tmp;
@@ -53,7 +26,8 @@ char				*find_path(char *old_cmd, char *path)
 	flag = 1;
 	dirs = NULL;
 	if (path)
-		dirs = ft_split(path, ':');
+		if (!(dirs = ft_split(path, ':')))
+			exit(errno);
 	while (path && dirs[i])
 	{
 		cmd = NULL;
@@ -69,12 +43,10 @@ char				*find_path(char *old_cmd, char *path)
 			{				
 				if (!(tmp = ft_strjoin(dirs[i], "/")))
 					exit(errno);
-				if (!(cmd = ft_strjoin(tmp, old_cmd)))
-					exit(errno);
+				cmd = ft_strjoin(tmp, old_cmd);
 				free(tmp);
-//				if (!(flag = create_process(cmd)))
-//					break ;
-//				free(cmd);
+				if (!cmd)
+					exit(errno);
 				flag = 0;
 				break ;
 			}
@@ -86,15 +58,3 @@ char				*find_path(char *old_cmd, char *path)
 	}
 	return (NULL);
 }
-//
-//int 	main(int argc, char **argv, char **envp)
-//{
-//	t_env	*env;
-//	char 	*str;
-//
-//	env = copy_envp_to_struct(envp);
-//	str = find_path("aaa", "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/munki");
-//	printf("%s\n", str);
-//	free(str);
-//	return (0);
-//}

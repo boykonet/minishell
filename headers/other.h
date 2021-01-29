@@ -11,7 +11,9 @@ t_env				*copy_envp_to_struct(char **envp);
 
 t_params 			*new_params_element(void);
 t_env				*ft_lstnew_env(void *name, void *value);
+t_env				*new_item(t_list *item);
 int					ft_lstsize_env(t_env *lst);
+int					ft_lstsize_params(t_params *lst);
 
 void				del_list_content(void *content);
 void				del_params_content(t_params *params);
@@ -32,5 +34,11 @@ int					getcharacter(int fd, char **line);
 
 void	 			init_params(t_params **params);
 void				init_data(t_d *data);
+
+int 				check_command(char *cmd);
+int         		check_word(t_list *str);
+int					ft_strcmp(const char *s1, const char *s2);
+char				**ft_split_by_colon(char *str, char c);
+void				*ft_split_by_quation(char *str, t_env *lst, char c);
 
 #endif

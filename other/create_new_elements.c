@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "other.h"
+#include "minishell.h"
 
 t_env		*ft_lstnew_env(void *name, void *value)
 {
@@ -34,3 +35,14 @@ t_params	*new_params_element(void)
 	return (params);
 }
 
+t_env		*new_item(t_list *item)
+{
+	t_env 	*random;
+
+	random = ft_lstnew_env(NULL, NULL);
+	if (ft_strchr(item->content, '='))
+		ft_split_by_quation(item->content, random, '=');
+	else
+		random->name = ft_strdup(item->content);
+	return (random);
+}

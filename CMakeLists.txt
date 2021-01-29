@@ -18,6 +18,7 @@ add_executable(srcs
 		builtins/ft_exit.c
 		builtins/ft_pwd.c
 		builtins/pipes.c
+		builtins/create_process.c
 		other/convert_from_to.c
 		other/copy_envp_to_struct.c
 		other/create_new_elements.c
@@ -40,5 +41,12 @@ add_executable(srcs
 		parser/number_of_redirect.c
 		parser/return_token.c
         headers/minishell.h
+
+		other/check_word.c
+		builtins/ft_env.c
+		builtins/ft_export.c
+		other/ft_split_by.c
+		other/check_command.c
+		other/ft_strcmp.c
 
         )

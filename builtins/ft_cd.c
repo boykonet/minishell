@@ -62,18 +62,28 @@ void		change_pwd(t_env **env, char *str)
 	}
 }
 
-char 		*cd_minus(t_env **env)
+char 		*cd_minus(t_list *args, t_env **env)
 {
 	char 	*str;
 	char 	*res;
 
+	res = NULL;
 	str = find_data_in_env(*env, "OLDPWD", 0);
-	if (!str)
+	if (!str || *str == '\0')
 	{
 		ft_printf("-minishell: cd: OLDPWD not set\n");
 		return (NULL);
 	}
-	res = ft_substr(str, 0, ft_strrchr(str, '\0') - str);
+	else if (!ft_strncmp(args->content, "--", ft_strlen(args->content)))
+		res = ft_strdup(find_data_in_env(*env, "HOME", 0));
+	else if (*(char*)args->content == '-' && (ft_isalpha(*(char*)(args->content + 1)) || *(char*)(args->content + 1) == '-'))
+	{
+		ft_printf("-minishell: cd: %c%c: invalid option\n", *(char*)args->content, *(char*)(args->content + 1));
+		ft_printf("cd: usage: cd [-L|-P] [dir]\n");
+		return (NULL);
+	}
+	if (!res)
+		res = ft_substr(str, 0, ft_strrchr(str, '\0') - str);
 	return (res);
 }
 
@@ -92,9 +102,9 @@ char 		*arg_for_cd(t_list *args, t_env **env)
 		str = find_data_in_env(*env, "HOME", 0);
 		res = ft_strjoin(str, ((args->content) + 1));
 	}
-	else if (!ft_strncmp(args->content, "-", ft_strlen(args->content)))
+	else if (*(char*)args->content == '-')
 	{
-		if (!(res = cd_minus(env)))
+		if (!(res = cd_minus(args, env)))
 			return (NULL);
 	}
 	else
@@ -119,6 +129,8 @@ int			ft_cd(t_list *args, t_env **env)
 	free(res);
 	ft_pwd(&res);
 	change_pwd(env, res);
+	if (!ft_strncmp(args->content, "-", ft_strlen(args->content)))
+		ft_printf("%s\n", res);
 	free(res);
 	return (0);
 }

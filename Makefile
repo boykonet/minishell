@@ -1,12 +1,18 @@
 NAME = minishell
 
 MINISRCS =	builtins/builtins.c \
+			builtins/create_process.c \
 			builtins/find_path.c \
 			builtins/ft_cd.c \
             builtins/ft_echo.c \
+            builtins/ft_env.c \
             builtins/ft_exit.c \
+            builtins/ft_export.c \
             builtins/ft_pwd.c \
+            builtins/ft_unset.c \
             builtins/pipes.c \
+            other/check_command.c \
+            other/check_word.c \
             other/convert_from_to.c \
 			other/copy_envp_to_struct.c \
 			other/create_new_elements.c \
@@ -15,6 +21,8 @@ MINISRCS =	builtins/builtins.c \
             other/free_params_in_struct.c \
             other/ft_lstadd_back_env.c \
             other/ft_lstsize_env.c \
+            other/ft_split_by.c \
+            other/ft_strcmp.c \
 			other/functions.c \
 			other/getcharacter.c \
 			other/init.c \
