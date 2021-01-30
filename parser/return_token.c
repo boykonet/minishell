@@ -63,7 +63,7 @@ char 		*return_token(char **line, t_env *env, int *status)
 
 	if (!(res = ft_strdup("")))
 		exit(errno);
-	while (*(*line) && *(*line) != ' ' && *(*line) != ';')
+	while (*(*line) && *(*line) != ' ' && *(*line) != ';' && *(*line) != '|')
 	{
 		tmp = res;
 		if (!(curr = check_line(line, env, status)))
