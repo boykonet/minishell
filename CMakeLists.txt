@@ -17,6 +17,7 @@ add_executable(srcs
 		builtins/ft_echo.c
 		builtins/ft_exit.c
 		builtins/ft_pwd.c
+		builtins/ft_unset.c
 		builtins/pipes.c
 		builtins/create_process.c
 		other/convert_from_to.c

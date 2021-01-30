@@ -23,8 +23,11 @@ int				create_process(char **args, char *cmd)
 		waitpid(pid, &wstatus, WUNTRACED);
 		if (WIFEXITED(wstatus))
 			status_code = WEXITSTATUS(wstatus);
-		if (wstatus)
+		if (status_code)
+		{
 			ft_printf("-minishell: %s: command not found\n", cmd);
+			return (127);
+		}
 	}
 	return (status_code);
 }
