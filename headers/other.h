@@ -9,7 +9,7 @@ char	        	**convert_struct_to_array(t_list *lst);
 char				**convert_env_to_arr(t_env *env);
 t_env				*copy_envp_to_struct(char **envp);
 
-t_params 			*new_params_element(void);
+void				new_params_element(t_params **params);
 t_env				*ft_lstnew_env(void *name, void *value);
 t_env				*new_item(t_list *item);
 int					ft_lstsize_env(t_env *lst);

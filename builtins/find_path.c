@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include "other.h"
 
 char				*find_path(char *old_cmd, char *path)
 {
@@ -39,7 +40,7 @@ char				*find_path(char *old_cmd, char *path)
 		while ((entry = readdir(name)))
 		{
 // d_name - Это поле содержит имя файла с завершающим null.
-			if (!ft_strncmp(entry->d_name, old_cmd, ft_strlen(entry->d_name)))
+			if (!ft_strcmp(entry->d_name, old_cmd))
 			{				
 				if (!(tmp = ft_strjoin(dirs[i], "/")))
 					exit(errno);

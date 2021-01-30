@@ -13,9 +13,9 @@
 #include "other.h"
 #include "minishell.h"
 
-t_env		*ft_lstnew_env(void *name, void *value)
+t_env			*ft_lstnew_env(void *name, void *value)
 {
-	t_env	*new;
+	t_env		*new;
 
 	if (!(new = malloc(sizeof(t_env))))
 		exit(errno);
@@ -25,19 +25,19 @@ t_env		*ft_lstnew_env(void *name, void *value)
 	return (new);
 }
 
-t_params	*new_params_element(void)
+void			new_params_element(t_params **params)
 {
-	t_params	*params;
-
-	if (!(params = malloc(sizeof(t_params))))
-		exit(errno);
-	init_params(&params);
-	return (params);
+	if (!(*params))
+	{
+		if (!((*params) = malloc(sizeof(t_params))))
+			exit(errno);
+		init_params(params);
+	}
 }
 
-t_env		*new_item(t_list *item)
+t_env			*new_item(t_list *item)
 {
-	t_env 	*random;
+	t_env 		*random;
 
 	random = ft_lstnew_env(NULL, NULL);
 	if (ft_strchr(item->content, '='))

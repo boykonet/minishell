@@ -15,6 +15,6 @@ int                 ft_exit(void);
 int					pipes(t_params *params, t_env **env, int *status);
 char				*find_path(char *old_cmd, char *path);
 int					builtins(t_params *params, t_env **env, int *status);
-int					create_process(char **args, char *cmd);
+int					create_process(char **args, char **envp, char *cmd);
 
 #endif

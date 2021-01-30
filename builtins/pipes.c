@@ -138,18 +138,26 @@ int		pipes(t_params *params, t_env **env, int *status)
 			if (!check_command(params->args->content))
 				builtins(params, env, status);
 			else
-				a = execve(cmd, args, envp);
+			{
+				if (execve(cmd, args, envp) < 0)
+				{
+					ft_printf("-minishell: %s: command not found\n", cmd);
+					exit(127);
+				}
+			}
 			free(cmd);
 			free_string(args);
 			free_string(envp);
-			exit(a);
+			exit(EXIT_FAILURE);
 		}
 		else
 		{
 			dup2(pipefd[0], params->in);
 			close(pipefd[0]);
 			close(pipefd[1]);
-			wait(&a);
+			waitpid(childpid, &a, WUNTRACED);
+			if (WIFEXITED(a) > 0)
+				return (WEXITSTATUS(a));
 		}
 		params = params->next;
 	}

@@ -109,7 +109,9 @@ char 		*arg_for_cd(t_list *args, t_env **env)
 int			ft_cd(t_list *args, t_env **env)
 {
 	char 	*res;
+	char 	*pwd;
 
+	pwd = NULL;
 	if (!(res = arg_for_cd(args, env)))
 		return (1);
 	if ((chdir(res) < 0))
@@ -118,11 +120,11 @@ int			ft_cd(t_list *args, t_env **env)
 		free(res);
 		return (1);
 	}
-	free(res);
-	ft_pwd(&res);
-	change_pwd(env, res);
-	if (!ft_strncmp(args->content, "-", ft_strlen(args->content)))
+	ft_pwd(&pwd);
+	change_pwd(env, pwd);
+	if (args && !ft_strncmp(args->content, "-", ft_strlen(args->content)))
 		ft_printf("%s\n", res);
 	free(res);
+	free(pwd);
 	return (0);
 }

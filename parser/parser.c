@@ -66,7 +66,8 @@ t_params		*parsing(char **line, t_env *env, int *status)
 	t_params	*res;
 	t_list		*lst;
 
-	res = new_params_element();
+	res = NULL;
+	new_params_element(&res);
 	if (*(*line) && *(*line) != '|' && *(*line) != ';')
 	{
 		if (!(lst = first_elem_list(line, &res, env, status)))
@@ -97,6 +98,13 @@ int 			parser(char **line, t_params **params, t_env *env, int *status)
 		(*params) = parsing(line, env, status);
 		if (*status > 0 && !(*params))
 			return (0);
+//		if (*(*line) == '|' && *(*line + 1) == '|')
+//		{
+//			ft_printf("-minishell: syntax error near unexpected "
+//					  "token `%s'\n", (*res)->args->content);
+//			*status = 258;
+//			params_free(res, del_params_content);
+//		}
 		if (*(*line) == '|')
 			(*line)++;
 		curr = (*params);

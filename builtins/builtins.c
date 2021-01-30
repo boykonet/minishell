@@ -26,7 +26,8 @@ static int	seven_commands(t_params *params, t_env **env, int *status)
 		*status = ft_pwd(&str);
 		if (str)
 		{
-			ft_printf("%s\n", str);
+			write(params->out, str, ft_strlen(str));
+			write(params->out, "\n", 1);
 			free(str);
 		}
 	}
@@ -47,6 +48,7 @@ static int	seven_commands(t_params *params, t_env **env, int *status)
 int         builtins(t_params *params, t_env **env, int *status)
 {
 	char	**arr;
+	char 	**envp;
 	char	*cmd;
 
 	if (!check_command(params->args->content))
@@ -57,10 +59,12 @@ int         builtins(t_params *params, t_env **env, int *status)
 	else
 	{
 		arr = convert_struct_to_array(params->args);
+		envp = convert_env_to_arr(*env);
 		if (!(cmd = find_path(params->args->content, find_data_in_env(*env, "PATH", 0))))
 			cmd = ft_strdup(params->args->content);
-		*status = create_process(arr, cmd);
+		*status = create_process(arr, envp, cmd);
 		free_string(arr);
+		free_string(envp);
 		free(cmd);
 	}
 	return (1);

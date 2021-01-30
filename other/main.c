@@ -53,15 +53,13 @@ int				bla(t_d **data, int *status)
 	while (*curr_symb)
 	{
 		(*data)->params = NULL;
-		if (!parser(&curr_symb, &(*data)->params, (*data)->env, status))
-			return (1);
-		if (*curr_symb == ';' && *(curr_symb + 1) != *curr_symb)
+		parser(&curr_symb, &(*data)->params, (*data)->env, status);
+		if (!*status && *curr_symb == ';' && *(curr_symb + 1) != *curr_symb)
 			curr_symb++;
-		else if (*curr_symb == ';' && *(curr_symb + 1) == *curr_symb)
+		else if (!*status && *curr_symb == ';' && *(curr_symb + 1) == *curr_symb)
 		{
 			ft_printf("-minishell: syntax error near unexpected token `%s'\n", ";;");
 			*status = 258;
-			return (1);
 		}
 //		d_p = (*data)->params;
 //		while (d_p)
@@ -74,9 +72,9 @@ int				bla(t_d **data, int *status)
 //			}
 //			d_p = d_p->next;
 //		}
-		if ((*data)->params->next)
-			pipes((*data)->params, &(*data)->env, status);
-		else
+		if (!*status && (*data)->params->next)
+			*status = pipes((*data)->params, &(*data)->env, status);
+		else if (!*status)
 		{
 			if (!builtins((*data)->params, &(*data)->env, status))
 			{
@@ -85,8 +83,10 @@ int				bla(t_d **data, int *status)
 			}
 		}
 		params_free(&(*data)->params, del_params_content);
+		if (*status)
+			break ;
 	}
-	return (2);
+	return (1);
 }
 
 int				main(int argc, char **argv, char **envp)
@@ -110,8 +110,6 @@ int				main(int argc, char **argv, char **envp)
 		a = bla(&data, &status);
 		if (!a)
 			return (status);
-		else if (a == 1)
-			continue ;
 		free(data->line);
 	}
 }
