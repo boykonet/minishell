@@ -20,6 +20,7 @@ void				del_params_content(t_params *params);
 void 				del_env_content(t_env *env);
 
 char				*find_data_in_env(t_env *env, char *needle, int serial_num);
+t_env				*find_list_env(t_env *env, char *needle, int spec);
 
 void 				params_free(t_params **params, void (*del)(t_params *));
 void 				env_free(t_env **env, void (*del)(t_env *));

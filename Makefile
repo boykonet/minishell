@@ -17,7 +17,7 @@ MINISRCS =	builtins/builtins.c \
 			other/copy_envp_to_struct.c \
 			other/create_new_elements.c \
 			other/del_content.c \
-			other/find_data_in_env.c \
+			other/find_in_env.c \
             other/free_params_in_struct.c \
             other/ft_lstadd_back_env.c \
             other/ft_lstsize_env.c \

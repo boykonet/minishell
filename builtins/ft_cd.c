@@ -12,21 +12,7 @@
 
 #include "builtins.h"
 #include "other.h"
-#include "parser.h"
 #include "minishell.h"
-
-t_env		*find_list_env(t_env *env, char *needle, int spec)
-{
-	while (env)
-	{
-		if (!spec && !ft_strncmp(env->name, needle, ft_strlen(env->name)))
-			return (env);
-		else if (spec == 1 && !ft_strncmp(env->value, needle, ft_strlen(env->value)))
-			return (env);
-		env = env->next;
-	}
-	return (NULL);
-}
 
 void		change_pwd(t_env **env, char *str)
 {
@@ -80,7 +66,7 @@ char 		*cd_minus(t_list *args, t_env **env)
 		ft_printf("-minishell: cd: OLDPWD not set\n");
 		return (NULL);
 	}
-	else if (!ft_strncmp(args->content, "--", 2))
+	else if (!ft_strcmp(args->content, "--"))
 		res = ft_strdup(find_data_in_env(*env, "HOME", 0));
 	else if (*(char*)args->content == '-' && (ft_isalpha(*(char*)(args->content + 1)) || *(char*)(args->content + 1) == '-'))
 	{

@@ -25,3 +25,16 @@ char		*find_data_in_env(t_env *env, char *needle, int serial_num)
 		return (env->value);
 	return (env->name);
 }
+
+t_env		*find_list_env(t_env *env, char *needle, int spec)
+{
+	while (env)
+	{
+		if (!spec && !ft_strncmp(env->name, needle, ft_strlen(env->name)))
+			return (env);
+		else if (spec == 1 && !ft_strncmp(env->value, needle, ft_strlen(env->value)))
+			return (env);
+		env = env->next;
+	}
+	return (NULL);
+}
