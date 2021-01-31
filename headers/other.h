@@ -18,13 +18,13 @@ int					ft_lstsize_params(t_params *lst);
 void				del_list_content(void *content);
 void				del_params_content(t_params *params);
 void 				del_env_content(t_env *env);
+void 				del_data_content(t_d *data);
 
 char				*find_data_in_env(t_env *env, char *needle, int serial_num);
 t_env				*find_list_env(t_env *env, char *needle, int spec);
 
 void 				params_free(t_params **params, void (*del)(t_params *));
 void 				env_free(t_env **env, void (*del)(t_env *));
-void 				free_data(t_d *data);
 void				free_string(char **str);
 
 void 				ft_lstadd_back_env(t_env **env, t_env *new);
@@ -41,5 +41,8 @@ int         		check_word(t_list *str);
 int					ft_strcmp(const char *s1, const char *s2);
 char				**ft_split_by_colon(char *str, char c);
 void				*ft_split_by_quation(char *str, t_env *lst, char c);
+
+void				print_prompt_line(t_env *env, char **user_name, char **folder);
+char				*prompt_line(t_env *env, char **username, char **folder);
 
 #endif

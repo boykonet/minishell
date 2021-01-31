@@ -27,7 +27,7 @@ char		**ft_split_by_colon(char *str, char c)
 		str = tmp;
 		i++;
 	}
-	if (!(arr = (char**)malloc(sizeof(char*) * (i + 1))))
+	if (!(arr = ft_calloc(i + 1, sizeof(char*))))
 		exit(errno);
 	i = 0;
 	str = buf;

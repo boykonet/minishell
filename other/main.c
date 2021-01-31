@@ -15,39 +15,33 @@
 #include "builtins.h"
 #include "other.h"
 
-void 			prompt_line(t_env *env, char **user_name, char **folder)
+int 			one_command(t_d **data)
 {
-	char 		*line;
+	char 		**arr;
+	char 		**envp;
+	char 		*cmd;
+	int 		status;
 
-	if ((line = find_data_in_env(env, "USER", 0)))
-	{
-		if (*user_name)
-			free(*user_name);
-		*user_name = ft_strdup(line);
-	}
-	if ((line = find_data_in_env(env, "PWD", 0)))
-	{
-		if (*folder)
-			free(*folder);
-		if ((ft_strncmp(find_data_in_env(env, "HOME", 0), line, ft_strlen(line))))
-			*folder = ft_strdup(ft_strrchr(line, '/'));
-		else
-			*folder = ft_strdup(line);
-	}
-	if (ft_strlen(*folder) == 1)
-		ft_printf("\e[1;36m%s\e[0m ", *folder);
-	else if (!(ft_strncmp(find_data_in_env(env, "HOME", 0), *folder, ft_strlen(*folder))))
-		ft_printf("\e[1;36m~\e[0m ");
+	status = 0;
+	if (!check_command((*data)->params->args->content))
+		status = builtins((*data)->params, &(*data)->env, &status, &(*data)->exit_status);
 	else
-		ft_printf("\e[1;36m%s\e[0m ", *folder + 1);
-	ft_printf("\e[1;36m%s\e[0m$ ", *user_name);
+	{
+		arr = convert_struct_to_array((*data)->params->args);
+		envp = convert_env_to_arr((*data)->env);
+		if (!(cmd = find_path((*data)->params->args->content,find_data_in_env((*data)->env, "PATH", 0))))
+			cmd = ft_strdup((*data)->params->args->content);
+		status = create_process(arr, envp, cmd);
+		free_string(arr);
+		free_string(envp);
+		free(cmd);
+	}
+	return (status);
 }
 
 int				bla(t_d **data, int *status)
 {
 	char 		*curr_symb;
-//	t_params	*d_p;
-//	t_list		*list;
 
 	curr_symb = (*data)->line;
 	while (*curr_symb)
@@ -61,26 +55,13 @@ int				bla(t_d **data, int *status)
 			ft_printf("-minishell: syntax error near unexpected token `%s'\n", ";;");
 			*status = 258;
 		}
-//		d_p = (*data)->params;
-//		while (d_p)
-//		{
-//			list = d_p->args;
-//			while (list)
-//			{
-//				printf("%s\n", list->content);
-//				list = list->next;
-//			}
-//			d_p = d_p->next;
-//		}
 		if (!*status && (*data)->params->next)
-			*status = pipes((*data)->params, &(*data)->env, status);
+			*status = pipes((*data)->params, &(*data)->env, status, &(*data)->exit_status);
 		else if (!*status)
 		{
-			if (!builtins((*data)->params, &(*data)->env, status))
-			{
-				free_data(*data);
+			*status = one_command(data);
+			if ((*data)->exit_status)
 				return (0);
-			}
 		}
 		params_free(&(*data)->params, del_params_content);
 		if (*status)
@@ -93,7 +74,6 @@ int				main(int argc, char **argv, char **envp)
 {
 	t_d 		*data;
 	static int	status;
-	int         a;
 
 	status = 0;
 	if (!(data = malloc(sizeof(t_d))))
@@ -104,12 +84,15 @@ int				main(int argc, char **argv, char **envp)
 	data->env = copy_envp_to_struct(envp);
 	while (TRUE)
 	{
-		prompt_line(data->env, &data->user_name, &data->folder);
+		data->line = NULL;
+		print_prompt_line(data->env, &data->username, &data->folder);
 		if ((getcharacter(0, &data->line)) < 0)
 			return (errno);
-		a = bla(&data, &status);
-		if (!a)
+		if (!bla(&data, &status))
+		{
+			del_data_content(data);
 			return (status);
+		}
 		free(data->line);
 	}
 }

@@ -106,7 +106,7 @@ char 		*arg_for_cd(t_list *args, t_env **env)
 	return (res);
 }
 
-int			ft_cd(t_list *args, t_env **env)
+int			ft_cd(t_list *args, t_env **env, int fd)
 {
 	char 	*res;
 	char 	*pwd;
@@ -123,7 +123,7 @@ int			ft_cd(t_list *args, t_env **env)
 	ft_pwd(&pwd);
 	change_pwd(env, pwd);
 	if (args && !ft_strncmp(args->content, "-", ft_strlen(args->content)))
-		ft_printf("%s\n", res);
+		ft_putendl_fd(res, fd);
 	free(res);
 	free(pwd);
 	return (0);

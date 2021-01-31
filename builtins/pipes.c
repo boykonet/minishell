@@ -100,32 +100,31 @@
 //	return (0);
 //}
 
-int		pipes(t_params *params, t_env **env, int *status)
+int				pipes(t_params *params, t_env **env, int *status, int *exit_status)
 {
-	int pipefd[2];
-	int origfd[2];
-	pid_t childpid;
-	char **args;
-	char **envp;
-	char buff[4096];
-	int a;
-	int len;
-	char *cmd;
+	int			pipefd[2];
+	int			origfd[2];
+	pid_t		childpid;
+	char		**args;
+	char		**envp;
+	char		buff[4096];
+	int			len;
+	char		*cmd;
 
-	a = 0;
 	origfd[0] = dup(STDIN_FILENO);
 	origfd[1] = dup(STDOUT_FILENO);
-	envp = convert_env_to_arr(*env);
 	while (params)
 	{
 		if (pipe(pipefd) == -1)
 		{
-			ft_printf("-minishell: pipe: %s\n", strerror(errno));
+			ft_putstr_fd("-minishell: pipe: ", 1);
+			ft_putendl_fd(strerror(errno), 1);
 			exit(EXIT_FAILURE);
 		}
 		if ((childpid = fork()) < 0)
 		{
-			ft_printf("-minishell: fork: %s\n", strerror(errno));
+			ft_putstr_fd("-minishell: fork: ", 1);
+			ft_putendl_fd(strerror(errno), 1);
 			exit(EXIT_FAILURE);
 		}
 		if (!childpid)
@@ -133,21 +132,28 @@ int		pipes(t_params *params, t_env **env, int *status)
 			dup2(pipefd[1], params->out);
 			close(pipefd[0]);
 			close(pipefd[1]);
-			cmd = find_path(params->args->content, find_data_in_env(*env, "PATH", 0));
+			envp = convert_env_to_arr(*env);
 			args = convert_struct_to_array(params->args);
+			cmd = find_path(params->args->content, find_data_in_env(*env, "PATH", 0));
 			if (!check_command(params->args->content))
-				builtins(params, env, status);
+				builtins(params, env, status, exit_status);
 			else
 			{
 				if (execve(cmd, args, envp) < 0)
 				{
-					ft_printf("-minishell: %s: command not found\n", cmd);
-					exit(127);
+					dup2(origfd[0], 0);
+					dup2(origfd[1], 1);
+					ft_putstr_fd("-minishell: ", 1);
+					ft_putstr_fd(cmd, 1);
+					ft_putendl_fd(": command not found", 1);
+					*status = 127;
 				}
 			}
 			free(cmd);
 			free_string(args);
 			free_string(envp);
+			if (*status)
+				exit(*status);
 			exit(EXIT_FAILURE);
 		}
 		else
@@ -155,9 +161,13 @@ int		pipes(t_params *params, t_env **env, int *status)
 			dup2(pipefd[0], params->in);
 			close(pipefd[0]);
 			close(pipefd[1]);
-			waitpid(childpid, &a, WUNTRACED);
-			if (WIFEXITED(a) > 0)
-				return (WEXITSTATUS(a));
+			waitpid(childpid, status, WUNTRACED);
+			if (WIFEXITED(*status) > 0)
+			{
+				dup2(origfd[0], 0);
+				dup2(origfd[1], 1);
+				return (WEXITSTATUS(*status));
+			}
 		}
 		params = params->next;
 	}

@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "builtins.h"
 #include "other.h"
 #include "parser.h"
 #include "minishell.h"
@@ -50,8 +49,9 @@ t_list			*first_elem_list(char **line, t_params **res, \
 		write_token_to_list(line, &(*res)->args, env, status);
 		if (!check_unexpected_token((char**)&((*res)->args)->content))
 		{
-			ft_printf("-minishell: syntax error near unexpected "
-			 "token `%s'\n", (*res)->args->content);
+			ft_putstr_fd("-minishell: syntax error near unexpected token `", 1);
+			ft_putstr_fd((*res)->args->content, 1);
+			ft_putendl_fd("'", 1);
 			*status = 258;
 			params_free(res, del_params_content);
 			return (NULL);

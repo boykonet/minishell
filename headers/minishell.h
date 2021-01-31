@@ -48,8 +48,9 @@ typedef struct		s_d
 	char 			**argv;
 	char 			*line;
 	char 			*folder;
-	char 			*user_name;
+	char 			*username;
 	int 			argc;
+	int 			exit_status;
 }					t_d;
 
 #endif

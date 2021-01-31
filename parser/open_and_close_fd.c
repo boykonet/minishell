@@ -82,7 +82,9 @@ int				redirect_and_name_fd(char **line, t_env *env, int *fd, \
 	nfd = shape_name_fd(line, curr, env, status);
 	if (!check_unexpected_token(&nfd))
 	{
-		ft_printf("-minishell: syntax error near unexpected token `%s'\n", nfd);
+		ft_putstr_fd("-minishell: syntax error near unexpected token `", 1);
+		ft_putstr_fd(nfd, 1);
+		ft_putendl_fd("'", 1);
 		*status = 258;
 		flag = 0;
 	}
@@ -90,7 +92,10 @@ int				redirect_and_name_fd(char **line, t_env *env, int *fd, \
 	{
 		if ((*fd = open_fd(nfd, redir)) < 0)
 		{
-			ft_printf("-minishell: %s: %s\n", nfd, strerror(errno));
+			ft_putstr_fd("-minishell: ", 1);
+			ft_putstr_fd(nfd, 1);
+			ft_putstr_fd(": ", 1);
+			ft_putendl_fd(strerror(errno), 1);
 			*status = 1;
 			flag = 0;
 		}

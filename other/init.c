@@ -24,10 +24,11 @@ void		init_params(t_params **params)
 void		init_data(t_d *data)
 {
 	data->argc = 0;
+	data->exit_status = 0;
 	data->argv = NULL;
 	data->env = NULL;
 	data->line = NULL;
 	data->folder = NULL;
-	data->user_name = NULL;
+	data->username = NULL;
 	data->params = NULL;
 }

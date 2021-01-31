@@ -1,6 +1,7 @@
 
 
 #include "minishell.h"
+#include "other.h"
 
 void		del_list_content(void *content)
 {
@@ -26,4 +27,21 @@ void 		del_env_content(t_env *env)
 		free(env->name);
 	if (env->value)
 		free(env->value);
+}
+
+void 			del_data_content(t_d *data)
+{
+	if (data->line)
+		free(data->line);
+	if (data->folder)
+		free(data->folder);
+	if (data->username)
+		free(data->username);
+	if (data->argv)
+		free_string(data->argv);
+	if (data->params)
+		params_free(&data->params, del_params_content);
+	if (data->env)
+		env_free(&data->env, del_env_content);
+	free(data);
 }

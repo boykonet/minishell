@@ -53,20 +53,3 @@ void			free_string(char **str)
 	}
 	free(str);
 }
-
-void 			free_data(t_d *data)
-{
-	if (data->line)
-		free(data->line);
-	if (data->folder)
-		free(data->folder);
-	if (data->user_name)
-		free(data->user_name);
-	if (data->argv)
-		free_string(data->argv);
-	if (data->params)
-		params_free(&data->params, del_params_content);
-	if (data->env)
-		env_free(&data->env, del_env_content);
-	free(data);
-}

@@ -26,6 +26,7 @@ MINISRCS =	builtins/builtins.c \
 			other/functions.c \
 			other/getcharacter.c \
 			other/init.c \
+			other/prompt_line.c \
 			parser/append_to_array.c \
             parser/check_redir.c \
             parser/expand_env_arg.c \

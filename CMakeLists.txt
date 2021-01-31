@@ -32,6 +32,7 @@ add_executable(srcs
 		other/getcharacter.c
 		other/init.c
 		other/main.c
+		other/prompt_line.c
 		parser/append_to_array.c
 		parser/check_redir.c
 		parser/expand_env_arg.c
