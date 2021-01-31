@@ -109,22 +109,22 @@ int				pipes(t_params *params, t_env **env, int *status, int *exit_status)
 	char		**envp;
 	char		buff[4096];
 	int			len;
+	int 		wstatus;
 	char		*cmd;
 
 	origfd[0] = dup(STDIN_FILENO);
 	origfd[1] = dup(STDOUT_FILENO);
-	while (params)
+	wstatus = 0;
+	while (!*status && params)
 	{
 		if (pipe(pipefd) == -1)
 		{
-			ft_putstr_fd("-minishell: pipe: ", 1);
-			ft_putendl_fd(strerror(errno), 1);
+			ft_putendl_fd("-minishell: pipe failed", 1);
 			exit(EXIT_FAILURE);
 		}
 		if ((childpid = fork()) < 0)
 		{
-			ft_putstr_fd("-minishell: fork: ", 1);
-			ft_putendl_fd(strerror(errno), 1);
+			ft_putendl_fd("-minishell: fork failed", 1);
 			exit(EXIT_FAILURE);
 		}
 		if (!childpid)
@@ -134,7 +134,8 @@ int				pipes(t_params *params, t_env **env, int *status, int *exit_status)
 			close(pipefd[1]);
 			envp = convert_env_to_arr(*env);
 			args = convert_struct_to_array(params->args);
-			cmd = find_path(params->args->content, find_data_in_env(*env, "PATH", 0));
+			if (!(cmd = find_path(params->args->content, find_data_in_env(*env, "PATH", 0))))
+				cmd = ft_strdup(params->args->content);
 			if (!check_command(params->args->content))
 				builtins(params, env, status, exit_status);
 			else
@@ -152,21 +153,28 @@ int				pipes(t_params *params, t_env **env, int *status, int *exit_status)
 			free(cmd);
 			free_string(args);
 			free_string(envp);
-			if (*status)
-				exit(*status);
-			exit(EXIT_FAILURE);
+			exit(*status);
 		}
 		else
 		{
 			dup2(pipefd[0], params->in);
 			close(pipefd[0]);
 			close(pipefd[1]);
-			waitpid(childpid, status, WUNTRACED);
-			if (WIFEXITED(*status) > 0)
+			if (waitpid(childpid, &wstatus, 0) < 0)
 			{
 				dup2(origfd[0], 0);
 				dup2(origfd[1], 1);
-				return (WEXITSTATUS(*status));
+				ft_putendl_fd("-minishell: waitpid failed", 1);
+				exit(EXIT_FAILURE);
+			}
+			if (WIFEXITED(wstatus))
+			{
+				if ((*status = WEXITSTATUS(wstatus)) > 0)
+				{
+					dup2(origfd[0], 0);
+					dup2(origfd[1], 1);
+					return (0);
+				}
 			}
 		}
 		params = params->next;

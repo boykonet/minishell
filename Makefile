@@ -37,7 +37,7 @@ MINISRCS =	builtins/builtins.c \
 			parser/number_of_redirect.c \
 			parser/return_token.c
 
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -g -fsanitize=address -Wall -Wextra -Werror
 
 SRCS =  ./other/main.c $(MINISRCS)
 
@@ -59,7 +59,7 @@ CC = gcc
 all: $(NAME)
 
 $(NAME): $(OBJS) libft.a libftprintf.a libminishell.a $(HEADERS)
-	$(CC) $(CFLAGS) -L. -I $(INCLUDEDIR) -g -o $@ ./other/main.c -lminishell -lftprintf -lft
+	$(CC) $(CFLAGS) -L. -I $(INCLUDEDIR) -o $@ ./other/main.c -lminishell -lftprintf -lft
 
 libft.a:
 	$(MAKE) bonus -C ./libs/libft CC=$(CC)
@@ -74,7 +74,7 @@ libminishell.a: $(MINIOBJS)
 	ranlib $@
 
 %.o: %.c
-	$(CC) $(CFLAGS) -I $(INCLUDEDIR) -g -c $< -o $@
+	$(CC) $(CFLAGS) -I $(INCLUDEDIR) -c $< -o $@
 
 clean:
 	$(MAKE) clean -C ./libs/libft

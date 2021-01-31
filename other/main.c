@@ -56,7 +56,7 @@ int				bla(t_d **data, int *status)
 			*status = 258;
 		}
 		if (!*status && (*data)->params->next)
-			*status = pipes((*data)->params, &(*data)->env, status, &(*data)->exit_status);
+			pipes((*data)->params, &(*data)->env, status, &(*data)->exit_status);
 		else if (!*status)
 		{
 			*status = one_command(data);
