@@ -24,6 +24,7 @@
 # include "../libs/printf/libftprintf.h"
 
 # define TRUE 1
+# define LLONGMAX 9223372036854775807ULL
 
 typedef struct		s_env
 {
