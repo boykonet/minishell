@@ -14,111 +14,106 @@
 #include "parser.h"
 #include "minishell.h"
 
-void			write_token_to_list(char **line, t_list **list, \
-									t_env *env, int *status)
+void			write_token_to_list(char **line, t_list **list, t_parser *p)
 {
 	char 		*str;
 
-	str = return_token(line, env, status);
+	str = return_token(line, p);
 	if (!((*list) = ft_lstnew(str)))
 		exit(errno);
 }
 
-t_params		*check_redir_line(char **line, t_env *env, \
-									t_params **res, int *status)
+void			first_elem_list(char **line, t_parser *p, t_params **params)
 {
-	if (!open_and_close_fd(line, res, env, status))
-		params_free(res, del_params_content);
-	if (!*res)
-		return (NULL);
-	return (*res);
-}
-
-t_list			*first_elem_list(char **line, t_params **res, \
-								t_env *env, int *status)
-{
-	t_list 		*lst;
-
-	lst = NULL;
 	(*line) = remove_spaces((*line));
-	while (res && (*(*line) == '<' || *(*line) == '>'))
-		check_redir_line(line, env, res, status);
-	if (res)
+	while (p->exit_status != 2 && *(*line) && (*(*line) == '<' || *(*line) == '>'))
+		open_and_close_fd(line, p, &(p->params));
+	(*line) = remove_spaces((*line));
+	write_token_to_list(line, &(*params)->args, p);
+	if (!check_unexpected_token((char**)&(p->params->args)->content))
 	{
-		(*line) = remove_spaces((*line));
-		write_token_to_list(line, &(*res)->args, env, status);
-		if (!check_unexpected_token((char**)&((*res)->args)->content))
-		{
-			ft_putstr_fd("-minishell: syntax error near unexpected token `", 1);
-			ft_putstr_fd((*res)->args->content, 1);
-			ft_putendl_fd("'", 1);
-			*status = 258;
-			params_free(res, del_params_content);
-			return (NULL);
-		}
-		lst = (*res)->args;
+		ft_putstr_fd("-minishell: syntax error near unexpected token `", 2);
+		ft_putstr_fd(p->params->args->content, 2);
+		ft_putendl_fd("'", 2);
+		p->status = 258;
+		p->exit_status = 2;
 	}
-	return (lst);
 }
 
-t_params		*parsing(char **line, t_env *env, int *status)
+int				parsing(char **line, t_parser *p, t_params **params)
 {
-	t_params	*res;
 	t_list		*lst;
+	int 		exit_status;
 
-	res = NULL;
-	new_params_element(&res);
+	exit_status = 0;
 	if (*(*line) && *(*line) != '|' && *(*line) != ';')
 	{
-		if (!(lst = first_elem_list(line, &res, env, status)))
-			if (!res)
-				return (NULL);
-		while (res && *(*line) && (*(*line) != '|' && *(*line) != ';'))
+		first_elem_list(line, p, params);
+		lst = (*params)->args;
+		while (p->exit_status != 2 && *(*line) && (*(*line) != '|' && *(*line) != ';'))
 		{
 			(*line) = remove_spaces((*line));
-			if (*(*line) == '<' || *(*line) == '>')
-				check_redir_line(line, env, &res, status);
+			if (*(*line) && (*(*line) == '<' || *(*line) == '>'))
+				open_and_close_fd(line, p, params);
 			else if (*(*line) && *(*line) != '|' && *(*line) != ';')
 			{
 				(*line) = remove_spaces((*line));
-				write_token_to_list(line, &lst->next, env, status);
+				write_token_to_list(line, &lst->next, p);
 				lst = lst->next;
 			}
 		}
 	}
-	return (res);
+	return (exit_status);
 }
 
-int 			parser(char **line, t_params **params, t_env *env, int *status)
+void			check_pipes_in_parser(char **line, t_parser *p)
 {
-	t_params 	*curr;
+	(*line) = remove_spaces((*line));
+	if (!ft_strncmp((*line), "||", 2))
+	{
+		ft_putendl_fd("-minishell: syntax error near unexpected token `||'", 2);
+		p->exit_status = 2;
+		p->status = 258;
+	}
+	else if (!ft_strncmp((*line), ";;", 2))
+	{
+		ft_putendl_fd("-minishell: syntax error near unexpected token `;;'", 2);
+		p->exit_status = 2;
+		p->status = 258;
+	}
+	else if (*(*line) == '|')
+		(*line)++;
+}
 
+void			parser(char **line, t_d **data, int *status)
+{
+	t_parser	p;
+
+	p.env = (*data)->env;
+	p.status = *status;
+	p.exit_status = (*data)->exit_status == 2 ? 1 : 0;
 	if (*(*line))
 	{
-		(*params) = parsing(line, env, status);
-		if (*status > 0 && !(*params))
-			return (0);
-//		if (*(*line) == '|' && *(*line + 1) == '|')
-//		{
-//			ft_printf("-minishell: syntax error near unexpected "
-//					  "token `%s'\n", (*res)->args->content);
-//			*status = 258;
-//			params_free(res, del_params_content);
-//		}
-		if (*(*line) == '|')
-			(*line)++;
-		curr = (*params);
-		while (curr && *(*line) && *(*line) != ';')
+		(*data)->params = new_params_element();
+		p.params = (*data)->params;
+		parsing(line, &p, &(p.params));
+		if (p.exit_status != 2)
+			check_pipes_in_parser(line, &p);
+		while (p.exit_status != 2 && *(*line) && *(*line) != ';')
 		{
-			curr->next = parsing(line, env, status);
-			if (*status > 0 && !curr->next)
-				return (0);
-			if (*(*line) == '|')
-				(*line)++;
-			curr = curr->next;
+			p.params->next = new_params_element();
+			parsing(line, &p, &(p.params->next));
+			if (p.exit_status == 2)
+				break ;
+			check_pipes_in_parser(line, &p);
+			p.params = p.params->next;
 		}
-		if (*status > 0 && (*params))
-			*status = 0;
 	}
-	return (1);
+	if (p.status > 0 && p.exit_status == 1)
+	{
+		p.status = 0;
+		p.exit_status = 0;
+	}
+	*status = p.status;
+	(*data)->exit_status = p.exit_status;
 }

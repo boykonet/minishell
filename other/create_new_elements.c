@@ -25,14 +25,14 @@ t_env			*ft_lstnew_env(void *name, void *value)
 	return (new);
 }
 
-void			new_params_element(t_params **params)
+t_params 		*new_params_element(void)
 {
-	if (!(*params))
-	{
-		if (!((*params) = malloc(sizeof(t_params))))
-			exit(errno);
-		init_params(params);
-	}
+	t_params	*params;
+
+	if (!(params = malloc(sizeof(t_params))))
+		exit(errno);
+	init_params(&params);
+	return (params);
 }
 
 t_env			*new_item(t_list *item)

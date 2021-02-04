@@ -34,10 +34,7 @@ static int	seven_commands(t_params *params, t_env **env, int *exit_status)
 	else if (!ft_strncmp(params->args->content, "env", ft_strlen(params->args->content)))
 		stat = ft_env(env, params);
 	else if (!ft_strncmp(params->args->content, "exit", ft_strlen(params->args->content)))
-	{
-		stat = ft_exit(params->args->next);
-		*exit_status = 1;
-	}
+		stat = ft_exit(params->args->next, exit_status);
 	if (str)
 	{
 		ft_putendl_fd(str, params->out);
@@ -46,16 +43,19 @@ static int	seven_commands(t_params *params, t_env **env, int *exit_status)
 	return (stat);
 }
 
-int         builtins(t_params *params, t_env **env, int *status, int *exit_status)
+int         builtins(t_d **data, t_params *params)
 {
-	if (!find_data_in_env(*env, "PATH", 0))
+	int 	status;
+
+	status = 0;
+	if (!find_data_in_env((*data)->env, "PATH", 0))
 	{
 		ft_putstr_fd("-minishell: ", 1);
-		ft_putstr_fd(params->args->content, 1);
+		ft_putstr_fd((*data)->params->args->content, 1);
 		ft_putendl_fd(": command not found", 1);
-		*status = 127;
+		status = 127;
 	}
-	if (!*status)
-		*status = seven_commands(params, env, exit_status);
-	return (*status);
+	if (!status)
+		status = seven_commands(params, &(*data)->env, &(*data)->exit_status);
+	return (status);
 }

@@ -10,11 +10,11 @@ int					ft_echo(t_list *args, int fd);
 int					ft_env(t_env **env, t_params *argv);
 int					ft_export(t_env **env, t_params *argv);
 int					ft_unset(t_env **env, t_params *argv);
-int                 ft_exit(t_list *args);
+int                 ft_exit(t_list *args, int *error_status);
 
-int					pipes(t_params *params, t_env **env, int *status, int *exit_status);
+int					pipes(t_d **data);
 char				*find_path(char *old_cmd, char *path);
-int					builtins(t_params *params, t_env **env, int *status, int *exit_status);
-int					create_process(char **args, char **envp, char *cmd);
+int					builtins(t_d **data, t_params *params);
+int					create_process(char **args, char **envp, char *cmd, int in, int out);
 
 #endif

@@ -10,12 +10,11 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "builtins.h"
 #include "other.h"
 #include "parser.h"
 #include "minishell.h"
 
-char 		*token_without_quotes(char **line, t_env *env, int *spec_char, int *status)
+char 		*token_without_quotes(char **line, t_env *env, const int *spec_char, int *status)
 {
 	char 	*curr;
 
@@ -25,7 +24,7 @@ char 		*token_without_quotes(char **line, t_env *env, int *spec_char, int *statu
 	else
 	{
 		if (!(curr = ft_calloc(2, sizeof(char))))
-			return (NULL);
+			exit(errno);
 		if (*(*line) == '\\' && !(*spec_char))
 			(*line)++;
 		curr[0] = *(*line)++;
@@ -33,7 +32,7 @@ char 		*token_without_quotes(char **line, t_env *env, int *spec_char, int *statu
 	return (curr);
 }
 
-char 		*check_line(char **line, t_env *env, int *status)
+char 		*check_line(char **line, t_parser *p)
 {
 	char	*curr;
 	int 	spec_char;
@@ -46,16 +45,13 @@ char 		*check_line(char **line, t_env *env, int *status)
 		spec_char = 1;
 	}
 	if ((*(*line) == '\'' || *(*line) == '\"') && !spec_char)
-		curr = handling_tokens_with_quotes(line, env, status);
+		curr = handling_tokens_with_quotes(line, p->env, &p->status);
 	else
-	{
-		if (!(curr = token_without_quotes(line, env, &spec_char, status)))
-			return (NULL);
-	}
+		curr = token_without_quotes(line, p->env, &spec_char, &p->status);
 	return (curr);
 }
 
-char 		*return_token(char **line, t_env *env, int *status)
+char 		*return_token(char **line, t_parser *p)
 {
 	char 	*res;
 	char 	*tmp;
@@ -63,10 +59,10 @@ char 		*return_token(char **line, t_env *env, int *status)
 
 	if (!(res = ft_strdup("")))
 		exit(errno);
-	while (*(*line) && *(*line) != ' ' && *(*line) != ';' && *(*line) != '|')
+	while (line && *(*line) && *(*line) != ' ' && *(*line) != ';' && *(*line) != '|' && *(*line) != '>' && *(*line) != '<')
 	{
 		tmp = res;
-		if (!(curr = check_line(line, env, status)))
+		if (!(curr = check_line(line, p)))
 		{
 			free(tmp);
 			exit(errno);

@@ -39,8 +39,17 @@ typedef struct		s_params
 	int 			in;
 	int 			out;
 	int 			err;
+	int 			flag;
 	struct s_params	*next;
 }					t_params;
+
+typedef struct 		s_parser
+{
+	t_params		*params;
+	t_env			*env;
+	int 			status;
+	int 			exit_status;
+}					t_parser;
 
 typedef struct		s_d
 {

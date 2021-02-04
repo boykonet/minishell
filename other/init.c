@@ -18,17 +18,18 @@ void		init_params(t_params **params)
 	(*params)->in = 0;
 	(*params)->out = 1;
 	(*params)->err = 2;
+	(*params)->flag = 0;
 	(*params)->next = NULL;
 }
 
-void		init_data(t_d *data)
+void		init_data(t_d **data)
 {
-	data->argc = 0;
-	data->exit_status = 0;
-	data->argv = NULL;
-	data->env = NULL;
-	data->line = NULL;
-	data->folder = NULL;
-	data->username = NULL;
-	data->params = NULL;
+	(*data)->argc = 0;
+	(*data)->exit_status = 0;
+	(*data)->argv = NULL;
+	(*data)->env = NULL;
+	(*data)->line = NULL;
+	(*data)->folder = NULL;
+	(*data)->username = NULL;
+	(*data)->params = NULL;
 }

@@ -100,89 +100,98 @@
 //	return (0);
 //}
 
-int				pipes(t_params *params, t_env **env, int *status, int *exit_status)
+int				pipes(t_d **data)
 {
+	t_params	*curr;
 	int			pipefd[2];
 	int			origfd[2];
 	pid_t		childpid;
 	char		**args;
 	char		**envp;
-	char		buff[4096];
+	char		buff[101];
 	int			len;
-	int 		wstatus;
+	int			wstatus;
+	int 		status;
 	char		*cmd;
+	char 		*tmp;
+	char 		*res;
 
 	origfd[0] = dup(STDIN_FILENO);
 	origfd[1] = dup(STDOUT_FILENO);
 	wstatus = 0;
-	while (!*status && params)
+	status = 0;
+	curr = (*data)->params;
+	while (!status && curr)
 	{
 		if (pipe(pipefd) == -1)
 		{
-			ft_putendl_fd("-minishell: pipe failed", 1);
+			ft_putendl_fd("-minishell: pipe failed", 2);
 			exit(EXIT_FAILURE);
 		}
 		if ((childpid = fork()) < 0)
 		{
-			ft_putendl_fd("-minishell: fork failed", 1);
+			ft_putendl_fd("-minishell: fork failed", 2);
 			exit(EXIT_FAILURE);
 		}
 		if (!childpid)
 		{
-			dup2(pipefd[1], params->out);
+			if (curr->in > 2)
+				dup2(curr->in, 0);
+			if (curr->out > 2)
+				dup2(curr->out, 1);
+			else
+				dup2(pipefd[1], 1);
 			close(pipefd[0]);
 			close(pipefd[1]);
-			envp = convert_env_to_arr(*env);
-			args = convert_struct_to_array(params->args);
-			if (!(cmd = find_path(params->args->content, find_data_in_env(*env, "PATH", 0))))
-				cmd = ft_strdup(params->args->content);
-			if (!check_command(params->args->content))
-				builtins(params, env, status, exit_status);
+			envp = convert_env_to_arr((*data)->env);
+			args = convert_struct_to_array(curr->args);
+			if (!(cmd = find_path(curr->args->content, find_data_in_env((*data)->env, "PATH", 0))))
+				if (!(cmd = ft_strdup(curr->args->content)))
+					exit(EXIT_FAILURE);
+			if (!check_command(curr->args->content))
+				wstatus = builtins(data, curr);
 			else
 			{
 				if (execve(cmd, args, envp) < 0)
 				{
-					dup2(origfd[0], 0);
-					dup2(origfd[1], 1);
-					ft_putstr_fd("-minishell: ", 1);
-					ft_putstr_fd(cmd, 1);
-					ft_putendl_fd(": command not found", 1);
-					*status = 127;
+					ft_putstr_fd("-minishell: ", 2);
+					ft_putstr_fd(cmd, 2);
+					ft_putendl_fd(": command not found", 2);
+					wstatus = 127;
 				}
 			}
 			free(cmd);
 			free_string(args);
 			free_string(envp);
-			exit(*status);
+			exit(wstatus);
 		}
 		else
 		{
-			dup2(pipefd[0], params->in);
+			dup2(pipefd[0], 0);
 			close(pipefd[0]);
 			close(pipefd[1]);
 			if (waitpid(childpid, &wstatus, 0) < 0)
 			{
-				dup2(origfd[0], 0);
-				dup2(origfd[1], 1);
-				ft_putendl_fd("-minishell: waitpid failed", 1);
+				ft_putendl_fd("-minishell: waitpid failed", 2);
 				exit(EXIT_FAILURE);
 			}
 			if (WIFEXITED(wstatus))
-			{
-				if ((*status = WEXITSTATUS(wstatus)) > 0)
-				{
-					dup2(origfd[0], 0);
-					dup2(origfd[1], 1);
-					return (0);
-				}
-			}
+				status = WEXITSTATUS(wstatus);
 		}
-		params = params->next;
+		curr = curr->next;
 	}
-	len = read(0, buff, 4095);
-	buff[len] = '\0';
+	res = ft_strdup("");
+	while ((len = read(0, buff, 100)) > 0)
+	{
+		tmp = res;
+		buff[len] = '\0';
+		if (!(res = ft_strjoin(res, buff)))
+			exit(errno);
+		free(tmp);
+	}
 	dup2(origfd[0], 0);
 	dup2(origfd[1], 1);
-	write(1, buff, ft_strlen(buff));
-	return (0);
+	ft_putstr_fd(res, 1);
+	free(res);
+	return (status);
 }

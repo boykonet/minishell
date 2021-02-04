@@ -65,7 +65,7 @@ char			*prompt_line(t_env *env, char **username, char **folder)
 
 void			print_prompt_line(t_env *env, char **user_name, char **folder)
 {
-	char 		*str;
+	char		*str;
 
 	str = prompt_line(env, user_name, folder);
 	ft_putstr_fd(str, 1);

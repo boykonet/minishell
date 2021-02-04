@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "builtins.h"
 #include "other.h"
 #include "parser.h"
 #include "minishell.h"
@@ -44,7 +43,7 @@ int 			check_unexpected_token(char **name_fd)
 	return (1);
 }
 
-char 			*shape_name_fd(char **line, char *curr, t_env *env, int *status)
+char 			*shape_name_fd(char **line, char *curr, t_parser *p)
 {
 	char 		symb;
 	char 		*name_fd;
@@ -59,81 +58,79 @@ char 			*shape_name_fd(char **line, char *curr, t_env *env, int *status)
 		(*line) = curr;
 	}
 	else
-		name_fd = return_token(line, env, status);
+		name_fd = return_token(line, p);
 	return (name_fd);
 }
 
-int				redirect_and_name_fd(char **line, t_env *env, int *fd, \
-									int *status)
+int				redirect_and_name_fd(char **line, t_parser *p, int *fd)
 {
 	char 		*redir;
 	char 		*curr;
 	char 		*nfd;
-	int 		flag;
 
 	curr = (*line);
-	flag = 1;
 	while (*curr && *curr == *(*line) && *curr != ' ')
 		curr++;
 	if (!(redir = ft_substr((*line), 0, curr - (*line))))
 		exit(errno);
 	curr = remove_spaces(curr);
 	(*line) = curr;
-	nfd = shape_name_fd(line, curr, env, status);
+	nfd = shape_name_fd(line, curr, p);
 	if (!check_unexpected_token(&nfd))
 	{
-		ft_putstr_fd("-minishell: syntax error near unexpected token `", 1);
-		ft_putstr_fd(nfd, 1);
-		ft_putendl_fd("'", 1);
-		*status = 258;
-		flag = 0;
+		ft_putstr_fd("-minishell: syntax error near unexpected token `", 2);
+		ft_putstr_fd(nfd, 2);
+		ft_putendl_fd("'", 2);
+		p->status = 258;
+		p->exit_status = 2;
 	}
 	else
 	{
 		if ((*fd = open_fd(nfd, redir)) < 0)
 		{
-			ft_putstr_fd("-minishell: ", 1);
-			ft_putstr_fd(nfd, 1);
-			ft_putstr_fd(": ", 1);
-			ft_putendl_fd(strerror(errno), 1);
-			*status = 1;
-			flag = 0;
+			ft_putstr_fd("-minishell: ", 2);
+			ft_putstr_fd(nfd, 2);
+			ft_putstr_fd(": ", 2);
+			ft_putendl_fd(strerror(errno), 2);
+			p->status = 1;
+			p->exit_status = 2;
 		}
 	}
 	free(redir);
 	free(nfd);
-	if (*status > 0 && !flag)
+	if (p->status && p->exit_status)
 		return (0);
 	return (1);
 }
 
-int				reopen_fd(char **line, t_env *env, int *fd, int *status)
+int				reopen_fd(char **line, t_parser *p, int *fd)
 {
 	if (*fd > 2)
 	{
 		if (close(*fd) < 0)
 		{
-			ft_printf("-minishell: %s\n", strerror(errno));
-			*status = errno;
+			ft_putstr_fd("-minishell: ", 2);
+			ft_putendl_fd(strerror(errno), 2);
+			p->status = errno;
+			p->exit_status = 2;
 			return (0);
 		}
 	}
-	if (!redirect_and_name_fd(line, env, fd, status))
+	if (!redirect_and_name_fd(line, p, fd))
 		return (0);
 	return (1);
 }
 
-int 			open_and_close_fd(char **line, t_params **params, \
-									t_env *env, int *status)
+int 			open_and_close_fd(char **line, t_parser *p, t_params **params)
 {
 	int 		res;
 
 	res = 1;
 	if (check_redir(line) == 0)
-		res = reopen_fd(line, env, &((*params)->in), status);
+		res = reopen_fd(line, p, &((*params)->in));
 	else if (check_redir(line) == 1)
-		res = reopen_fd(line, env, &((*params)->out), status);
+		res = reopen_fd(line, p, &((*params)->out));
 	else if (check_redir(line) == 2)
-		res = reopen_fd(line, env, &((*params)->err), status);
+		res = reopen_fd(line, p, &((*params)->err));
 	return (res);
 }

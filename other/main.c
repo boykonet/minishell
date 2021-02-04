@@ -22,16 +22,22 @@ int 			one_command(t_d **data)
 	char 		*cmd;
 	int 		status;
 
-	status = 0;
 	if (!check_command((*data)->params->args->content))
-		status = builtins((*data)->params, &(*data)->env, &status, &(*data)->exit_status);
+	{
+		status = builtins(data, (*data)->params);
+		if (status > 0 && (*data)->exit_status != 1)
+			(*data)->exit_status = 2;
+	}
 	else
 	{
 		arr = convert_struct_to_array((*data)->params->args);
 		envp = convert_env_to_arr((*data)->env);
-		if (!(cmd = find_path((*data)->params->args->content,find_data_in_env((*data)->env, "PATH", 0))))
+		if (!(cmd = find_path((*data)->params->args->content,\
+		find_data_in_env((*data)->env, "PATH", 0))))
 			cmd = ft_strdup((*data)->params->args->content);
-		status = create_process(arr, envp, cmd);
+		status = create_process(arr, envp, cmd, (*data)->params->in, (*data)->params->out);
+		if (status > 0)
+			(*data)->exit_status = 2;
 		free_string(arr);
 		free_string(envp);
 		free(cmd);
@@ -44,27 +50,32 @@ int				bla(t_d **data, int *status)
 	char 		*curr_symb;
 
 	curr_symb = (*data)->line;
+	if (*curr_symb == '\0' && (*data)->exit_status == 2)
+	{
+		(*data)->exit_status = 0;
+		*status = 0;
+	}
 	while (*curr_symb)
 	{
 		(*data)->params = NULL;
-		parser(&curr_symb, &(*data)->params, (*data)->env, status);
-		if (!*status && *curr_symb == ';' && *(curr_symb + 1) != *curr_symb)
+		parser(&curr_symb, data, status);
+		if (*status)
+			break ;
+		if (*curr_symb == ';' && *(curr_symb + 1) != *curr_symb)
 			curr_symb++;
-		else if (!*status && *curr_symb == ';' && *(curr_symb + 1) == *curr_symb)
+		if ((*data)->params->next)
 		{
-			ft_printf("-minishell: syntax error near unexpected token `%s'\n", ";;");
-			*status = 258;
+			*status = pipes(data);
+			if (*status > 0)
+				(*data)->exit_status = 2;
 		}
-		if (!*status && (*data)->params->next)
-			pipes((*data)->params, &(*data)->env, status, &(*data)->exit_status);
-		else if (!*status)
+		else
 		{
 			*status = one_command(data);
-			if ((*data)->exit_status)
+			if (!ft_strcmp((*data)->params->args->content, "exit") && (*data)->exit_status == 1)
 				return (0);
 		}
-		params_free(&(*data)->params, del_params_content);
-		if (*status)
+		if (*status && *curr_symb == '\0')
 			break ;
 	}
 	return (1);
@@ -78,21 +89,24 @@ int				main(int argc, char **argv, char **envp)
 	status = 0;
 	if (!(data = malloc(sizeof(t_d))))
 		exit(errno);
-	init_data(data);
+	init_data(&data);
 	data->argc = argc;
 	data->argv = copy_array(argv);
 	data->env = copy_envp_to_struct(envp);
 	while (TRUE)
 	{
 		data->line = NULL;
+		data->params = NULL;
 		print_prompt_line(data->env, &data->username, &data->folder);
 		if ((getcharacter(0, &data->line)) < 0)
 			return (errno);
 		if (!bla(&data, &status))
 		{
 			del_data_content(data);
-			return (status);
+			break ;
 		}
 		free(data->line);
+		params_free(&data->params, del_params_content);
 	}
+	return (status);
 }

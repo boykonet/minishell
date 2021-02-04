@@ -63,15 +63,18 @@ char 		*cd_minus(t_list *args, t_env **env)
 	str = find_data_in_env(*env, "OLDPWD", 0);
 	if (!str || *str == '\0')
 	{
-		ft_printf("-minishell: cd: OLDPWD not set\n");
+		ft_putendl_fd("-minishell: cd: OLDPWD not set", 2);
 		return (NULL);
 	}
 	else if (!ft_strcmp(args->content, "--"))
 		res = ft_strdup(find_data_in_env(*env, "HOME", 0));
 	else if (*(char*)args->content == '-' && (ft_isalpha(*(char*)(args->content + 1)) || *(char*)(args->content + 1) == '-'))
 	{
-		ft_printf("-minishell: cd: %c%c: invalid option\n", *(char*)args->content, *(char*)(args->content + 1));
-		ft_printf("cd: usage: cd [-L|-P] [dir]\n");
+		ft_putstr_fd("-minishell: cd: ", 2);
+		ft_putchar_fd(*(char*)args->content, 2);
+		ft_putchar_fd(*(char*)(args->content + 1), 2);
+		ft_putendl_fd(": invalid option", 2);
+		ft_putendl_fd("cd: usage: cd [-L|-P] [dir]", 2);
 		return (NULL);
 	}
 	if (!res)
@@ -116,7 +119,10 @@ int			ft_cd(t_list *args, t_env **env, int fd)
 		return (1);
 	if ((chdir(res) < 0))
 	{
-		ft_printf("-minishell: cd: %s: %s\n", res, strerror(errno));
+		ft_putstr_fd("-minishell: cd: ", 2);
+		ft_putstr_fd(res, 2);
+		ft_putstr_fd(": ", 2);
+		ft_putendl_fd(strerror(errno), 2);
 		free(res);
 		return (1);
 	}
