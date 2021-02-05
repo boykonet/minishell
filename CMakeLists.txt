@@ -20,6 +20,7 @@ add_executable(srcs
 		builtins/ft_unset.c
 		builtins/pipes.c
 		builtins/create_process.c
+		builtins/signals.c
 		other/convert_from_to.c
 		other/copy_envp_to_struct.c
 		other/create_new_elements.c

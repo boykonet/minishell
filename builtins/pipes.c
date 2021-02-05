@@ -167,6 +167,7 @@ int				pipes(t_d **data)
 		}
 		else
 		{
+			(*data)->flag = 1;
 			dup2(pipefd[0], 0);
 			close(pipefd[0]);
 			close(pipefd[1]);
@@ -193,5 +194,6 @@ int				pipes(t_d **data)
 	dup2(origfd[1], 1);
 	ft_putstr_fd(res, 1);
 	free(res);
+	(*data)->flag = 0;
 	return (status);
 }

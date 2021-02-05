@@ -41,7 +41,7 @@ int					ft_strcmp(const char *s1, const char *s2);
 char				**ft_split_by_colon(char *str, char c);
 void				*ft_split_by_quation(char *str, t_env *lst, char c);
 
-void				print_prompt_line(t_env *env, char **user_name, char **folder);
+void				print_prompt_line(t_d *data, int signo);
 char				*prompt_line(t_env *env, char **username, char **folder);
 
 #endif

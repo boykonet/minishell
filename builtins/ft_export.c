@@ -261,7 +261,7 @@ int			ft_export(t_env **env, t_params *argv)
 	buf = *env;
 	while (argv->args->next)
 	{
-		argv->args=argv->args->next;
+		argv->args = argv->args->next;
 		if (check_word(argv->args))
 		{
 			random = new_item(argv->args);

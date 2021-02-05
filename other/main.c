@@ -35,7 +35,7 @@ int 			one_command(t_d **data)
 		if (!(cmd = find_path((*data)->params->args->content,\
 		find_data_in_env((*data)->env, "PATH", 0))))
 			cmd = ft_strdup((*data)->params->args->content);
-		status = create_process(arr, envp, cmd, (*data)->params->in, (*data)->params->out);
+		status = create_process(data, arr, envp, cmd);
 		if (status > 0)
 			(*data)->exit_status = 2;
 		free_string(arr);
@@ -93,11 +93,13 @@ int				main(int argc, char **argv, char **envp)
 	data->argc = argc;
 	data->argv = copy_array(argv);
 	data->env = copy_envp_to_struct(envp);
+	signal(SIGINT, handle_sig);
+	signal(SIGQUIT, handle_sig);
 	while (TRUE)
 	{
 		data->line = NULL;
 		data->params = NULL;
-		print_prompt_line(data->env, &data->username, &data->folder);
+		print_prompt_line(data, 0);
 		if ((getcharacter(0, &data->line)) < 0)
 			return (errno);
 		if (!bla(&data, &status))

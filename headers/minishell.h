@@ -39,7 +39,6 @@ typedef struct		s_params
 	int 			in;
 	int 			out;
 	int 			err;
-	int 			flag;
 	struct s_params	*next;
 }					t_params;
 
@@ -61,6 +60,7 @@ typedef struct		s_d
 	char 			*username;
 	int 			argc;
 	int 			exit_status;
+	int 			flag;
 }					t_d;
 
 #endif

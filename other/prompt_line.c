@@ -63,11 +63,31 @@ char			*prompt_line(t_env *env, char **username, char **folder)
 	return (res);
 }
 
-void			print_prompt_line(t_env *env, char **user_name, char **folder)
-{
-	char		*str;
+//void			print_prompt_line(t_env *env, char **user_name, char **folder)
+//{
+//	char		*str;
+//
+//	str = prompt_line(env, user_name, folder);
+//	ft_putstr_fd(str, 1);
+//	free(str);
+//}
 
-	str = prompt_line(env, user_name, folder);
-	ft_putstr_fd(str, 1);
-	free(str);
+void            print_prompt_line(t_d *data, int signo)
+{
+	static t_d *temp;
+	char        *str;
+	if (temp == NULL)
+		temp = data;
+	if (signo != 0 && temp->flag == 0)
+		write(1, "\b\b  \b\b", ft_strlen("\b\b  \b\b") + 1);
+	if ((signo == SIGINT && temp->flag == 0) || (signo == SIGINT && temp->flag == 1))
+		write(1, "\n", 1);
+	if (signo == 0 || (signo == SIGINT && temp->flag == 0))
+	{
+		str = prompt_line(temp->env, &temp->username, &temp->folder);
+		ft_putstr_fd(str, 1);
+		free(str);
+	}
+	if (signo == SIGQUIT && temp->flag == 1)
+		write(1, "Quit: 3\n", ft_strlen("Quit: 3\n") + 1);
 }

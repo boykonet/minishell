@@ -11,6 +11,7 @@ MINISRCS =	builtins/builtins.c \
             builtins/ft_pwd.c \
             builtins/ft_unset.c \
             builtins/pipes.c \
+            builtins/signals.c \
             other/check_command.c \
             other/check_word.c \
             other/convert_from_to.c \
