@@ -101,7 +101,7 @@ int				main(int argc, char **argv, char **envp)
 		data->params = NULL;
 		print_prompt_line(data, 0);
 		if ((getcharacter(0, &data->line)) < 0)
-			return (errno);
+			continue ;
 		if (!bla(&data, &status))
 		{
 			del_data_content(data);

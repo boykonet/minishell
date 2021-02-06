@@ -14,9 +14,9 @@
 
 int				getcharacter(int fd, char **line)
 {
-	char		buff[2];
-	char		*tmp;
-	int			len;
+	char        buff[2];
+	char        *tmp;
+	int         len;
 
 	len = 0;
 	ft_memset(buff, '\0', 2);
@@ -24,7 +24,17 @@ int				getcharacter(int fd, char **line)
 	while ((len = read(fd, buff, 1)) >= 0)
 	{
 		tmp = (*line);
-		if (buff[0] == '\n' || len == 0)
+		if (len == 0)
+		{
+			write(1, "  \b\b", ft_strlen("  \b\b"));
+			if (!ft_strlen(*line))
+			{
+				write(1, "\n", ft_strlen("\n"));
+				exit(0);
+			}
+			continue ;
+		}
+		if (buff[0] == '\n')
 			break ;
 		if (!((*line) = ft_strjoin((*line), buff)))
 		{
