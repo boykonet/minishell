@@ -11,6 +11,7 @@ MINISRCS =	builtins/builtins.c \
             builtins/ft_pwd.c \
             builtins/ft_unset.c \
             builtins/pipes.c \
+            builtins/read_and_write_pipeline.c \
             builtins/signals.c \
             other/check_command.c \
             other/check_word.c \
@@ -50,8 +51,7 @@ HEADERS =	./headers/minishell.h \
 			./headers/builtins.h \
 			./headers/other.h \
 			./headers/parser.h \
-			./libs/libft/libft.h \
-			./libs/printf/libftprintf.h
+			./libs/libft/libft.h
 
 INCLUDEDIR = ./headers
 
@@ -59,16 +59,12 @@ CC = gcc
 
 all: $(NAME)
 
-$(NAME): $(OBJS) libft.a libftprintf.a libminishell.a $(HEADERS)
-	$(CC) $(CFLAGS) -L. -I $(INCLUDEDIR) -o $@ ./other/main.c -lminishell -lftprintf -lft
+$(NAME): $(OBJS) libft.a libminishell.a $(HEADERS)
+	$(CC) $(CFLAGS) -L. -I $(INCLUDEDIR) -o $@ ./other/main.c -lminishell -lft
 
 libft.a:
 	$(MAKE) bonus -C ./libs/libft CC=$(CC)
 	mv ./libs/libft/libft.a .
-
-libftprintf.a:
-	$(MAKE) all -C ./libs/printf CC=$(CC)
-	mv ./libs/printf/libftprintf.a .
 
 libminishell.a: $(MINIOBJS)
 	ar rcs $@ $^
@@ -79,14 +75,12 @@ libminishell.a: $(MINIOBJS)
 
 clean:
 	$(MAKE) clean -C ./libs/libft
-	$(MAKE) clean -C ./libs/printf
 	rm -rf $(OBJS)
 
 fclean:
-	$(MAKE) fclean -C ./libs/printf
 	$(MAKE) fclean -C ./libs/libft
 	rm -rf $(OBJS)
-	rm -rf $(NAME) libft.a libftprintf.a libminishell.a
+	rm -rf $(NAME) libft.a libminishell.a
 
 re:
 	$(MAKE) fclean

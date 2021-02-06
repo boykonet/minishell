@@ -34,12 +34,8 @@ char				*find_path(char *old_cmd, char *path)
 		cmd = NULL;
 		if (!(name = opendir(dirs[i])))
 			return (NULL);
-// The readdir() function returns a pointer
-// to a dirent structure, or NULL if an error occurs or end of the directory stream is reached. 
-// On error, errno is set appropriately. 
 		while ((entry = readdir(name)))
 		{
-// d_name - Это поле содержит имя файла с завершающим null.
 			if (!ft_strcmp(entry->d_name, old_cmd))
 			{				
 				if (!(tmp = ft_strjoin(dirs[i], "/")))

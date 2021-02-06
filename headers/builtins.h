@@ -13,6 +13,7 @@ int					ft_unset(t_env **env, t_params *argv);
 int                 ft_exit(t_list *args, int *error_status);
 
 int					pipes(t_d **data);
+void				read_and_write_pipeline(int *origfd);
 char				*find_path(char *old_cmd, char *path);
 int					builtins(t_d **data, t_params *params);
 int					create_process(t_d **data, char **args, char **envp, char *cmd);

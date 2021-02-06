@@ -26,6 +26,8 @@ void		init_data(t_d **data)
 	(*data)->argc = 0;
 	(*data)->exit_status = 0;
 	(*data)->flag = 0;
+	(*data)->origfd[0] = dup(STDIN_FILENO);
+	(*data)->origfd[1] = dup(STDOUT_FILENO);
 	(*data)->argv = NULL;
 	(*data)->env = NULL;
 	(*data)->line = NULL;

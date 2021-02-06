@@ -21,19 +21,19 @@ static int	seven_commands(t_params *params, t_env **env, int *exit_status)
 
 	str = NULL;
 	stat = 0;
-	if (!ft_strncmp(params->args->content, "echo", ft_strlen(params->args->content)))
+	if (!ft_strcmp(params->args->content, "echo"))
 		stat = ft_echo(params->args->next, params->out);
-	else if (!ft_strncmp(params->args->content, "pwd", ft_strlen(params->args->content)))
+	else if (!ft_strcmp(params->args->content, "pwd"))
 		stat = ft_pwd(&str);
-	else if (!ft_strncmp(params->args->content, "cd", ft_strlen(params->args->content)))
+	else if (!ft_strcmp(params->args->content, "cd"))
 		stat = ft_cd(params->args->next, env, params->out);
-	else if (!ft_strncmp(params->args->content, "export", ft_strlen(params->args->content)))
+	else if (!ft_strcmp(params->args->content, "export"))
 		stat = ft_export(env, params);
-	else if (!ft_strncmp(params->args->content, "unset", ft_strlen(params->args->content)))
+	else if (!ft_strcmp(params->args->content, "unset"))
 		stat = ft_unset(env, params);
-	else if (!ft_strncmp(params->args->content, "env", ft_strlen(params->args->content)))
+	else if (!ft_strcmp(params->args->content, "env"))
 		stat = ft_env(env, params);
-	else if (!ft_strncmp(params->args->content, "exit", ft_strlen(params->args->content)))
+	else if (!ft_strcmp(params->args->content, "exit"))
 		stat = ft_exit(params->args->next, exit_status);
 	if (str)
 	{

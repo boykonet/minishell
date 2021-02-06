@@ -21,7 +21,6 @@
 # include <sys/wait.h>
 # include <signal.h>
 # include "../libs/libft/libft.h"
-# include "../libs/printf/libftprintf.h"
 
 # define TRUE 1
 # define LLONGMAX 9223372036854775807ULL
@@ -58,6 +57,7 @@ typedef struct		s_d
 	char 			*line;
 	char 			*folder;
 	char 			*username;
+	int 			origfd[2];
 	int 			argc;
 	int 			exit_status;
 	int 			flag;
