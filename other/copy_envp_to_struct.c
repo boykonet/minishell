@@ -1,6 +1,7 @@
 #include "other.h"
 
-void			init_name_value(char *str, char *separator, char **name, char **value)
+static void		init_name_value(char *str, \
+				char *separator, char **name, char **value)
 {
 	*name = ft_substr(str, 0, separator - str);
 	*value = ft_substr(separator, 1, ft_strlen(separator + 1));
@@ -8,12 +9,12 @@ void			init_name_value(char *str, char *separator, char **name, char **value)
 		exit(errno);
 }
 
-t_env		*copy_envp_to_struct(char **envp)
+t_env			*copy_envp_to_struct(char **envp)
 {
-	t_env	*env;
-	t_env	*curr;
-	char	*tmp;
-	size_t	i;
+	t_env		*env;
+	t_env		*curr;
+	char		*tmp;
+	size_t		i;
 
 	i = 0;
 	env = ft_lstnew_env(NULL, NULL);

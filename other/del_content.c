@@ -1,5 +1,3 @@
-
-
 #include "minishell.h"
 #include "other.h"
 
@@ -21,7 +19,7 @@ void		del_params_content(t_params *params)
 		close(params->err);
 }
 
-void 		del_env_content(t_env *env)
+void		del_env_content(t_env *env)
 {
 	if (env->name)
 		free(env->name);
@@ -29,7 +27,7 @@ void 		del_env_content(t_env *env)
 		free(env->value);
 }
 
-void 			del_data_content(t_d *data)
+void		del_data_content(t_d *data)
 {
 	if (data->line)
 		free(data->line);

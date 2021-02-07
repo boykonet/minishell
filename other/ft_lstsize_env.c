@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-int		ft_lstsize_env(t_env *lst)
+int			ft_lstsize_env(t_env *lst)
 {
 	size_t	size;
 

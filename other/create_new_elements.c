@@ -25,7 +25,7 @@ t_env			*ft_lstnew_env(void *name, void *value)
 	return (new);
 }
 
-t_params 		*new_params_element(void)
+t_params		*new_params_element(void)
 {
 	t_params	*params;
 
@@ -37,7 +37,7 @@ t_params 		*new_params_element(void)
 
 t_env			*new_item(t_list *item)
 {
-	t_env 		*random;
+	t_env		*random;
 
 	random = ft_lstnew_env(NULL, NULL);
 	if (ft_strchr(item->content, '='))

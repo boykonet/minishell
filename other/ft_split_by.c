@@ -17,7 +17,7 @@ char		**ft_split_by_colon(char *str, char c)
 	int		i;
 	char	**arr;
 	char	*tmp;
-	char 	*buf;
+	char	*buf;
 
 	i = 0;
 	buf = str;

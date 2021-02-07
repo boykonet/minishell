@@ -14,10 +14,11 @@
 
 int			check_command(char *cmd)
 {
-	char 	*arr[] = {"echo", "pwd", "cd", "env", "export", "unset", \
-						"exit", NULL};
-	int 	count;
+	char	**arr;
+	int		count;
 
+	arr = (char*[]) { "echo", "pwd", "cd", "env", "export", "unset", \
+					"exit", NULL };
 	count = 0;
 	while (arr[count])
 	{

@@ -34,34 +34,34 @@ typedef struct		s_env
 
 typedef struct		s_params
 {
-	t_list 			*args;
-	int 			in;
-	int 			out;
-	int 			err;
+	t_list			*args;
+	int				in;
+	int				out;
+	int				err;
 	struct s_params	*next;
 }					t_params;
 
-typedef struct 		s_parser
+typedef struct		s_parser
 {
 	t_params		*params;
 	t_env			*env;
-	int 			status;
-	int 			exit_status;
-	int 			quotes;
+	int				status;
+	int				exit_status;
+	int				quotes;
 }					t_parser;
 
 typedef struct		s_d
 {
 	t_params		*params;
 	t_env			*env;
-	char 			**argv;
-	char 			*line;
-	char 			*folder;
-	char 			*username;
-	int 			origfd[2];
-	int 			argc;
-	int 			exit_status;
-	int 			flag;
+	char			**argv;
+	char			*line;
+	char			*folder;
+	char			*username;
+	int				origfd[2];
+	int				argc;
+	int				exit_status;
+	int				flag;
 }					t_d;
 
 #endif

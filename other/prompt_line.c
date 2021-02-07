@@ -13,9 +13,10 @@
 #include "minishell.h"
 #include "other.h"
 
-void			write_username_folder(t_env *env, char **username, char **folder)
+static void		write_username_folder(t_env *env, char **username, \
+									char **folder)
 {
-	char 		*line;
+	char		*line;
 
 	if ((line = find_data_in_env(env, "USER", 0)))
 	{
@@ -37,10 +38,10 @@ void			write_username_folder(t_env *env, char **username, char **folder)
 	}
 }
 
-char			*prompt_line(t_env *env, char **username, char **folder)
+static char		*prompt_line(t_env *env, char **username, char **folder)
 {
-	char 		*line;
-	char 		*res;
+	char		*line;
+	char		*res;
 
 	write_username_folder(env, username, folder);
 	if (ft_strlen(*folder) == 1)
@@ -63,24 +64,17 @@ char			*prompt_line(t_env *env, char **username, char **folder)
 	return (res);
 }
 
-//void			print_prompt_line(t_env *env, char **user_name, char **folder)
-//{
-//	char		*str;
-//
-//	str = prompt_line(env, user_name, folder);
-//	ft_putstr_fd(str, 1);
-//	free(str);
-//}
-
-void            print_prompt_line(t_d *data, int signo)
+void			print_prompt_line(t_d *data, int signo)
 {
-	static t_d *temp;
-	char        *str;
+	static t_d	*temp;
+	char		*str;
+
 	if (temp == NULL)
 		temp = data;
 	if (signo != 0 && temp->flag == 0)
 		write(1, "\b\b  \b\b", ft_strlen("\b\b  \b\b") + 1);
-	if ((signo == SIGINT && temp->flag == 0) || (signo == SIGINT && temp->flag == 1))
+	if ((signo == SIGINT && temp->flag == 0) || \
+		(signo == SIGINT && temp->flag == 1))
 		write(1, "\n", 1);
 	if (signo == 0 || (signo == SIGINT && temp->flag == 0))
 	{

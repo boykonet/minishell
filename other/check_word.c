@@ -1,12 +1,12 @@
 #include "minishell.h"
 #include "other.h"
 
-int         check_word(t_list *str)
+int			check_word(t_list *str)
 {
-	char    *buf;
-	int     i;
-	int     len;
-	t_env   *random;
+	t_env	*random;
+	char	*buf;
+	int		i;
+	int		len;
 
 	i = 0;
 	random = new_item(str);

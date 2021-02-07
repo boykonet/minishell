@@ -1,6 +1,6 @@
-
-
-/* 0 return value have name in needle, 1 return name have value in needle*/
+/* 0 return value have name in needle,
+ * 1 return name have value in needle
+*/
 
 #include "other.h"
 
@@ -32,7 +32,8 @@ t_env		*find_list_env(t_env *env, char *needle, int spec)
 	{
 		if (!spec && !ft_strncmp(env->name, needle, ft_strlen(env->name)))
 			return (env);
-		else if (spec == 1 && !ft_strncmp(env->value, needle, ft_strlen(env->value)))
+		else if (spec == 1 && !ft_strncmp(env->value, needle, \
+				ft_strlen(env->value)))
 			return (env);
 		env = env->next;
 	}

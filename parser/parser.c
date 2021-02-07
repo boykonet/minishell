@@ -96,7 +96,7 @@ void			parser(char **line, t_d **data, int *status)
 		(*data)->params = new_params_element();
 		p.params = (*data)->params;
 		parsing(line, &p, &(p.params));
-		if (p.exit_status != 2)
+		if (p.exit_status != 2 && !p.quotes)
 			check_pipes_semicolon(line, &p);
 		while (p.exit_status != 2 && *(*line) && *(*line) != ';')
 		{
@@ -104,7 +104,8 @@ void			parser(char **line, t_d **data, int *status)
 			parsing(line, &p, &(p.params->next));
 			if (p.exit_status == 2)
 				break ;
-			check_pipes_semicolon(line, &p);
+			if (!p.quotes)
+				check_pipes_semicolon(line, &p);
 			p.params = p.params->next;
 		}
 	}

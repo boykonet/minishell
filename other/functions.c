@@ -17,10 +17,10 @@ char		*remove_spaces(char *line)
 	return (line);
 }
 
-char 			**copy_array(char **src)
+char		**copy_array(char **src)
 {
-	char 		**res;
-	int 		i;
+	char	**res;
+	int		i;
 
 	i = number_of_lines(src);
 	if (!(res = ft_calloc(i + 1, sizeof(char*))))

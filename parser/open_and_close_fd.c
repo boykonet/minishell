@@ -14,15 +14,16 @@
 #include "parser.h"
 #include "minishell.h"
 
-int 			check_unexpected_token(char **name_fd)
+int				check_unexpected_token(char **name_fd)
 {
-	char 		*err[] = {">>", "<<", ";;", "||", "<", ">", "(", ")", ";", \
-							"|", "", NULL};
-	char 		*tmp;
-	int 		i;
+	char		**err;
+	char		*tmp;
+	int			i;
 
 	i = 0;
 	tmp = *name_fd;
+	err = (char*[]) {">>", "<<", ";;", "||", "<", ">", "(", ")", ";", \
+						"|", "", NULL};
 	while (err[i])
 	{
 		if (**name_fd == *err[i] && \
@@ -43,10 +44,10 @@ int 			check_unexpected_token(char **name_fd)
 	return (1);
 }
 
-char 			*shape_name_fd(char **line, char *curr, t_parser *p)
+static char		*shape_name_fd(char **line, char *curr, t_parser *p)
 {
-	char 		symb;
-	char 		*name_fd;
+	char		symb;
+	char		*name_fd;
 
 	symb = *(*line);
 	if (*curr == ';' || *curr == '|')
@@ -64,9 +65,9 @@ char 			*shape_name_fd(char **line, char *curr, t_parser *p)
 
 int				redirect_and_name_fd(char **line, t_parser *p, int *fd)
 {
-	char 		*redir;
-	char 		*curr;
-	char 		*nfd;
+	char		*redir;
+	char		*curr;
+	char		*nfd;
 
 	curr = (*line);
 	while (*curr && *curr == *(*line) && *curr != ' ')
@@ -76,7 +77,7 @@ int				redirect_and_name_fd(char **line, t_parser *p, int *fd)
 	curr = remove_spaces(curr);
 	(*line) = curr;
 	nfd = shape_name_fd(line, curr, p);
-	if (!check_unexpected_token(&nfd))
+	if (!p->quotes && !check_unexpected_token(&nfd))
 	{
 		ft_putstr_fd("-minishell: syntax error near unexpected token `", 2);
 		ft_putstr_fd(nfd, 2);
@@ -103,7 +104,7 @@ int				redirect_and_name_fd(char **line, t_parser *p, int *fd)
 	return (1);
 }
 
-int				reopen_fd(char **line, t_parser *p, int *fd)
+static int		reopen_fd(char **line, t_parser *p, int *fd)
 {
 	if (*fd > 2)
 	{
@@ -121,9 +122,9 @@ int				reopen_fd(char **line, t_parser *p, int *fd)
 	return (1);
 }
 
-int 			open_and_close_fd(char **line, t_parser *p, t_params **params)
+int				open_and_close_fd(char **line, t_parser *p, t_params **params)
 {
-	int 		res;
+	int			res;
 
 	res = 1;
 	if (check_redir(line) == 0)

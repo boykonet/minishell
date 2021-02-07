@@ -15,12 +15,12 @@
 #include "builtins.h"
 #include "other.h"
 
-int 			one_command(t_d **data)
+static int		one_command(t_d **data)
 {
-	char 		**arr;
-	char 		**envp;
-	char 		*cmd;
-	int 		status;
+	char		**arr;
+	char		**envp;
+	char		*cmd;
+	int			status;
 
 	if (!check_command((*data)->params->args->content))
 	{
@@ -47,7 +47,7 @@ int 			one_command(t_d **data)
 
 int				bla(t_d **data, int *status)
 {
-	char 		*curr_symb;
+	char		*curr_symb;
 
 	curr_symb = (*data)->line;
 	if (*curr_symb == '\0' && (*data)->exit_status == 2)
@@ -72,7 +72,8 @@ int				bla(t_d **data, int *status)
 		else
 		{
 			*status = one_command(data);
-			if (!ft_strcmp((*data)->params->args->content, "exit") && (*data)->exit_status == 1)
+			if (!ft_strcmp((*data)->params->args->content, "exit") && \
+				(*data)->exit_status == 1)
 				return (0);
 		}
 		if (*status && *curr_symb == '\0')
@@ -83,7 +84,7 @@ int				bla(t_d **data, int *status)
 
 int				main(int argc, char **argv, char **envp)
 {
-	t_d 		*data;
+	t_d			*data;
 	static int	status;
 
 	status = 0;
@@ -100,8 +101,12 @@ int				main(int argc, char **argv, char **envp)
 		data->line = NULL;
 		data->params = NULL;
 		print_prompt_line(data, 0);
-		if ((getcharacter(0, &data->line)) < 0)
-			continue ;
+		if (!(getcharacter(0, &data->line)))
+		{
+			status = 0;
+			del_data_content(data);
+			break ;
+		}
 		if (!bla(&data, &status))
 		{
 			del_data_content(data);

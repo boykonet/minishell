@@ -12,7 +12,7 @@
 
 #include "other.h"
 
-void 			env_free(t_env **env, void (*del)(t_env *))
+void			env_free(t_env **env, void (*del)(t_env *))
 {
 	t_env		*curr;
 
@@ -26,7 +26,7 @@ void 			env_free(t_env **env, void (*del)(t_env *))
 	}
 }
 
-void 			params_free(t_params **params, void (*del)(t_params *))
+void			params_free(t_params **params, void (*del)(t_params *))
 {
 	t_params	*curr;
 

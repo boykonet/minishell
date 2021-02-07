@@ -1,6 +1,6 @@
 #include "other.h"
 
-void 		ft_lstadd_back_env(t_env **env, t_env *new)
+void		ft_lstadd_back_env(t_env **env, t_env *new)
 {
 	t_env	*current;
 	t_env	*prev;

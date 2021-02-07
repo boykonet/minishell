@@ -12,37 +12,44 @@
 
 #include "other.h"
 
+static int		eof_char(char **line, int len)
+{
+	if (len == 0)
+	{
+		write(1, "  \b\b", ft_strlen("  \b\b"));
+		if (!ft_strlen(*line))
+		{
+			ft_putendl_fd("exit", 1);
+			return (0);
+		}
+		return (1);
+	}
+	return (2);
+}
+
 int				getcharacter(int fd, char **line)
 {
-	char        buff[2];
-	char        *tmp;
-	int         len;
+	char		buff[2];
+	char		*tmp;
+	int			len;
+	int			sig;
 
-	len = 0;
 	ft_memset(buff, '\0', 2);
-	(*line) = ft_strdup("");
+	if (!((*line) = ft_strdup("")))
+		exit(errno);
 	while ((len = read(fd, buff, 1)) >= 0)
 	{
 		tmp = (*line);
-		if (len == 0)
-		{
-			write(1, "  \b\b", ft_strlen("  \b\b"));
-			if (!ft_strlen(*line))
-			{
-				write(1, "\n", ft_strlen("\n"));
-				exit(0);
-			}
+		if (!(sig = eof_char(line, len)))
+			return (0);
+		else if (sig == 1)
 			continue ;
-		}
 		if (buff[0] == '\n')
 			break ;
-		if (!((*line) = ft_strjoin((*line), buff)))
-		{
-			free(tmp);
-			return (-1);
-		}
+		(*line) = ft_strjoin((*line), buff);
 		free(tmp);
+		if (!(*line))
+			exit(errno);
 	}
-	len = len > 0 ? 1 : len;
-	return (len);
+	return (1);
 }
