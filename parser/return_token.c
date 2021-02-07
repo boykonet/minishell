@@ -45,7 +45,10 @@ char 		*check_line(char **line, t_parser *p)
 		spec_char = 1;
 	}
 	if ((*(*line) == '\'' || *(*line) == '\"') && !spec_char)
+	{
 		curr = handling_tokens_with_quotes(line, p->env, &p->status);
+		p->quotes = 1;
+	}
 	else
 		curr = token_without_quotes(line, p->env, &spec_char, &p->status);
 	return (curr);
@@ -57,6 +60,7 @@ char 		*return_token(char **line, t_parser *p)
 	char 	*tmp;
 	char 	*curr;
 
+	p->quotes = 0;
 	if (!(res = ft_strdup("")))
 		exit(errno);
 	while (line && *(*line) && *(*line) != ' ' && *(*line) != ';' && *(*line) != '|' && *(*line) != '>' && *(*line) != '<')

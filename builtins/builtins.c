@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gkarina <gkarina@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: snaomi <snaomi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/19 20:57:36 by gkarina           #+#    #+#             */
-/*   Updated: 2020/11/19 20:57:36 by gkarina          ###   ########.fr       */
+/*   Updated: 2021/02/07 15:29:16 by snaomi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@
 
 static int	seven_commands(t_params *params, t_env **env, int *exit_status)
 {
-	char 	*str;
-	int 	stat;
+	char	*str;
+	int		stat;
 
 	str = NULL;
 	stat = 0;
@@ -43,9 +43,9 @@ static int	seven_commands(t_params *params, t_env **env, int *exit_status)
 	return (stat);
 }
 
-int         builtins(t_d **data, t_params *params)
+int			builtins(t_d **data, t_params *params)
 {
-	int 	status;
+	int		status;
 
 	status = 0;
 	if (!find_data_in_env((*data)->env, "PATH", 0))

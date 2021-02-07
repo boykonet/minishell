@@ -30,7 +30,7 @@ void			first_elem_list(char **line, t_parser *p, t_params **params)
 		open_and_close_fd(line, p, &(p->params));
 	(*line) = remove_spaces((*line));
 	write_token_to_list(line, &(*params)->args, p);
-	if (!check_unexpected_token((char**)&(p->params->args)->content))
+	if (!p->quotes && !check_unexpected_token((char**)&((*params)->args)->content))
 	{
 		ft_putstr_fd("-minishell: syntax error near unexpected token `", 2);
 		ft_putstr_fd(p->params->args->content, 2);
@@ -43,9 +43,7 @@ void			first_elem_list(char **line, t_parser *p, t_params **params)
 int				parsing(char **line, t_parser *p, t_params **params)
 {
 	t_list		*lst;
-	int 		exit_status;
 
-	exit_status = 0;
 	if (*(*line) && *(*line) != '|' && *(*line) != ';')
 	{
 		first_elem_list(line, p, params);
@@ -63,10 +61,10 @@ int				parsing(char **line, t_parser *p, t_params **params)
 			}
 		}
 	}
-	return (exit_status);
+	return (0);
 }
 
-void			check_pipes_in_parser(char **line, t_parser *p)
+void			check_pipes_semicolon(char **line, t_parser *p)
 {
 	(*line) = remove_spaces((*line));
 	if (!ft_strncmp((*line), "||", 2))
@@ -92,20 +90,21 @@ void			parser(char **line, t_d **data, int *status)
 	p.env = (*data)->env;
 	p.status = *status;
 	p.exit_status = (*data)->exit_status == 2 ? 1 : 0;
+	p.quotes = 0;
 	if (*(*line))
 	{
 		(*data)->params = new_params_element();
 		p.params = (*data)->params;
 		parsing(line, &p, &(p.params));
 		if (p.exit_status != 2)
-			check_pipes_in_parser(line, &p);
+			check_pipes_semicolon(line, &p);
 		while (p.exit_status != 2 && *(*line) && *(*line) != ';')
 		{
 			p.params->next = new_params_element();
 			parsing(line, &p, &(p.params->next));
 			if (p.exit_status == 2)
 				break ;
-			check_pipes_in_parser(line, &p);
+			check_pipes_semicolon(line, &p);
 			p.params = p.params->next;
 		}
 	}

@@ -1,11 +1,23 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   read_and_write_pipeline.c                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: snaomi <snaomi@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/02/07 15:56:08 by snaomi            #+#    #+#             */
+/*   Updated: 2021/02/07 15:56:41 by snaomi           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-void		 	read_and_write_pipeline(int *origfd)
+void		read_and_write_pipeline(int *origfd)
 {
-	char 		buff[101];
-	char 		*tmp;
-	char 		*line;
-	int 		len;
+	char	buff[101];
+	char	*tmp;
+	char	*line;
+	int		len;
 
 	line = ft_strdup("");
 	while ((len = read(0, buff, 100)) > 0)

@@ -6,42 +6,14 @@
 /*   By: snaomi <snaomi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/24 22:34:02 by snaomi            #+#    #+#             */
-/*   Updated: 2021/01/29 10:27:59 by snaomi           ###   ########.fr       */
+/*   Updated: 2021/02/07 15:51:22 by snaomi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "other.h"
-//
-//char		**from_list_to_arr(t_env *env, int len)
-//{
-//	int 	i;
-//	char	**arr;
-//	char	*tmp;
-//	char	equat[2] = {'=', '\0'};
-//	t_env	*temp;
-//
-//	temp = env;
-//	i = 0;
-//	if(!(arr = ft_calloc(len + 1, sizeof(char*))))
-//		return (NULL);
-//	while(temp)
-//	{
-//		if (temp->value)
-//		{
-//			tmp = ft_strjoin(temp->name, equat);
-//			arr[i] = ft_strjoin(tmp, temp->value);
-//			free(tmp);
-//		}
-//		else
-//			arr[i] = ft_strjoin(temp->name, equat);
-//		i++;
-//		temp = temp->next;
-//	}
-//	return (arr);
-//}
 
-void 		print_export(char **str, int len)
+void			print_export(char **str, int len)
 {
 	int		k;
 	int		i;
@@ -75,27 +47,14 @@ static void		swap(char **a, char **b)
 	*b = t;
 }
 
-//int				ft_strcmp(const char *s1, const char *s2)
-//{
-//    while (*s1 || *s2)
-//    {
-//        if (*s1 != *s2)
-//            return ((unsigned char)*s1 - (unsigned char)*s2);
-//        s1++;
-//        s2++;
-//    }
-//    return (0);
-//}
-
-static int relative_position(char **arr, int low, int high)
+static int		relative_position(char **arr, int low, int high)
 {
-	char 	*pivot;
-	int 	i;
-	int 	j;
+	char	*pivot;
+	int		i;
+	int		j;
 
 	j = low;
 	i = low - 1;
-
 	pivot = arr[high];
 	while (j <= high)
 	{
@@ -123,142 +82,16 @@ static void		quicksort(char **arr, int low, int high)
 	}
 }
 
-//static void		free_head(t_env **head)
-//{
-//	t_env *tmp;
-//
-//	tmp = *head;
-//	if (*head)
-//		*head = (*head)->next;
-//	free(tmp);
-//}
-
-//char		**ft_split_by_colon(char *str, char c)
-//{
-//	int		i;
-//	char	**arr;
-//	char	*tmp;
-//	char 	*buf;
-//
-//	i = 0;
-//	buf = str;
-//	while ((tmp = ft_strchr(str, c)) && *str != '\0')
-//	{
-//		tmp++;
-//		str = tmp;
-//		i++;
-//	}
-//	if (!(arr = (char**)malloc(sizeof(char*) * (i + 1))))
-//		exit(errno);
-//	i = 0;
-//	str = buf;
-//	while ((tmp = ft_strchr(str, c)) && *str != '\0')
-//	{
-//		if (!(arr[i] = ft_substr(str, 0, tmp - str)))
-//			exit(errno);
-//		tmp++;
-//		str = tmp;
-//		i++;
-//	}
-//	if (!(arr[i] = ft_strdup(str)))
-//		exit(errno);
-//	arr[i + 1] = NULL;
-//	return (arr);
-//}
-
-//void		*ft_split_by_quation(char *str, t_env *lst, char c)
-//{
-//	char	*tmp;
-//
-//	tmp = ft_strchr(str, c);
-//	lst->name = ft_substr(str, 0, tmp - str);
-//	lst->value = ft_substr(tmp, 1, ft_strlen(str));
-//	if (!lst->name || !lst->value)
-//		exit(errno);
-//	return (tmp);
-//}
-//
-//int			ft_lstsize_env(t_env *lst)
-//{
-//	t_env	*temp;
-//	int		i;
-//
-//	i = 0;
-//	temp = lst;
-//	while (temp)
-//	{
-//		i++;
-//		temp = temp->next;
-//	}
-//	return (i);
-//}
-
-//t_env		*new_item(t_list *item)
-//{
-//	t_env 	*random;
-//
-//	random = ft_lstnew_env(NULL, NULL);
-//	if (ft_strchr(item->content, '='))
-//		ft_split_by_quation(item->content, random, '=');
-//	else
-//		random->name = ft_strdup(item->content);
-//	return (random);
-//}
-
-//int			check_word(t_list *str)
-//{
-//	char 	*buf;
-//	int		i;
-//	int		len;
-//	t_env 	*random;
-//
-//	i = 0;
-//	random = new_item(str);
-//	if (!(buf = ft_strdup(random->name)))
-//		exit(errno);
-//	len = ft_strlen(buf);
-//	while (i < len)
-//	{
-//		if (i == 0 && !ft_isalpha(buf[i]) && buf[i] != 95)
-//			return (0);
-//		i++;
-//		if (ft_isalnum(buf[i]) || buf[i] == 95)
-//			return (1);
-//	}
-//	return (0);
-//}
-
-//int         check_word(t_list *str)
-//{
-//	char    *buf;
-//	int     i;
-//	int     len;
-//	t_env   *random;
-//
-//	i = 0;
-//	random = new_item(str);
-//	if (!(buf = ft_strdup(random->name)))
-//		exit(errno);
-//	len = ft_strlen(buf);
-//	while (i < len)
-//	{
-//		if (i == 0 && !ft_isalpha(buf[i]) && buf[i] != 95)
-//			return (0);
-//		if (!ft_isalnum(buf[i]) && !buf[i] == 95)
-//			return (0);
-//		i++;
-//	}
-//	return (1);
-//}
-
-int			ft_export(t_env **env, t_params *argv)
+int				ft_export(t_env **env, t_params *argv)
 {
-	char 	**arr;
+	char	**arr;
+	t_env	*random;
+	t_env	*buf;
 	int		len;
-	t_env 	*random;
-	t_env 	*buf;
+	int		status;
 
 	buf = *env;
+	status = 0;
 	while (argv->args->next)
 	{
 		argv->args = argv->args->next;
@@ -284,13 +117,13 @@ int			ft_export(t_env **env, t_params *argv)
 		}
 		else
 		{
-			ft_putstr_fd("minishell: export: `", 1);
-			ft_putstr_fd(argv->args->content, 1);
-			ft_putstr_fd("': not a valid identifier", 1);
-			ft_putchar_fd('\n', 1);
+			ft_putstr_fd("minishell: export: `", 2);
+			ft_putstr_fd(argv->args->content, 2);
+			ft_putendl_fd("': not a valid identifier", 2);
+			status = 1;
 		}
 	}
-	if (!ft_strncmp(argv->args->content, "export", ft_strlen(argv->args->content)))
+	if (!ft_strncmp(argv->args->content, "export", 6))
 	{
 		len = ft_lstsize_env(buf);
 		arr = convert_env_to_arr(buf);
@@ -298,5 +131,5 @@ int			ft_export(t_env **env, t_params *argv)
 		print_export(arr, len);
 		free_string(arr);
 	}
-	return (0);
+	return (status);
 }

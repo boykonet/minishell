@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cd.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gkarina <gkarina@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: snaomi <snaomi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/19 15:30:25 by gkarina           #+#    #+#             */
-/*   Updated: 2020/11/19 15:30:25 by gkarina          ###   ########.fr       */
+/*   Updated: 2021/02/07 16:00:10 by snaomi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void		change_pwd(t_env **env, char *str)
 	t_env	*new;
 	t_env	*pwd;
 	t_env	*oldpwd;
-	char 	*tmp;
+	char	*tmp;
 
 	pwd = find_list_env(*env, "PWD", 0);
 	oldpwd = find_list_env(*env, "OLDPWD", 0);
@@ -54,10 +54,10 @@ void		change_pwd(t_env **env, char *str)
 	}
 }
 
-char 		*cd_minus(t_list *args, t_env **env)
+char		*cd_minus(t_list *args, t_env **env)
 {
-	char 	*str;
-	char 	*res;
+	char	*str;
+	char	*res;
 
 	res = NULL;
 	str = find_data_in_env(*env, "OLDPWD", 0);
@@ -68,7 +68,8 @@ char 		*cd_minus(t_list *args, t_env **env)
 	}
 	else if (!ft_strcmp(args->content, "--"))
 		res = ft_strdup(find_data_in_env(*env, "HOME", 0));
-	else if (*(char*)args->content == '-' && (ft_isalpha(*(char*)(args->content + 1)) || *(char*)(args->content + 1) == '-'))
+	else if (*(char*)args->content == '-' && (ft_isalpha(*(char*)(args->content\
+			+ 1)) || *(char*)(args->content + 1) == '-'))
 	{
 		ft_putstr_fd("-minishell: cd: ", 2);
 		ft_putchar_fd(*(char*)args->content, 2);
@@ -82,9 +83,9 @@ char 		*cd_minus(t_list *args, t_env **env)
 	return (res);
 }
 
-char 		*arg_for_cd(t_list *args, t_env **env)
+char		*arg_for_cd(t_list *args, t_env **env)
 {
-	char 	*res;
+	char	*res;
 	char	*str;
 
 	if (!args || *(char*)args->content == '\0')
@@ -111,8 +112,8 @@ char 		*arg_for_cd(t_list *args, t_env **env)
 
 int			ft_cd(t_list *args, t_env **env, int fd)
 {
-	char 	*res;
-	char 	*pwd;
+	char	*res;
+	char	*pwd;
 
 	pwd = NULL;
 	if (!(res = arg_for_cd(args, env)))

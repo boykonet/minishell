@@ -47,6 +47,7 @@ typedef struct 		s_parser
 	t_env			*env;
 	int 			status;
 	int 			exit_status;
+	int 			quotes;
 }					t_parser;
 
 typedef struct		s_d

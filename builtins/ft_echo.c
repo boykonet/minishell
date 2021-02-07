@@ -11,19 +11,18 @@
 /* ************************************************************************** */
 
 #include "builtins.h"
+#include "other.h"
 
-int			ft_echo(t_list *args, int fd)
+int		ft_echo(t_list *args, int fd)
 {
-	int 	flag;
-	char 	*str;
+	char	*str;
+	int		flag;
 
 	flag = 0;
 	while (args && !ft_strncmp(args->content, "-", 1))
 	{
 		str = args->content + 1;
-		while (str && *str == 'n')
-			str++;
-		if (str && *str == '\0')
+		if (str && !ft_strcmp(str, "n"))
 		{
 			flag = 1;
 			args = args->next;

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   create_process.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: snaomi <snaomi@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/02/07 15:25:30 by snaomi            #+#    #+#             */
+/*   Updated: 2021/02/07 15:26:20 by snaomi           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 static int	child_process(t_d **data, char **args, char **envp, char *cmd)
@@ -41,8 +53,8 @@ static int	parent_process(int pid, t_d **data)
 
 int			create_process(t_d **data, char **args, char **envp, char *cmd)
 {
-	pid_t           pid;
-	int             status_code;
+	pid_t	pid;
+	int		status_code;
 
 	status_code = 0;
 	if ((pid = fork()) == -1)

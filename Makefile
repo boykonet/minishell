@@ -39,7 +39,7 @@ MINISRCS =	builtins/builtins.c \
 			parser/number_of_redirect.c \
 			parser/return_token.c
 
-CFLAGS = -g -Wall -Wextra -Werror
+CFLAGS = -g -fsanitize=address -Wall -Wextra -Werror
 
 SRCS =  ./other/main.c $(MINISRCS)
 

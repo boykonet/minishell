@@ -15,7 +15,7 @@ char		*find_data_in_env(t_env *env, char *needle, int serial_num)
 			val = env->name;
 		else if (serial_num == 1)
 			val = env->value;
-		if (!ft_strncmp(val, needle, ft_strlen(needle)))
+		if (!ft_strcmp(val, needle))
 			break ;
 		env = env->next;
 	}

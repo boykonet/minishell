@@ -1,6 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_exit.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: snaomi <snaomi@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/02/07 15:29:43 by snaomi            #+#    #+#             */
+/*   Updated: 2021/02/07 15:34:32 by snaomi           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "builtins.h"
 
-static void				arg_exit(char *str, int *neg, unsigned long long *long_num, int *overflow)
+static void		arg_exit(char *str, int *neg, unsigned long long *long_num, \
+						int *overflow)
 {
 	if (*str == '-')
 	{
@@ -10,14 +23,16 @@ static void				arg_exit(char *str, int *neg, unsigned long long *long_num, int *
 	while (!*overflow && str && *str >= '0' && *str <= '9')
 	{
 		*long_num = *long_num * 10 + *str++ - '0';
-		if ((*neg == 1 && *long_num > LLONGMAX) || (*neg == -1 && *long_num > (LLONGMAX + 1)))
+		if ((*neg == 1 && *long_num > LLONGMAX) || \
+			(*neg == -1 && *long_num > (LLONGMAX + 1)))
 			*overflow = 1;
 	}
 }
 
-static int 				exit_error(char *str, int *error_status, int overflow, int many_arg)
+static int		exit_error(char *str, int *error_status, int overflow,\
+				int many_arg)
 {
-	int 				status;
+	int		status;
 
 	status = 0;
 	if (overflow)
@@ -37,13 +52,13 @@ static int 				exit_error(char *str, int *error_status, int overflow, int many_a
 	return (status);
 }
 
-int     				ft_exit(t_list *args, int *error_status)
+int				ft_exit(t_list *args, int *error_status)
 {
 	unsigned long long	long_num;
-	int 				neg;
-	int 				answ;
-	int 				overflow;
-	int 				many_arg;
+	int					neg;
+	int					answ;
+	int					overflow;
+	int					many_arg;
 
 	neg = 1;
 	overflow = 0;
@@ -56,7 +71,8 @@ int     				ft_exit(t_list *args, int *error_status)
 	if (args)
 		arg_exit(args->content, &neg, &long_num, &overflow);
 	ft_putendl_fd("exit", 1);
-	if (args && (answ = exit_error(args->content, error_status, overflow, many_arg)) > 0)
+	if (args && (answ = exit_error(args->content, error_status, \
+	overflow, many_arg)) > 0)
 		long_num = answ;
 	return (((unsigned char)((long long)long_num * neg)));
 }

@@ -13,7 +13,7 @@
 #include "builtins.h"
 #include "other.h"
 
-void     handle_sig(int signo)
+void	handle_sig(int signo)
 {
-    print_prompt_line(NULL, signo);
+	print_prompt_line(NULL, signo);
 }

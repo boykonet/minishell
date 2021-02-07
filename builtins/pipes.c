@@ -1,11 +1,24 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   pipes.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: snaomi <snaomi@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/02/07 15:52:01 by snaomi            #+#    #+#             */
+/*   Updated: 2021/02/07 16:01:07 by snaomi           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "builtins.h"
 #include "other.h"
 #include "minishell.h"
 
-static int 		child_proc_pipes_cmd(t_d **data, t_params *curr, char **args, char **envp)
+static int		child_proc_pipes_cmd(t_d **data, t_params *curr, char **args, \
+									char **envp)
 {
-	int 		status;
-	char 		*cmd;
+	int		status;
+	char	*cmd;
 
 	status = 0;
 	if (!(cmd = find_path(curr->args->content, \
@@ -28,11 +41,11 @@ static int 		child_proc_pipes_cmd(t_d **data, t_params *curr, char **args, char 
 	return (status);
 }
 
-static int 		child_proc_pipes(t_d **data, t_params *curr, int *pipefd)
+static int		child_proc_pipes(t_d **data, t_params *curr, int *pipefd)
 {
-	int 		status;
-	char 		**envp;
-	char 		**args;
+	int		status;
+	char	**envp;
+	char	**args;
 
 	if (curr->in > 2)
 		dup2(curr->in, 0);
@@ -50,9 +63,9 @@ static int 		child_proc_pipes(t_d **data, t_params *curr, int *pipefd)
 	exit(status);
 }
 
-static int 		parent_proc_pipes(t_d **data, int *pipefd, int childpid)
+static int		parent_proc_pipes(t_d **data, int *pipefd, int childpid)
 {
-	int 		status;
+	int		status;
 
 	status = 0;
 	(*data)->flag = 1;
@@ -71,11 +84,11 @@ static int 		parent_proc_pipes(t_d **data, int *pipefd, int childpid)
 	return (status);
 }
 
-static int 		pipes_in_work(t_d **data, t_params *curr)
+static int		pipes_in_work(t_d **data, t_params *curr)
 {
-	int 		pipefd[2];
-	int 		childpid;
-	int 		status;
+	int		pipefd[2];
+	int		childpid;
+	int		status;
 
 	childpid = 0;
 	status = 0;
@@ -99,7 +112,7 @@ static int 		pipes_in_work(t_d **data, t_params *curr)
 int				pipes(t_d **data)
 {
 	t_params	*curr;
-	int 		status;
+	int			status;
 
 	status = 0;
 	curr = (*data)->params;
