@@ -15,10 +15,10 @@
 #include "parser.h"
 #include "minishell.h"
 
-char		*tokens_with_single_quotes(char **line)
+static char		*tokens_with_single_quotes(char **line)
 {
-	char 	*token;
-	char 	*curr;
+	char		*token;
+	char		*curr;
 
 	curr = (*line);
 	curr++;
@@ -35,7 +35,7 @@ char		*tokens_with_single_quotes(char **line)
 	return (token);
 }
 
-int 		validate_token_with_double_quotes(char **line, int *spec_char)
+static int		validate_token_with_double_quotes(char **line, int *spec_char)
 {
 	*spec_char = 0;
 	if (*(*line) == '\\')
@@ -56,13 +56,25 @@ int 		validate_token_with_double_quotes(char **line, int *spec_char)
 	return (1);
 }
 
-char		*tokens_with_double_quotes(char **line, t_env *env, int *status)
+static char		*return_token_double_quotes(char **line, char *token, t_parser *p)
 {
-	char 	*token;
-	char	*tmp;
-	char 	*curr;
-	int 	spec_char;
+	char		*curr;
 
+	curr = expand_env_arg(line, p);
+	token = ft_strjoin(token, curr);
+	free(curr);
+	if (!token)
+		exit(errno);
+	return (token);
+}
+
+static char		*tokens_with_double_quotes(char **line, t_parser *p)
+{
+	char		*token;
+	char		*tmp;
+	int			spec_char;
+
+	spec_char = 0;
 	if (!(token = ft_strdup("")))
 		exit(errno);
 	(*line)++;
@@ -72,13 +84,7 @@ char		*tokens_with_double_quotes(char **line, t_env *env, int *status)
 		if (!validate_token_with_double_quotes(line, &spec_char))
 			break ;
 		if (*(*line) == '$' && !spec_char)
-		{
-			curr = expand_env_arg(line, env, status);
-			token = ft_strjoin(token, curr);
-			free(curr);
-			if (!token)
-				exit(errno);
-		}
+			token = return_token_double_quotes(line, token, p);
 		else
 			token = append_to_array(token, *(*line)++);
 		free(tmp);
@@ -86,14 +92,14 @@ char		*tokens_with_double_quotes(char **line, t_env *env, int *status)
 	return (token);
 }
 
-char		*handling_tokens_with_quotes(char **line, t_env *env, int *status)
+char			*handling_tokens_with_quotes(char **line, t_parser *p)
 {
-	char 	*res;
+	char		*res;
 
 	res = NULL;
 	if (*(*line) == '\'')
 		res = tokens_with_single_quotes(line);
 	else if (*(*line) == '\"')
-		res = tokens_with_double_quotes(line, env, status);
+		res = tokens_with_double_quotes(line, p);
 	return (res);
 }

@@ -14,8 +14,8 @@
 
 char		*append_to_array(char *src, char symb)
 {
-	char 	*dst;
-	int 	i;
+	char	*dst;
+	int		i;
 
 	i = 0;
 	if (!(dst = ft_calloc(ft_strlen(src) + 2, sizeof(char))))

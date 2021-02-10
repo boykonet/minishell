@@ -14,12 +14,12 @@
 #include "other.h"
 #include "minishell.h"
 
-void		change_pwd(t_env **env, char *str)
+static void		change_pwd(t_env **env, char *str)
 {
-	t_env	*new;
-	t_env	*pwd;
-	t_env	*oldpwd;
-	char	*tmp;
+	t_env		*new;
+	t_env		*pwd;
+	t_env		*oldpwd;
+	char		*tmp;
 
 	pwd = find_list_env(*env, "PWD", 0);
 	oldpwd = find_list_env(*env, "OLDPWD", 0);
@@ -54,10 +54,10 @@ void		change_pwd(t_env **env, char *str)
 	}
 }
 
-char		*cd_minus(t_list *args, t_env **env)
+static char		*cd_minus(t_list *args, t_env **env)
 {
-	char	*str;
-	char	*res;
+	char		*str;
+	char		*res;
 
 	res = NULL;
 	str = find_data_in_env(*env, "OLDPWD", 0);
@@ -83,10 +83,10 @@ char		*cd_minus(t_list *args, t_env **env)
 	return (res);
 }
 
-char		*arg_for_cd(t_list *args, t_env **env)
+static char		*arg_for_cd(t_list *args, t_env **env)
 {
-	char	*res;
-	char	*str;
+	char		*res;
+	char		*str;
 
 	if (!args || *(char*)args->content == '\0')
 	{
@@ -110,10 +110,10 @@ char		*arg_for_cd(t_list *args, t_env **env)
 	return (res);
 }
 
-int			ft_cd(t_list *args, t_env **env, int fd)
+int				ft_cd(t_list *args, t_env **env)
 {
-	char	*res;
-	char	*pwd;
+	char		*res;
+	char		*pwd;
 
 	pwd = NULL;
 	if (!(res = arg_for_cd(args, env)))
@@ -130,7 +130,7 @@ int			ft_cd(t_list *args, t_env **env, int fd)
 	ft_pwd(&pwd);
 	change_pwd(env, pwd);
 	if (args && !ft_strncmp(args->content, "-", ft_strlen(args->content)))
-		ft_putendl_fd(res, fd);
+		ft_putendl_fd(res, 1);
 	free(res);
 	free(pwd);
 	return (0);

@@ -15,18 +15,21 @@
 static void		arg_exit(char *str, int *neg, unsigned long long *long_num, \
 						int *overflow)
 {
-	if (*str == '-')
+	while (*str == '-' || *str == '+')
 	{
-		*neg = -1;
+		if (*str == '-')
+			*neg = -1;
 		str++;
 	}
-	while (!*overflow && str && *str >= '0' && *str <= '9')
+	while (!*overflow && *str && *str >= '0' && *str <= '9')
 	{
 		*long_num = *long_num * 10 + *str++ - '0';
 		if ((*neg == 1 && *long_num > LLONGMAX) || \
 			(*neg == -1 && *long_num > (LLONGMAX + 1)))
 			*overflow = 1;
 	}
+	if (*str && *str != ' ' && !ft_isdigit(*str))
+		*overflow = 1;
 }
 
 static int		exit_error(char *str, int *error_status, int overflow,\

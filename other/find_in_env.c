@@ -1,5 +1,17 @@
-/* 0 return value have name in needle,
- * 1 return name have value in needle
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   find_in_env.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gkarina <gkarina@student.21-school.ru>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/02/08 14:55:26 by gkarina           #+#    #+#             */
+/*   Updated: 2021/02/08 14:55:26 by gkarina          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+/*
+** 0 return value have name in needle, 1 return name have value in needle
 */
 
 #include "other.h"

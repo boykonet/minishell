@@ -6,19 +6,13 @@
 /*   By: snaomi <snaomi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/27 01:58:49 by snaomi            #+#    #+#             */
-/*   Updated: 2021/02/07 15:42:07 by snaomi           ###   ########.fr       */
+/*   Updated: 2021/02/09 08:22:58 by snaomi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "other.h"
-
-static void		print_notification(t_params *argv)
-{
-	ft_putstr_fd("minishell: unset: `", 2);
-	ft_putstr_fd(argv->args->content, 2);
-	ft_putendl_fd("': not a valid identifier", 2);
-}
+#include "builtins.h"
 
 static void		env_item_free(t_env *env, t_env *prev, void (*del)(t_env *))
 {
@@ -31,35 +25,46 @@ static void		env_item_free(t_env *env, t_env *prev, void (*del)(t_env *))
 	prev->next = curr;
 }
 
+void			del_if_found(t_list *smth, t_env *buf, t_env *buf_prev, t_env *buf_next)	
+{
+	while (buf)
+	{
+		if (!ft_strcmp(smth->content, buf->name))
+		{
+			buf_next = buf->next; 
+			env_item_free(buf, buf_prev, del_env_content);
+			buf = buf_next;
+		}
+		else if (buf)
+		{
+			buf_prev = buf;
+			buf = buf->next;
+		}
+	}
+	return ;
+}
+
+
 int				ft_unset(t_env **env, t_params *argv)
 {
-	t_env		*prev;
+	t_list		*smth;
 	t_env		*buf;
+	t_env		*buf_prev;
+	t_env		*buf_next;
 	int			status;
 
-	buf = *env;
 	status = 0;
-	while (argv->args->next)
+	buf_prev = NULL;
+	buf_next = NULL;
+	smth = argv->args;
+	while (smth->next)
 	{
-		argv->args = argv->args->next;
-		if (check_word(argv->args))
-		{
-			while (buf)
-			{
-				if (!ft_strcmp(argv->args->content, buf->name))
-					env_item_free(buf, prev, del_env_content);
-				if (buf)
-				{
-					prev = buf;
-					buf = buf->next;
-				}
-			}
-		}
+		buf = *env;
+		smth = smth->next;
+		if (check_word(smth))
+			del_if_found(smth, buf, buf_prev, buf_next);
 		else
-		{
-			print_notification(argv);
-			status = 1;
-		}
+			status = print_notification(argv, smth);
 	}
 	return (status);
 }

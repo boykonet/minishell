@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   other.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gkarina <gkarina@student.21-school.ru>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/02/08 09:32:31 by gkarina           #+#    #+#             */
+/*   Updated: 2021/02/08 09:32:31 by gkarina          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef OTHER_H
 # define OTHER_H
 
@@ -13,6 +25,7 @@ t_params			*new_params_element(void);
 t_env				*ft_lstnew_env(void *name, void *value);
 t_env				*new_item(t_list *item);
 int					ft_lstsize_env(t_env *lst);
+int					ft_lstsize_params(t_params *params);
 
 void				del_list_content(void *content);
 void				del_params_content(t_params *params);
@@ -25,14 +38,18 @@ t_env				*find_list_env(t_env *env, char *needle, int spec);
 void				params_free(t_params **params, void (*del)(t_params *));
 void				env_free(t_env **env, void (*del)(t_env *));
 void				free_string(char **str);
+void				free_env_element(t_env *lst);
 
 void				ft_lstadd_back_env(t_env **env, t_env *new);
 char				*remove_spaces(char *line);
 char				**copy_array(char **src);
+void				swap(char **a, char **b);
+void				close_fd(int fd);
 size_t				number_of_lines(char **arr);
 int					getcharacter(int fd, char **line);
 
 void				init_params(t_params **params);
+void 				init_pipes(t_pipes *pp);
 void				init_data(t_d **data);
 
 int					check_command(char *cmd);

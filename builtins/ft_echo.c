@@ -13,7 +13,7 @@
 #include "builtins.h"
 #include "other.h"
 
-int		ft_echo(t_list *args, int fd)
+int			ft_echo(t_list *args)
 {
 	char	*str;
 	int		flag;
@@ -32,12 +32,12 @@ int		ft_echo(t_list *args, int fd)
 	}
 	while (args)
 	{
-		ft_putstr_fd(args->content, fd);
+		ft_putstr_fd(args->content, 1);
 		if (args->next)
-			ft_putstr_fd(" ", fd);
+			ft_putstr_fd(" ", 1);
 		args = args->next;
 	}
 	if (!flag)
-		ft_putendl_fd("", fd);
+		ft_putendl_fd("", 1);
 	return (0);
 }

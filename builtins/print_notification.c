@@ -1,31 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   check_command.c                                    :+:      :+:    :+:   */
+/*   print_notification.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gkarina <gkarina@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: gkarina <gkarina@student.21-school.r       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/01/29 18:25:38 by gkarina           #+#    #+#             */
-/*   Updated: 2021/01/29 18:25:38 by gkarina          ###   ########.fr       */
+/*   Created: 2021/02/09 19:03:52 by gkarina           #+#    #+#             */
+/*   Updated: 2021/02/09 19:03:52 by gkarina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include "other.h"
 
-int			check_command(char *cmd)
+int				print_notification(t_params *argv, t_list *smth)
 {
-	char	**arr;
-	int		count;
-
-	arr = (char*[]) { "echo", "pwd", "cd", "env", "export", "unset", \
-					"exit", NULL };
-	count = 0;
-	while (arr[count])
-	{
-		if (!ft_strcmp(arr[count], cmd))
-			return (0);
-		count++;
-	}
+	ft_putstr_fd("minishell: ", 2);
+	ft_putstr_fd(argv->args->content, 2);
+	ft_putstr_fd(": `", 2);
+	ft_putstr_fd(smth->content, 2);
+	ft_putendl_fd("': not a valid identifier", 2);
 	return (1);
 }

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   functions.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gkarina <gkarina@student.21-school.ru>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/02/08 15:23:20 by gkarina           #+#    #+#             */
+/*   Updated: 2021/02/08 15:23:20 by gkarina          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "other.h"
 
 size_t		number_of_lines(char **arr)
@@ -36,4 +48,24 @@ char		**copy_array(char **src)
 		i++;
 	}
 	return (res);
+}
+
+void			swap(char **a, char **b)
+{
+	char		*t;
+
+	t = *a;
+	*a = *b;
+	*b = t;
+}
+
+void			close_fd(int fd)
+{
+	if (close(fd) < 0)
+	{
+		ft_putstr_fd("-minishell: ", 2);
+		ft_putstr_fd("close: ", 2);
+		ft_putendl_fd(strerror(errno), 2);
+		exit(errno);
+	}
 }

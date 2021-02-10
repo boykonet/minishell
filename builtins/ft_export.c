@@ -6,14 +6,15 @@
 /*   By: snaomi <snaomi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/24 22:34:02 by snaomi            #+#    #+#             */
-/*   Updated: 2021/02/07 15:51:22 by snaomi           ###   ########.fr       */
+/*   Updated: 2021/02/09 15:31:59 by snaomi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "other.h"
+#include "builtins.h"
 
-void			print_export(char **str, int len)
+void			form_export(char **str, int len)
 {
 	int		k;
 	int		i;
@@ -36,15 +37,6 @@ void			print_export(char **str, int len)
 		ft_putchar_fd('\n', 1);
 		k++;
 	}
-}
-
-static void		swap(char **a, char **b)
-{
-	char		*t;
-
-	t = *a;
-	*a = *b;
-	*b = t;
 }
 
 static int		relative_position(char **arr, int low, int high)
@@ -82,27 +74,41 @@ static void		quicksort(char **arr, int low, int high)
 	}
 }
 
+void 			print_export(t_env *buf)
+{
+	int		len;
+	char	**arr;
+
+	len = ft_lstsize_env(buf);
+	arr = convert_env_to_arr(buf);
+	quicksort(arr, 0, len - 1);
+	form_export(arr, len);
+	free_string(arr);
+	return ;
+}
+
 int				ft_export(t_env **env, t_params *argv)
 {
-	char	**arr;
 	t_env	*random;
 	t_env	*buf;
-	int		len;
 	int		status;
+	t_list	*smth;
 
 	buf = *env;
 	status = 0;
-	while (argv->args->next)
+	smth = argv->args;
+	while (smth->next)
 	{
-		argv->args = argv->args->next;
-		if (check_word(argv->args))
+		smth = smth->next;
+		if (check_word(smth))
 		{
-			random = new_item(argv->args);
+			random = new_item(smth);
 			while (buf)
 			{
+				// add_if_found(buf, random);
 				if (!ft_strcmp(random->name, buf->name))
 				{
-					if (random->value)
+					if (random->value && *random->value != '\0')
 					{
 						buf->value = random->value;
 						return (0);
@@ -116,20 +122,9 @@ int				ft_export(t_env **env, t_params *argv)
 			buf = *env;
 		}
 		else
-		{
-			ft_putstr_fd("minishell: export: `", 2);
-			ft_putstr_fd(argv->args->content, 2);
-			ft_putendl_fd("': not a valid identifier", 2);
-			status = 1;
-		}
+			status = print_notification(argv, smth);
 	}
-	if (!ft_strncmp(argv->args->content, "export", 6))
-	{
-		len = ft_lstsize_env(buf);
-		arr = convert_env_to_arr(buf);
-		quicksort(arr, 0, len - 1);
-		print_export(arr, len);
-		free_string(arr);
-	}
+	if (!ft_strncmp(argv->args->content, "export", 6) && !argv->args->next)
+		print_export(buf);
 	return (status);
 }

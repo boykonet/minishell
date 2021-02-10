@@ -11,9 +11,6 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include "builtins.h"
-#include "other.h"
-#include "parser.h"
 
 int			open_fd(char *file, char *redir)
 {
@@ -28,5 +25,12 @@ int			open_fd(char *file, char *redir)
 	else if (!ft_strncmp(redir, ">>", ft_strlen(redir)))
 		fd = open(file, O_CREAT | O_RDWR | O_APPEND, \
 		S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+	if (fd < 0)
+	{
+		ft_putstr_fd("-minishell: ", 2);
+		ft_putstr_fd(file, 2);
+		ft_putstr_fd(": ", 2);
+		ft_putendl_fd(strerror(errno), 2);
+	}
 	return (fd);
 }

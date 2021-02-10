@@ -21,6 +21,11 @@ void		init_params(t_params **params)
 	(*params)->next = NULL;
 }
 
+void 		init_pipes(t_pipes *pp)
+{
+	*pp = (t_pipes) { { 0, 0 }, { 0, 0 }, NULL, 0, 0 };
+}
+
 void		init_data(t_d **data)
 {
 	(*data)->argc = 0;

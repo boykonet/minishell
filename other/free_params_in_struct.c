@@ -53,3 +53,14 @@ void			free_string(char **str)
 	}
 	free(str);
 }
+
+void			free_env_element(t_env *lst)
+{
+	if (!lst)
+		return ;
+	if (lst->name)
+		free(lst->name);
+	if (lst->value)
+		free(lst->value);
+	free(lst);
+}

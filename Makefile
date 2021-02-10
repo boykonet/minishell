@@ -11,7 +11,7 @@ MINISRCS =	builtins/builtins.c \
             builtins/ft_pwd.c \
             builtins/ft_unset.c \
             builtins/pipes.c \
-            builtins/read_and_write_pipeline.c \
+            builtins/print_notification.c \
             builtins/signals.c \
             other/check_command.c \
             other/check_word.c \
@@ -31,13 +31,15 @@ MINISRCS =	builtins/builtins.c \
 			other/prompt_line.c \
 			parser/append_to_array.c \
             parser/check_redir.c \
+            parser/check_unexpected_token.c \
             parser/expand_env_arg.c \
             parser/handling_tokens_with_quotes.c \
             parser/open_and_close_fd.c \
             parser/open_fd.c \
             parser/parser.c \
 			parser/number_of_redirect.c \
-			parser/return_token.c
+			parser/return_token.c \
+			parser/shape_name_fd.c
 
 CFLAGS = -g -fsanitize=address -Wall -Wextra -Werror
 

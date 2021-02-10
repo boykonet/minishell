@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipes.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: snaomi <snaomi@student.42.fr>              +#+  +:+       +#+        */
+/*   By: gkarina <gkarina@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/02/07 15:52:01 by snaomi            #+#    #+#             */
-/*   Updated: 2021/02/07 16:01:07 by snaomi           ###   ########.fr       */
+/*   Created: 2021/02/10 15:33:57 by gkarina           #+#    #+#             */
+/*   Updated: 2021/02/10 15:33:57 by gkarina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,20 +14,22 @@
 #include "other.h"
 #include "minishell.h"
 
-static int		child_proc_pipes_cmd(t_d **data, t_params *curr, char **args, \
+static int		write_in_fd(t_d **data, t_params *curr, char **args, \
 									char **envp)
 {
-	int		status;
-	char	*cmd;
+	int			status;
+	char		*cmd;
 
 	status = 0;
+	cmd = NULL;
 	if (!(cmd = find_path(curr->args->content, \
-	find_data_in_env((*data)->env, "PATH", 0))))
-		if (!(cmd = ft_strdup(curr->args->content)))
-			exit(EXIT_FAILURE);
-	if (!check_command(curr->args->content))
+	find_data_in_env((*data)->env, "PATH", 0), &status)))
+		if (!status)
+			if (!(cmd = ft_strdup(curr->args->content)))
+				exit(EXIT_FAILURE);
+	if (!status && !check_command(curr->args->content))
 		status = builtins(data, curr);
-	else
+	else if (!status)
 	{
 		if (execve(cmd, args, envp) < 0)
 		{
@@ -41,87 +43,129 @@ static int		child_proc_pipes_cmd(t_d **data, t_params *curr, char **args, \
 	return (status);
 }
 
-static int		child_proc_pipes(t_d **data, t_params *curr, int *pipefd)
+static int		cmd_write(t_d **data, t_params *curr, t_pipes *pp)
 {
-	int		status;
-	char	**envp;
-	char	**args;
+	int			status;
+	char		**envp;
+	char		**args;
 
 	if (curr->in > 2)
 		dup2(curr->in, 0);
 	if (curr->out > 2)
 		dup2(curr->out, 1);
-	else
-		dup2(pipefd[1], 1);
-	close(pipefd[0]);
-	close(pipefd[1]);
+	else if (pp->position < pp->size_params - 1)
+		dup2(pp->rpipe[1], 1);
+	close_fd(pp->rpipe[0]);
+	close_fd(pp->rpipe[1]);
 	envp = convert_env_to_arr((*data)->env);
 	args = convert_struct_to_array(curr->args);
-	status = child_proc_pipes_cmd(data, curr, args, envp);
+	status = write_in_fd(data, curr, args, envp);
 	free_string(args);
 	free_string(envp);
-	exit(status);
-}
-
-static int		parent_proc_pipes(t_d **data, int *pipefd, int childpid)
-{
-	int		status;
-
-	status = 0;
-	(*data)->flag = 1;
-	dup2(pipefd[0], 0);
-	close(pipefd[0]);
-	close(pipefd[1]);
-	if (waitpid(childpid, &status, 0) < 0)
-	{
-		ft_putendl_fd("-minishell: waitpid failed", 2);
-		exit(EXIT_FAILURE);
-	}
-	if (WIFEXITED(status))
-		status = WEXITSTATUS(status);
-	else if (WIFSIGNALED(status))
-		status = 128 + WTERMSIG(status);
 	return (status);
 }
 
-static int		pipes_in_work(t_d **data, t_params *curr)
+static void		cmd_read(t_d **data, int *lpipe)
 {
-	int		pipefd[2];
-	int		childpid;
-	int		status;
+	(*data)->flag = 1;
+	dup2(lpipe[0], 0);
+	close_fd(lpipe[0]);
+	close_fd(lpipe[1]);
+}
 
-	childpid = 0;
-	status = 0;
-	if (pipe(pipefd) == -1)
+static void		fork_child_proc(t_d **data, t_params *curr, t_pipes *pp)
+{
+	int 		status;
+
+	if (!((pp->childpid[pp->position]) = fork()))
 	{
-		ft_putendl_fd("-minishell: pipe failed", 2);
-		exit(EXIT_FAILURE);
+		if (pp->position > 0)
+			cmd_read(data, pp->lpipe);
+		status = cmd_write(data, curr, pp);
+		exit(status);
 	}
-	if ((childpid = fork()) < 0)
+	if ((pp->childpid[pp->position]) < 0)
 	{
 		ft_putendl_fd("-minishell: fork failed", 2);
 		exit(EXIT_FAILURE);
 	}
-	if (!childpid)
-		status = child_proc_pipes(data, curr, pipefd);
-	else
-		status = parent_proc_pipes(data, pipefd, childpid);
+}
+
+static int 		parent_pipes(t_pipes *pp)
+{
+	int 		status;
+	int 		i;
+
+	i = 0;
+	status = 0;
+	while (i < pp->size_params)
+	{
+		if (waitpid(pp->childpid[i], &status, WUNTRACED) < 0)
+		{
+			ft_putstr_fd("-minishell: waitpid: ", 2);
+			ft_putendl_fd(strerror(errno), 2);
+			exit(EXIT_FAILURE);
+		}
+		if (WIFEXITED(status))
+			status = WEXITSTATUS(status);
+		else if (WIFSIGNALED(status))
+			status = 128 + WTERMSIG(status);
+		i++;
+	}
+	return (status);
+}
+
+static void 	work_child_proc(t_d **data, t_params *curr, t_pipes *pp)
+{
+	if (pipe(pp->rpipe) == -1)
+	{
+		ft_putendl_fd("-minishell: pipe failed", 2);
+		exit(EXIT_FAILURE);
+	}
+	fork_child_proc(data, curr, pp);
+	if (pp->position > 0)
+	{
+		close_fd(pp->lpipe[0]);
+		close_fd(pp->lpipe[1]);
+	}
+	if (pp->position < pp->size_params - 1)
+	{
+		pp->lpipe[0] = pp->rpipe[0];
+		pp->lpipe[1] = pp->rpipe[1];
+	}
+}
+
+static int		pipes_in_work(t_d **data)
+{
+	t_pipes 	pp;
+	t_params	*curr;
+	int			status;
+
+	init_pipes(&pp);
+	curr = (*data)->params;
+	pp.size_params = ft_lstsize_params((*data)->params);
+	if (!(pp.childpid = ft_calloc(pp.size_params, sizeof(pid_t))))
+		exit(errno);
+	while (curr)
+	{
+		work_child_proc(data, curr, &pp);
+		curr = curr->next;
+		pp.position++;
+	}
+	close_fd(pp.rpipe[0]);
+	close_fd(pp.rpipe[1]);
+	status = parent_pipes(&pp);
+	free(pp.childpid);
 	return (status);
 }
 
 int				pipes(t_d **data)
 {
-	t_params	*curr;
 	int			status;
 
-	status = 0;
-	curr = (*data)->params;
-	while (!status && curr)
-	{
-		status = pipes_in_work(data, curr);
-		curr = curr->next;
-	}
-	read_and_write_pipeline((*data)->origfd);
+	status = pipes_in_work(data);
+	dup2((*data)->origfd[0], 0);
+	dup2((*data)->origfd[1], 1);
 	(*data)->flag = 0;
 	return (status);
 }

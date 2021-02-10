@@ -14,39 +14,62 @@
 #include "parser.h"
 #include "minishell.h"
 
-void			write_token_to_list(char **line, t_list **list, t_parser *p)
+void			write_token_to_list(char **line, t_list **list, t_parser *p, int *flag)
 {
 	char 		*str;
+	char 		*tmp;
 
 	str = return_token(line, p);
-	if (!((*list) = ft_lstnew(str)))
-		exit(errno);
+	*flag = 0;
+	if (ft_strchr(str, ' ') && p->dollar_flag == 1)
+	{
+		tmp = *p->copy_line;
+		*p->copy_line = ft_strjoin(str, (*line));
+		free(tmp);
+		free(str);
+		if (!(*line))
+			exit(errno);
+		(*line) = *p->copy_line;
+	}
+	if (((p->quotes && !ft_strncmp(str, "", 1)) || ft_strncmp(str, "", 1)) || p->dollar_flag == 2)
+	{
+		*flag = 1;
+		if (!((*list) = ft_lstnew(str)))
+			exit(errno);
+	}
 }
 
-void			first_elem_list(char **line, t_parser *p, t_params **params)
+void			first_elem_list(char **line, t_parser *p, t_params **params, int *flag)
 {
-	(*line) = remove_spaces((*line));
-	while (p->exit_status != 2 && *(*line) && (*(*line) == '<' || *(*line) == '>'))
-		open_and_close_fd(line, p, &(p->params));
-	(*line) = remove_spaces((*line));
-	write_token_to_list(line, &(*params)->args, p);
-	if (!p->quotes && !check_unexpected_token((char**)&((*params)->args)->content))
+	while (!(*params)->args && *(*line) && *(*line) != ';' && *(*line) != '|')
 	{
-		ft_putstr_fd("-minishell: syntax error near unexpected token `", 2);
-		ft_putstr_fd(p->params->args->content, 2);
-		ft_putendl_fd("'", 2);
-		p->status = 258;
-		p->exit_status = 2;
+		(*line) = remove_spaces((*line));
+		while (p->exit_status != 2 && *(*line) && (*(*line) == '<' || *(*line) == '>'))
+			open_and_close_fd(line, p, &(p->params));
+		(*line) = remove_spaces((*line));
+		write_token_to_list(line, &(*params)->args, p, flag);
+		if (!*flag)
+			continue ;
+		if (!p->quotes && !check_unexpected_token((char **) &((*params)->args)->content))
+		{
+			ft_putstr_fd("-minishell: syntax error near unexpected token `", 2);
+			ft_putstr_fd(p->params->args->content, 2);
+			ft_putendl_fd("'", 2);
+			p->status = 258;
+			p->exit_status = 2;
+		}
 	}
 }
 
 int				parsing(char **line, t_parser *p, t_params **params)
 {
 	t_list		*lst;
+	int 		flag;
 
+	flag = 0;
 	if (*(*line) && *(*line) != '|' && *(*line) != ';')
 	{
-		first_elem_list(line, p, params);
+		first_elem_list(line, p, params, &flag);
 		lst = (*params)->args;
 		while (p->exit_status != 2 && *(*line) && (*(*line) != '|' && *(*line) != ';'))
 		{
@@ -56,8 +79,9 @@ int				parsing(char **line, t_parser *p, t_params **params)
 			else if (*(*line) && *(*line) != '|' && *(*line) != ';')
 			{
 				(*line) = remove_spaces((*line));
-				write_token_to_list(line, &lst->next, p);
-				lst = lst->next;
+				write_token_to_list(line, &lst->next, p, &flag);
+				if (flag)
+					lst = lst->next;
 			}
 		}
 	}
@@ -83,30 +107,58 @@ void			check_pipes_semicolon(char **line, t_parser *p)
 		(*line)++;
 }
 
+void 			init_parser(t_d **data, t_parser *p, int *status)
+{
+	p->copy_line = &(*data)->line;
+	p->env = (*data)->env;
+	p->status = *status;
+	p->exit_status = (*data)->exit_status == 2 ? 1 : 0;
+	p->quotes = 0;
+	p->dollar_flag = 0;
+}
+
 void			parser(char **line, t_d **data, int *status)
 {
 	t_parser	p;
+	int 		flag;
 
-	p.env = (*data)->env;
-	p.status = *status;
-	p.exit_status = (*data)->exit_status == 2 ? 1 : 0;
-	p.quotes = 0;
+	init_parser(data, &p, status);
 	if (*(*line))
 	{
-		(*data)->params = new_params_element();
-		p.params = (*data)->params;
-		parsing(line, &p, &(p.params));
-		if (p.exit_status != 2 && !p.quotes)
-			check_pipes_semicolon(line, &p);
+		while (*(*line) && *(*line) != ';')
+		{
+			flag = 0;
+			(*data)->params = new_params_element();
+			p.params = (*data)->params;
+			parsing(line, &p, &(p.params));
+			if (p.exit_status != 2 && !p.quotes)
+				check_pipes_semicolon(line, &p);
+			if (!ft_lstsize(p.params->args))
+			{
+				flag = 1;
+				params_free(&(*data)->params, del_params_content);
+				(*data)->params = NULL;
+			}
+			if (!flag)
+				break ;
+		}
 		while (p.exit_status != 2 && *(*line) && *(*line) != ';')
 		{
 			p.params->next = new_params_element();
 			parsing(line, &p, &(p.params->next));
-			if (p.exit_status == 2)
-				break ;
-			if (!p.quotes)
-				check_pipes_semicolon(line, &p);
-			p.params = p.params->next;
+			if (!ft_lstsize(p.params->args))
+			{
+				params_free(&(*data)->params, del_params_content);
+				(*data)->params = NULL;
+			}
+			else
+			{
+				if (p.exit_status == 2)
+					break ;
+				if (!p.quotes)
+					check_pipes_semicolon(line, &p);
+				p.params = p.params->next;
+			}
 		}
 	}
 	if (p.status > 0 && p.exit_status == 1)

@@ -22,20 +22,30 @@ static int		one_command(t_d **data)
 	char		*cmd;
 	int			status;
 
+	status = 0;
 	if (!check_command((*data)->params->args->content))
 	{
+		if ((*data)->params->in > 2)
+			dup2((*data)->params->in, 0);
+		if ((*data)->params->out > 2)
+			dup2((*data)->params->out, 1);
 		status = builtins(data, (*data)->params);
 		if (status > 0 && (*data)->exit_status != 1)
 			(*data)->exit_status = 2;
+		dup2((*data)->origfd[0], 0);
+		dup2((*data)->origfd[1], 1);
 	}
 	else
 	{
 		arr = convert_struct_to_array((*data)->params->args);
 		envp = convert_env_to_arr((*data)->env);
 		if (!(cmd = find_path((*data)->params->args->content,\
-		find_data_in_env((*data)->env, "PATH", 0))))
-			cmd = ft_strdup((*data)->params->args->content);
-		status = create_process(data, arr, envp, cmd);
+		find_data_in_env((*data)->env, "PATH", 0), &status)))
+			if (!status)
+				if (!(cmd = ft_strdup((*data)->params->args->content)))
+					exit(errno);
+		if (!status)
+			status = create_process(data, arr, envp, cmd);
 		if (status > 0)
 			(*data)->exit_status = 2;
 		free_string(arr);
@@ -45,7 +55,25 @@ static int		one_command(t_d **data)
 	return (status);
 }
 
-int				bla(t_d **data, int *status)
+static int 		pipes_and_one_cmd(t_d **data, int *status)
+{
+	if ((*data)->params && (*data)->params->next)
+	{
+		*status = pipes(data);
+		if (*status > 0)
+			(*data)->exit_status = 2;
+	}
+	else if ((*data)->params)
+	{
+		*status = one_command(data);
+		if (!ft_strcmp((*data)->params->args->content, "exit") && \
+				(*data)->exit_status == 1)
+			return (0);
+	}
+	return (1);
+}
+
+static int		programm_logic(t_d **data, int *status)
 {
 	char		*curr_symb;
 
@@ -61,23 +89,29 @@ int				bla(t_d **data, int *status)
 		parser(&curr_symb, data, status);
 		if (*status)
 			break ;
-		if (*curr_symb == ';' && *(curr_symb + 1) != *curr_symb)
-			curr_symb++;
-		if ((*data)->params->next)
-		{
-			*status = pipes(data);
-			if (*status > 0)
-				(*data)->exit_status = 2;
-		}
-		else
-		{
-			*status = one_command(data);
-			if (!ft_strcmp((*data)->params->args->content, "exit") && \
-				(*data)->exit_status == 1)
-				return (0);
-		}
-		if (*status && *curr_symb == '\0')
+		if (!pipes_and_one_cmd(data, status))
+			return (0);
+		if (*status && *curr_symb != ';')
 			break ;
+		if (*curr_symb == ';')
+			curr_symb++;
+	}
+	return (1);
+}
+
+static int 		read_and_write_cmd(t_d *data, int *status)
+{
+	print_prompt_line(data, 0);
+	if (!(getcharacter(0, &data->line)))
+	{
+		*status = 0;
+		del_data_content(data);
+		return (0);
+	}
+	if (!programm_logic(&data, status))
+	{
+		del_data_content(data);
+		return (0);
 	}
 	return (1);
 }
@@ -100,18 +134,8 @@ int				main(int argc, char **argv, char **envp)
 	{
 		data->line = NULL;
 		data->params = NULL;
-		print_prompt_line(data, 0);
-		if (!(getcharacter(0, &data->line)))
-		{
-			status = 0;
-			del_data_content(data);
+		if (!read_and_write_cmd(data, &status))
 			break ;
-		}
-		if (!bla(&data, &status))
-		{
-			del_data_content(data);
-			break ;
-		}
 		free(data->line);
 		params_free(&data->params, del_params_content);
 	}

@@ -45,10 +45,21 @@ typedef struct		s_parser
 {
 	t_params		*params;
 	t_env			*env;
+	char 			**copy_line;
 	int				status;
 	int				exit_status;
 	int				quotes;
+	int 			dollar_flag;
 }					t_parser;
+
+typedef struct 		s_pipes
+{
+	int 			lpipe[2];
+	int 			rpipe[2];
+	pid_t			*childpid;
+	int 			size_params;
+	int 			position;
+}					t_pipes;
 
 typedef struct		s_d
 {

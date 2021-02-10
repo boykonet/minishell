@@ -14,53 +14,24 @@
 #include "parser.h"
 #include "minishell.h"
 
-int				check_unexpected_token(char **name_fd)
+static void 	error_or_open_fd(t_parser *p, char **nfd, char *redir, int *fd)
 {
-	char		**err;
-	char		*tmp;
-	int			i;
-
-	i = 0;
-	tmp = *name_fd;
-	err = (char*[]) {">>", "<<", ";;", "||", "<", ">", "(", ")", ";", \
-						"|", "", NULL};
-	while (err[i])
+	if (!p->quotes && !check_unexpected_token(nfd))
 	{
-		if (**name_fd == *err[i] && \
-		!ft_strncmp(err[i], *name_fd, ft_strlen(err[i])) && \
-		!ft_isalpha(*(*name_fd + ft_strlen(err[i]))))
-		{
-			if (!ft_strncmp(*name_fd, "", ft_strlen(*name_fd)))
-				*name_fd = ft_strdup("newline");
-			else
-				*name_fd = ft_strdup(err[i]);
-			free(tmp);
-			if (!*name_fd)
-				exit(errno);
-			return (0);
-		}
-		i++;
-	}
-	return (1);
-}
-
-static char		*shape_name_fd(char **line, char *curr, t_parser *p)
-{
-	char		symb;
-	char		*name_fd;
-
-	symb = *(*line);
-	if (*curr == ';' || *curr == '|')
-	{
-		while (*curr && *curr == symb && *curr != ' ')
-			curr++;
-		if (!(name_fd = ft_substr((*line), 0, curr - *(line))))
-			exit(errno);
-		(*line) = curr;
+		ft_putstr_fd("-minishell: syntax error near unexpected token `", 2);
+		ft_putstr_fd((*nfd), 2);
+		ft_putendl_fd("'", 2);
+		p->status = 258;
+		p->exit_status = 2;
 	}
 	else
-		name_fd = return_token(line, p);
-	return (name_fd);
+	{
+		if ((*fd = open_fd((*nfd), redir)) < 0)
+		{
+			p->status = 1;
+			p->exit_status = 2;
+		}
+	}
 }
 
 int				redirect_and_name_fd(char **line, t_parser *p, int *fd)
@@ -70,6 +41,7 @@ int				redirect_and_name_fd(char **line, t_parser *p, int *fd)
 	char		*nfd;
 
 	curr = (*line);
+	nfd = NULL;
 	while (*curr && *curr == *(*line) && *curr != ' ')
 		curr++;
 	if (!(redir = ft_substr((*line), 0, curr - (*line))))
@@ -77,26 +49,8 @@ int				redirect_and_name_fd(char **line, t_parser *p, int *fd)
 	curr = remove_spaces(curr);
 	(*line) = curr;
 	nfd = shape_name_fd(line, curr, p);
-	if (!p->quotes && !check_unexpected_token(&nfd))
-	{
-		ft_putstr_fd("-minishell: syntax error near unexpected token `", 2);
-		ft_putstr_fd(nfd, 2);
-		ft_putendl_fd("'", 2);
-		p->status = 258;
-		p->exit_status = 2;
-	}
-	else
-	{
-		if ((*fd = open_fd(nfd, redir)) < 0)
-		{
-			ft_putstr_fd("-minishell: ", 2);
-			ft_putstr_fd(nfd, 2);
-			ft_putstr_fd(": ", 2);
-			ft_putendl_fd(strerror(errno), 2);
-			p->status = 1;
-			p->exit_status = 2;
-		}
-	}
+	if (p->exit_status != 2)
+		error_or_open_fd(p, &nfd, redir, fd);
 	free(redir);
 	free(nfd);
 	if (p->status && p->exit_status)
@@ -107,16 +61,7 @@ int				redirect_and_name_fd(char **line, t_parser *p, int *fd)
 static int		reopen_fd(char **line, t_parser *p, int *fd)
 {
 	if (*fd > 2)
-	{
-		if (close(*fd) < 0)
-		{
-			ft_putstr_fd("-minishell: ", 2);
-			ft_putendl_fd(strerror(errno), 2);
-			p->status = errno;
-			p->exit_status = 2;
-			return (0);
-		}
-	}
+		close_fd(*fd);
 	if (!redirect_and_name_fd(line, p, fd))
 		return (0);
 	return (1);

@@ -21,7 +21,7 @@ add_executable(srcs
 		builtins/pipes.c
 		builtins/create_process.c
 		builtins/signals.c
-		builtins/read_and_write_pipeline.c
+		builtins/print_notification.c
 		other/convert_from_to.c
 		other/copy_envp_to_struct.c
 		other/create_new_elements.c
@@ -44,6 +44,8 @@ add_executable(srcs
 		parser/parser.c
 		parser/number_of_redirect.c
 		parser/return_token.c
+		parser/check_unexpected_token.c
+		parser/shape_name_fd.c
         headers/minishell.h
 
 		other/check_word.c

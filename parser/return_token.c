@@ -14,13 +14,13 @@
 #include "parser.h"
 #include "minishell.h"
 
-char 		*token_without_quotes(char **line, t_env *env, const int *spec_char, int *status)
+char 		*token_without_quotes(char **line, t_parser *p, const int *spec_char)
 {
 	char 	*curr;
 
 	curr = NULL;
 	if (*(*line) == '$' && !(*spec_char))
-		curr = expand_env_arg(line, env, status);
+		curr = expand_env_arg(line, p);
 	else
 	{
 		if (!(curr = ft_calloc(2, sizeof(char))))
@@ -46,11 +46,11 @@ char 		*check_line(char **line, t_parser *p)
 	}
 	if ((*(*line) == '\'' || *(*line) == '\"') && !spec_char)
 	{
-		curr = handling_tokens_with_quotes(line, p->env, &p->status);
+		curr = handling_tokens_with_quotes(line, p);
 		p->quotes = 1;
 	}
 	else
-		curr = token_without_quotes(line, p->env, &spec_char, &p->status);
+		curr = token_without_quotes(line, p, &spec_char);
 	return (curr);
 }
 
@@ -61,6 +61,7 @@ char 		*return_token(char **line, t_parser *p)
 	char 	*curr;
 
 	p->quotes = 0;
+	p->dollar_flag = 0;
 	if (!(res = ft_strdup("")))
 		exit(errno);
 	while (line && *(*line) && *(*line) != ' ' && *(*line) != ';' && *(*line) != '|' && *(*line) != '>' && *(*line) != '<')
