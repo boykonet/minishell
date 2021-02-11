@@ -38,7 +38,6 @@ t_params		*new_params_element(void)
 t_env			*new_item(t_list *item)
 {
 	t_env		*random;
-
 	random = ft_lstnew_env(NULL, NULL);
 	if (ft_strchr(item->content, '='))
 		ft_split_by_quation(item->content, random, '=');

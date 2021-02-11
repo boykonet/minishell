@@ -24,6 +24,7 @@ int					ft_export(t_env **env, t_params *argv);
 int					ft_unset(t_env **env, t_params *argv);
 int					ft_exit(t_list *args, int *error_status);
 
+int					pipes_and_one_cmd(t_d **data, int *status);
 int					pipes(t_d **data);
 char				*find_path(char *old_cmd, char *path, int *status);
 int					builtins(t_d **data, t_params *params);

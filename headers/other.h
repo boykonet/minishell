@@ -16,7 +16,6 @@
 # include "minishell.h"
 # include "../libs/libft/libft.h"
 
-t_list				*convert_array_to_struct(char **array);
 char				**convert_struct_to_array(t_list *lst);
 char				**convert_env_to_arr(t_env *env);
 t_env				*copy_envp_to_struct(char **envp);
@@ -43,7 +42,7 @@ void				free_env_element(t_env *lst);
 void				ft_lstadd_back_env(t_env **env, t_env *new);
 char				*remove_spaces(char *line);
 char				**copy_array(char **src);
-void				swap(char **a, char **b);
+void				quicksort(char **arr, int low, int high);
 void				close_fd(int fd);
 size_t				number_of_lines(char **arr);
 int					getcharacter(int fd, char **line);

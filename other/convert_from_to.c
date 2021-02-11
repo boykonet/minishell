@@ -12,32 +12,6 @@
 
 #include "other.h"
 
-t_list		*convert_array_to_struct(char **array)
-{
-	t_list	*res;
-	t_list	*curr;
-	int		i;
-
-	i = 0;
-	res = NULL;
-	if (array[i])
-	{
-		if (!(res = ft_lstnew(ft_strdup(array[i++]))))
-			return (NULL);
-	}
-	curr = res;
-	while (array[i])
-	{
-		if (!(curr->next = ft_lstnew(ft_strdup(array[i++]))))
-		{
-			ft_lstclear(&res, del_list_content);
-			return (NULL);
-		}
-		curr = curr->next;
-	}
-	return (res);
-}
-
 char		**convert_struct_to_array(t_list *lst)
 {
 	t_list	*curr;
@@ -87,7 +61,7 @@ char		**convert_env_to_arr(t_env *env)
 			free(tmp);
 		}
 		else
-			arr[i] = ft_strjoin(env->name, "=");
+			arr[i] = ft_strdup(env->name);
 		if (!arr[i])
 			exit(errno);
 		i++;

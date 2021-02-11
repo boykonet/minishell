@@ -3,11 +3,13 @@
 void		*ft_split_by_quation(char *str, t_env *lst, char c)
 {
 	char	*tmp;
-
 	tmp = ft_strchr(str, c);
 	lst->name = ft_substr(str, 0, tmp - str);
-	lst->value = ft_substr(tmp, 1, ft_strlen(str));
-	if (!lst->name || !lst->value)
+	if (*(tmp + 1) == '\0')
+		lst->value = ft_strdup("");
+	else
+		lst->value = ft_substr(tmp, 1, ft_strlen(str));
+	if (!lst->name)
 		exit(errno);
 	return (tmp);
 }

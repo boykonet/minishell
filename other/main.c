@@ -15,64 +15,6 @@
 #include "builtins.h"
 #include "other.h"
 
-static int		one_command(t_d **data)
-{
-	char		**arr;
-	char		**envp;
-	char		*cmd;
-	int			status;
-
-	status = 0;
-	if (!check_command((*data)->params->args->content))
-	{
-		if ((*data)->params->in > 2)
-			dup2((*data)->params->in, 0);
-		if ((*data)->params->out > 2)
-			dup2((*data)->params->out, 1);
-		status = builtins(data, (*data)->params);
-		if (status > 0 && (*data)->exit_status != 1)
-			(*data)->exit_status = 2;
-		dup2((*data)->origfd[0], 0);
-		dup2((*data)->origfd[1], 1);
-	}
-	else
-	{
-		arr = convert_struct_to_array((*data)->params->args);
-		envp = convert_env_to_arr((*data)->env);
-		if (!(cmd = find_path((*data)->params->args->content,\
-		find_data_in_env((*data)->env, "PATH", 0), &status)))
-			if (!status)
-				if (!(cmd = ft_strdup((*data)->params->args->content)))
-					exit(errno);
-		if (!status)
-			status = create_process(data, arr, envp, cmd);
-		if (status > 0)
-			(*data)->exit_status = 2;
-		free_string(arr);
-		free_string(envp);
-		free(cmd);
-	}
-	return (status);
-}
-
-static int 		pipes_and_one_cmd(t_d **data, int *status)
-{
-	if ((*data)->params && (*data)->params->next)
-	{
-		*status = pipes(data);
-		if (*status > 0)
-			(*data)->exit_status = 2;
-	}
-	else if ((*data)->params)
-	{
-		*status = one_command(data);
-		if (!ft_strcmp((*data)->params->args->content, "exit") && \
-				(*data)->exit_status == 1)
-			return (0);
-	}
-	return (1);
-}
-
 static int		programm_logic(t_d **data, int *status)
 {
 	char		*curr_symb;
@@ -99,7 +41,7 @@ static int		programm_logic(t_d **data, int *status)
 	return (1);
 }
 
-static int 		read_and_write_cmd(t_d *data, int *status)
+static int		read_and_write_cmd(t_d *data, int *status)
 {
 	print_prompt_line(data, 0);
 	if (!(getcharacter(0, &data->line)))

@@ -11,6 +11,7 @@ MINISRCS =	builtins/builtins.c \
             builtins/ft_pwd.c \
             builtins/ft_unset.c \
             builtins/pipes.c \
+            builtins/pipes_and_one_cmd.c \
             builtins/print_notification.c \
             builtins/signals.c \
             other/check_command.c \
@@ -29,6 +30,7 @@ MINISRCS =	builtins/builtins.c \
 			other/getcharacter.c \
 			other/init.c \
 			other/prompt_line.c \
+			other/sort.c \
 			parser/append_to_array.c \
             parser/check_redir.c \
             parser/check_unexpected_token.c \

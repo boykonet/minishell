@@ -50,15 +50,6 @@ char		**copy_array(char **src)
 	return (res);
 }
 
-void			swap(char **a, char **b)
-{
-	char		*t;
-
-	t = *a;
-	*a = *b;
-	*b = t;
-}
-
 void			close_fd(int fd)
 {
 	if (close(fd) < 0)

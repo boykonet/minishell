@@ -6,13 +6,30 @@
 /*   By: snaomi <snaomi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/24 22:34:02 by snaomi            #+#    #+#             */
-/*   Updated: 2021/02/09 15:31:59 by snaomi           ###   ########.fr       */
+/*   Updated: 2021/02/11 18:08:47 by snaomi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "other.h"
 #include "builtins.h"
+
+void			print_comma(char **str, int k, int i)
+{
+	if(str[k][i])
+	{
+		ft_putchar_fd('"', 1);
+		while (str[k][i] != '\0')
+			ft_putchar_fd(str[k][i++], 1);
+		ft_putchar_fd('"', 1);
+	}
+	else if (str[k][i - 1] == '=')
+	{
+		ft_putchar_fd('"', 1);
+		ft_putchar_fd('"', 1);
+	}
+	ft_putchar_fd('\n', 1);
+}
 
 void			form_export(char **str, int len)
 {
@@ -24,55 +41,16 @@ void			form_export(char **str, int len)
 	{
 		i = 0;
 		ft_putstr_fd("declare -x ", 1);
-		while (str[k][i])
+		while ((i == 0 && str[k][i]) || (str[k][i] && str[k][i - 1] != '='))
 		{
-			ft_putchar_fd(str[k][i++], 1);
-			if (str[k][i - 1] == '=')
-				break ;
+			ft_putchar_fd(str[k][i], 1);
+			i++;
 		}
-		ft_putchar_fd('"', 1);
-		while (str[k][i] != '\0')
-			ft_putchar_fd(str[k][i++], 1);
-		ft_putchar_fd('"', 1);
-		ft_putchar_fd('\n', 1);
+		print_comma(str, k, i);
 		k++;
 	}
 }
 
-static int		relative_position(char **arr, int low, int high)
-{
-	char	*pivot;
-	int		i;
-	int		j;
-
-	j = low;
-	i = low - 1;
-	pivot = arr[high];
-	while (j <= high)
-	{
-		if (ft_strcmp(arr[j], pivot) < 0)
-		{
-			i++;
-			swap(&arr[i], &arr[j]);
-		}
-		j++;
-	}
-	swap(&arr[i + 1], &arr[high]);
-	return (i + 1);
-}
-
-static void		quicksort(char **arr, int low, int high)
-{
-	int			index;
-
-	index = 0;
-	if (low < high)
-	{
-		index = relative_position(arr, low, high);
-		quicksort(arr, low, index - 1);
-		quicksort(arr, index + 1, high);
-	}
-}
 
 void 			print_export(t_env *buf)
 {
@@ -87,40 +65,43 @@ void 			print_export(t_env *buf)
 	return ;
 }
 
-int				ft_export(t_env **env, t_params *argv)
+int			add_it(t_env *buf, t_list *smth, t_env **env)
 {
 	t_env	*random;
-	t_env	*buf;
+
+	random = new_item(smth);
+	while (buf)
+	{
+		if (!ft_strcmp(random->name, buf->name))
+		{
+			if (random->value)
+			{
+				buf->value = random->value;
+				return (0);
+			}
+			else
+				return (0);
+		}
+		buf = buf->next;
+	}
+	ft_lstadd_back_env(env, random);
+	return (0);
+}
+
+int				ft_export(t_env **env, t_params *argv)
+{
 	int		status;
 	t_list	*smth;
+	t_env	*buf;
 
-	buf = *env;
 	status = 0;
+	buf = *env;
 	smth = argv->args;
 	while (smth->next)
 	{
 		smth = smth->next;
-		if (check_word(smth))
-		{
-			random = new_item(smth);
-			while (buf)
-			{
-				// add_if_found(buf, random);
-				if (!ft_strcmp(random->name, buf->name))
-				{
-					if (random->value && *random->value != '\0')
-					{
-						buf->value = random->value;
-						return (0);
-					}
-					else
-						return (0);
-				}
-				buf = buf->next;
-			}
-			ft_lstadd_back_env(env, random);
-			buf = *env;
-		}
+		if (check_word(smth) && !(add_it(buf, smth, env)))
+			continue ;
 		else
 			status = print_notification(argv, smth);
 	}

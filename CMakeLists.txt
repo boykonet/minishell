@@ -19,6 +19,7 @@ add_executable(srcs
 		builtins/ft_pwd.c
 		builtins/ft_unset.c
 		builtins/pipes.c
+		builtins/pipes_and_one_cmd.c
 		builtins/create_process.c
 		builtins/signals.c
 		builtins/print_notification.c
@@ -46,6 +47,7 @@ add_executable(srcs
 		parser/return_token.c
 		parser/check_unexpected_token.c
 		parser/shape_name_fd.c
+		other/sort.c
         headers/minishell.h
 
 		other/check_word.c
