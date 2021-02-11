@@ -11,30 +11,30 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include "other.h"
 
-int				check_unexpected_token(char **name_fd)
+int				check_unexpected_token(char *token, t_parser *p)
 {
 	char		**err;
-	char		*tmp;
 	int			i;
 
 	i = 0;
-	tmp = *name_fd;
 	err = (char*[]) {">>", "<<", ";;", "||", "<", ">", "(", ")", ";", \
 						"|", "", NULL};
 	while (err[i])
 	{
-		if (**name_fd == *err[i] && \
-		!ft_strncmp(err[i], *name_fd, ft_strlen(err[i])) && \
-		!ft_isalpha(*(*name_fd + ft_strlen(err[i]))))
+		if (*token == *err[i] && \
+		!ft_strncmp(err[i], token, ft_strlen(err[i])) && \
+		!ft_isalpha(*(token + ft_strlen(err[i]))))
 		{
-			if (!ft_strncmp(*name_fd, "", ft_strlen(*name_fd)))
-				*name_fd = ft_strdup("newline");
+			ft_putstr_fd("-minishell: syntax error near unexpected token `", 2);
+			if (!ft_strncmp(token, "", 1))
+				ft_putstr_fd("newline", 2);
 			else
-				*name_fd = ft_strdup(err[i]);
-			free(tmp);
-			if (!*name_fd)
-				exit(errno);
+				ft_putstr_fd(err[i], 2);
+			ft_putendl_fd("'", 2);
+			p->status = 258;
+			p->exit_status = 2;
 			return (0);
 		}
 		i++;

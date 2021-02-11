@@ -24,7 +24,7 @@ void				parser(char **line, t_d **data, int *status);
 int					number_of_redirect(char *redir);
 char				*return_token(char **line, t_parser *p);
 int					redirect_and_name_fd(char **line, t_parser *p, int *fd);
-int					check_unexpected_token(char **name_fd);
+int					check_unexpected_token(char *token, t_parser *p);
 char				*shape_name_fd(char **line, char *curr, t_parser *p);
 
 #endif

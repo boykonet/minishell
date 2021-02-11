@@ -17,6 +17,7 @@
 
 static int		programm_logic(t_d **data, int *status)
 {
+	t_params	*curr;
 	char		*curr_symb;
 
 	curr_symb = (*data)->line;
@@ -31,12 +32,14 @@ static int		programm_logic(t_d **data, int *status)
 		parser(&curr_symb, data, status);
 		if (*status)
 			break ;
-		if (!pipes_and_one_cmd(data, status))
-			return (0);
-		if (*status && *curr_symb != ';')
-			break ;
-		if (*curr_symb == ';')
-			curr_symb++;
+		curr = (*data)->params;
+		while (curr)
+		{
+			if (!pipes_and_one_cmd(data, &curr, status))
+				return (0);
+//			if (*status && *curr_symb != ';')
+//				return (1);
+		}
 	}
 	return (1);
 }

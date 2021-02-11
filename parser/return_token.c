@@ -62,6 +62,7 @@ char 		*return_token(char **line, t_parser *p)
 
 	p->quotes = 0;
 	p->dollar_flag = 0;
+	tmp = NULL;
 	if (!(res = ft_strdup("")))
 		exit(errno);
 	while (line && *(*line) && *(*line) != ' ' && *(*line) != ';' && *(*line) != '|' && *(*line) != '>' && *(*line) != '<')
@@ -74,9 +75,11 @@ char 		*return_token(char **line, t_parser *p)
 		}
 		res = ft_strjoin(res, curr);
 		free(tmp);
+		tmp = NULL;
 		free(curr);
 		if (!res)
 			exit(errno);
 	}
+	free(tmp);
 	return (res);
 }

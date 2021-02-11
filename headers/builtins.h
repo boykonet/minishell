@@ -24,12 +24,12 @@ int					ft_export(t_env **env, t_params *argv);
 int					ft_unset(t_env **env, t_params *argv);
 int					ft_exit(t_list *args, int *error_status);
 
-int					pipes_and_one_cmd(t_d **data, int *status);
-int					pipes(t_d **data);
+int					pipes_and_one_cmd(t_d **data, t_params **par, int *status);
+int					pipes(t_d **data, t_params **par);
 char				*find_path(char *old_cmd, char *path, int *status);
 int					builtins(t_d **data, t_params *params);
-int					create_process(t_d **data, char **args, \
-					char **envp, char *cmd);
+int					create_process(t_d **data, t_params **par, char **args, \
+					char **envp);
 void				handle_sig(int signo);
 int					print_notification(t_params *argv, t_list *smth);
 

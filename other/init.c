@@ -18,6 +18,7 @@ void		init_params(t_params **params)
 	(*params)->in = 0;
 	(*params)->out = 1;
 	(*params)->err = 2;
+	(*params)->pipe_semic = 0;
 	(*params)->next = NULL;
 }
 

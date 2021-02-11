@@ -14,26 +14,6 @@
 #include "parser.h"
 #include "minishell.h"
 
-static void 	error_or_open_fd(t_parser *p, char **nfd, char *redir, int *fd)
-{
-	if (!p->quotes && !check_unexpected_token(nfd))
-	{
-		ft_putstr_fd("-minishell: syntax error near unexpected token `", 2);
-		ft_putstr_fd((*nfd), 2);
-		ft_putendl_fd("'", 2);
-		p->status = 258;
-		p->exit_status = 2;
-	}
-	else
-	{
-		if ((*fd = open_fd((*nfd), redir)) < 0)
-		{
-			p->status = 1;
-			p->exit_status = 2;
-		}
-	}
-}
-
 int				redirect_and_name_fd(char **line, t_parser *p, int *fd)
 {
 	char		*redir;
@@ -41,7 +21,6 @@ int				redirect_and_name_fd(char **line, t_parser *p, int *fd)
 	char		*nfd;
 
 	curr = (*line);
-	nfd = NULL;
 	while (*curr && *curr == *(*line) && *curr != ' ')
 		curr++;
 	if (!(redir = ft_substr((*line), 0, curr - (*line))))
@@ -49,11 +28,19 @@ int				redirect_and_name_fd(char **line, t_parser *p, int *fd)
 	curr = remove_spaces(curr);
 	(*line) = curr;
 	nfd = shape_name_fd(line, curr, p);
+	if (!p->quotes)
+		check_unexpected_token(nfd, p);
 	if (p->exit_status != 2)
-		error_or_open_fd(p, &nfd, redir, fd);
+	{
+		if ((*fd = open_fd(nfd, redir)) < 0)
+		{
+			p->status = 1;
+			p->exit_status = 2;
+		}
+	}
 	free(redir);
 	free(nfd);
-	if (p->status && p->exit_status)
+	if (p->status && p->exit_status == 2)
 		return (0);
 	return (1);
 }

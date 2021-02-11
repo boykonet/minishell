@@ -38,6 +38,7 @@ typedef struct		s_params
 	int				in;
 	int				out;
 	int				err;
+	int 			pipe_semic;
 	struct s_params	*next;
 }					t_params;
 

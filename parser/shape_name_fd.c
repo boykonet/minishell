@@ -62,7 +62,6 @@ char			*shape_name_fd(char **line, char *curr, t_parser *p)
 	char		*name_fd;
 
 	symb = *(*line);
-	name_fd = NULL;
 	if (*curr == '$')
 		name_fd = token_with_dollar(line, p);
 	else if (*curr == ';' || *curr == '|')

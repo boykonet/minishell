@@ -15,27 +15,29 @@
 
 int			ft_echo(t_list *args)
 {
+	t_list	*curr;
 	char	*str;
 	int		flag;
 
 	flag = 0;
-	while (args && !ft_strncmp(args->content, "-", 1))
+	curr = args;
+	while (curr && !ft_strncmp(curr->content, "-", 1))
 	{
-		str = args->content + 1;
+		str = curr->content + 1;
 		if (str && !ft_strcmp(str, "n"))
 		{
 			flag = 1;
-			args = args->next;
+			curr = curr->next;
 		}
 		else
 			break ;
 	}
-	while (args)
+	while (curr)
 	{
-		ft_putstr_fd(args->content, 1);
-		if (args->next)
+		ft_putstr_fd(curr->content, 1);
+		if (curr->next)
 			ft_putstr_fd(" ", 1);
-		args = args->next;
+		curr = curr->next;
 	}
 	if (!flag)
 		ft_putendl_fd("", 1);
