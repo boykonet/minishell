@@ -24,11 +24,11 @@ void		del_params_content(t_params *params)
 	if (params->args)
 		ft_lstclear(&params->args, del_list_content);
 	if (params->in > 2)
-		close(params->in);
+		close_fd(params->in);
 	if (params->out > 2)
-		close(params->out);
+		close_fd(params->out);
 	if (params->err > 2)
-		close(params->err);
+		close_fd(params->err);
 }
 
 void		del_env_content(t_env *env)
@@ -53,5 +53,9 @@ void		del_data_content(t_d *data)
 		params_free(&data->params, del_params_content);
 	if (data->env)
 		env_free(&data->env, del_env_content);
+	if (data->origfd[0] > 2)
+		close_fd(data->origfd[0]);
+	if (data->origfd[1] > 2)
+		close_fd(data->origfd[1]);
 	free(data);
 }

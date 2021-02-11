@@ -40,36 +40,38 @@ static char			*read_dir(char **dirs, int i, char *old_cmd)
 	return (cmd);
 }
 
+static int 			err_path(char *old_cmd)
+{
+	ft_putstr_fd("-minishell: ", 2);
+	ft_putstr_fd(old_cmd, 2);
+	ft_putendl_fd(": No such file or directory", 2);
+	return (127);
+}
+
 char				*find_path(char *old_cmd, char *path, int *status)
 {
 	char			*cmd;
 	char			**dirs;
 	int				i;
-	int				flag;
 
 	i = 0;
-	flag = 1;
 	dirs = NULL;
+	cmd = NULL;
 	if (path)
 	{
 		if (!(dirs = ft_split(path, ':')))
 			exit(errno);
 	}
 	else
-	{
-		ft_putstr_fd("-minishell: ", 2);
-		ft_putstr_fd(old_cmd, 2);
-		ft_putendl_fd(": No such file or directory", 2);
-		*status = 127;
-	}
+		*status = err_path(old_cmd);
 	while (path && dirs[i])
 	{
-		cmd = NULL;
-		if ((cmd = read_dir(dirs, i, old_cmd)) != NULL)
-			flag = 0;
-		if (!flag)
-			return (cmd);
+		if ((cmd = read_dir(dirs, i, old_cmd)))
+			break ;
 		i++;
 	}
+	free_string(dirs);
+	if (cmd)
+		return (cmd);
 	return (NULL);
 }
