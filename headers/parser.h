@@ -20,11 +20,11 @@ char				*handling_tokens_with_quotes(char **line, t_parser *p);
 int					open_and_close_fd(char **line, t_parser *p, \
 					t_params **params);
 int					open_fd(char *in, char *redir);
-void				parser(char **line, t_d **data, int *status);
+void				parser(char *line, t_d **data, int *status);
 int					number_of_redirect(char *redir);
 char				*return_token(char **line, t_parser *p);
 int					redirect_and_name_fd(char **line, t_parser *p, int *fd);
-int					check_unexpected_token(char *token, t_parser *p);
+int					check_unexpected_token(char *token);
 char				*shape_name_fd(char **line, char *curr, t_parser *p);
 
 #endif

@@ -43,12 +43,12 @@ static int	seven_commands(t_params *params, t_env **env, int *exit_status)
 	return (stat);
 }
 
-int			builtins(t_d **data, t_params *params)
+int			builtins(t_d **data)
 {
 	int		status;
 
 	status = 0;
-	if (!find_data_in_env((*data)->env, "PATH", 0) && !ft_strcmp(params->args->content, "env"))
+	if (!find_data_in_env((*data)->env, "PATH", 0) && !ft_strcmp((*data)->params->args->content, "env"))
 	{
 		ft_putstr_fd("-minishell: ", 2);
 		ft_putstr_fd((*data)->params->args->content, 2);
@@ -57,6 +57,6 @@ int			builtins(t_d **data, t_params *params)
 		(*data)->exit_status = 2;
 	}
 	if (!status)
-		status = seven_commands(params, &(*data)->env, &(*data)->exit_status);
+		status = seven_commands((*data)->params, &(*data)->env, &(*data)->exit_status);
 	return (status);
 }

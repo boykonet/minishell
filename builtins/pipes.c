@@ -28,7 +28,7 @@ static int		write_in_fd(t_d **data, t_params *curr, char **args, \
 			if (!(cmd = ft_strdup(curr->args->content)))
 				exit(EXIT_FAILURE);
 	if (!status && !check_command(curr->args->content))
-		status = builtins(data, curr);
+		status = builtins(data);
 	else if (!status)
 	{
 		if (execve(cmd, args, envp) < 0)
@@ -135,25 +135,21 @@ static void 	work_child_proc(t_d **data, t_params *curr, t_pipes *pp)
 	}
 }
 
-static int		pipes_in_work(t_d **data, t_params **par)
+static int		pipes_in_work(t_d **data)
 {
 	t_pipes 	pp;
 	t_params	*curr;
 	int			status;
 
 	init_pipes(&pp);
-	curr = (*par);
-	while (curr && curr->pipe_semic == 1)
-	{
-		curr = curr->next;
-		pp.size_params++;
-	}
-	if (!(pp.childpid = ft_calloc(++pp.size_params, sizeof(pid_t))))
+	pp.size_params = ft_lstsize_params((*data)->params);
+	curr = (*data)->params;
+	if (!(pp.childpid = ft_calloc(pp.size_params, sizeof(pid_t))))
 		exit(errno);
-	while ((*par) && pp.position < pp.size_params)
+	while (pp.position < pp.size_params)
 	{
-		work_child_proc(data, (*par), &pp);
-		(*par) = (*par)->next;
+		work_child_proc(data, curr, &pp);
+		curr = curr->next;
 		pp.position++;
 	}
 	close_fd(pp.rpipe[0]);
@@ -163,11 +159,11 @@ static int		pipes_in_work(t_d **data, t_params **par)
 	return (status);
 }
 
-int				pipes(t_d **data, t_params **par)
+int				pipes(t_d **data)
 {
 	int			status;
 
-	status = pipes_in_work(data, par);
+	status = pipes_in_work(data);
 	dup2((*data)->origfd[0], 0);
 	dup2((*data)->origfd[1], 1);
 	(*data)->flag = 0;

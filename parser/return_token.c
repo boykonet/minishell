@@ -21,6 +21,12 @@ char 		*token_without_quotes(char **line, t_parser *p, const int *spec_char)
 	curr = NULL;
 	if (*(*line) == '$' && !(*spec_char))
 		curr = expand_env_arg(line, p);
+	else if ((!ft_strncmp(*line, "~", 2) || !ft_strncmp(*line, "~ ", 2)) && !(*spec_char))
+	{
+		if (!(curr = ft_strdup(find_data_in_env(p->env, "HOME", 0))))
+			exit(errno);
+		(*line)++;
+	}
 	else
 	{
 		if (!(curr = ft_calloc(2, sizeof(char))))
@@ -59,13 +65,15 @@ char 		*return_token(char **line, t_parser *p)
 	char 	*res;
 	char 	*tmp;
 	char 	*curr;
+	char 	c;
 
 	p->quotes = 0;
 	p->dollar_flag = 0;
 	tmp = NULL;
 	if (!(res = ft_strdup("")))
 		exit(errno);
-	while (line && *(*line) && *(*line) != ' ' && *(*line) != ';' && *(*line) != '|' && *(*line) != '>' && *(*line) != '<')
+	c = *(*line);
+	while (c && c != ' ' && c != ';' && c != '|' && c != '>' && c != '<' && c != ')' && c != '(' && c != '&')
 	{
 		tmp = res;
 		if (!(curr = check_line(line, p)))
@@ -79,6 +87,7 @@ char 		*return_token(char **line, t_parser *p)
 		free(curr);
 		if (!res)
 			exit(errno);
+		c = *(*line);
 	}
 	free(tmp);
 	return (res);

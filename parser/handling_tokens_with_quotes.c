@@ -98,8 +98,14 @@ char			*handling_tokens_with_quotes(char **line, t_parser *p)
 
 	res = NULL;
 	if (*(*line) == '\'')
+	{
 		res = tokens_with_single_quotes(line);
+		p->quotes = 1;
+	}
 	else if (*(*line) == '\"')
+	{
 		res = tokens_with_double_quotes(line, p);
+		p->quotes = 2;
+	}
 	return (res);
 }

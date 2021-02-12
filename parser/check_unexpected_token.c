@@ -13,14 +13,17 @@
 #include "minishell.h"
 #include "other.h"
 
-int				check_unexpected_token(char *token, t_parser *p)
+int				check_unexpected_token(char *token)
 {
 	char		**err;
+	int 		status;
 	int			i;
 
 	i = 0;
-	err = (char*[]) {">>", "<<", ";;", "||", "<", ">", "(", ")", ";", \
-						"|", "", NULL};
+	status = 0;
+	err = (char*[]) {">>", "<<", ";;", "||", "&&", "<", ">", "(", ")", ";", \
+						"|", "&", NULL};
+	token = remove_spaces(token);
 	while (err[i])
 	{
 		if (*token == *err[i] && \
@@ -33,11 +36,10 @@ int				check_unexpected_token(char *token, t_parser *p)
 			else
 				ft_putstr_fd(err[i], 2);
 			ft_putendl_fd("'", 2);
-			p->status = 258;
-			p->exit_status = 2;
-			return (0);
+			status = 258;
+			break ;
 		}
 		i++;
 	}
-	return (1);
+	return (status);
 }

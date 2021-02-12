@@ -14,33 +14,32 @@
 #include "parser.h"
 #include "builtins.h"
 #include "other.h"
+#include "lexer.h"
+#include "lexic.h"
 
 static int		programm_logic(t_d **data, int *status)
 {
-	t_params	*curr;
-	char		*curr_symb;
+//	t_params 	*curr;
 
-	curr_symb = (*data)->line;
-	if (*curr_symb == '\0' && (*data)->exit_status == 2)
+	if (*(*data)->line == '\0' && (*data)->exit_status == 2)
 	{
 		(*data)->exit_status = 0;
 		*status = 0;
 	}
-	while (*curr_symb)
+	*status = lexic((*data)->line);
+	if (*status)
 	{
-		(*data)->params = NULL;
-		parser(&curr_symb, data, status);
-		if (*status)
-			break ;
-		curr = (*data)->params;
-		while (curr)
-		{
-			if (!pipes_and_one_cmd(data, &curr, status))
-				return (0);
-//			if (*status && *curr_symb != ';')
-//				return (1);
-		}
+		(*data)->exit_status = 2;
+		return (1);
 	}
+	parser((*data)->line, data, status);
+//	curr = (*data)->params;
+//	while (!(*status) && curr)
+//	{
+////		lexer(data, curr);
+//		if (!pipes_and_one_cmd(data, &curr, status))
+//			return (0);
+//	}
 	return (1);
 }
 

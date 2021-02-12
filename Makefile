@@ -43,7 +43,7 @@ MINISRCS =	builtins/builtins.c \
 			parser/return_token.c \
 			parser/shape_name_fd.c
 
-CFLAGS = -fsanitize=address -fsanitize=leak -fno-omit-frame-pointer -g -Wall -Wextra -Werror
+CFLAGS = -fsanitize=address -g -Wall -Wextra -Werror
 
 SRCS =  ./other/main.c $(MINISRCS)
 

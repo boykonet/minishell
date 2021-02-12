@@ -42,6 +42,13 @@ typedef struct		s_params
 	struct s_params	*next;
 }					t_params;
 
+typedef struct 		s_lexic
+{
+	int 			quotes;
+	int 			escaping;
+	int 			status;
+}					t_lexic;
+
 typedef struct		s_parser
 {
 	t_params		*params;
@@ -51,6 +58,8 @@ typedef struct		s_parser
 	int				exit_status;
 	int				quotes;
 	int 			dollar_flag;
+	int 			pipe_semic;
+	int 			escaping;
 }					t_parser;
 
 typedef struct 		s_pipes
