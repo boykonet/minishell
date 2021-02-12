@@ -21,6 +21,9 @@ void			write_token_to_list(char **line, t_list **list, t_parser *p)
 
 	str = return_token(line, p);
 	(*line) = remove_spaces((*line));
+	if ((*(*line) == ';' || *(*line) == '|') && *(*line + 1) != *(*line))
+		if (!check_unexpected_token((*line) + 1, p))
+			return ;
 	if (ft_strncmp((*line), "", 1) && *(*line) == *(*line + 1))
 		if (!check_unexpected_token((*line), p))
 			return ;
@@ -68,8 +71,19 @@ void			parsing(char **line, t_parser *p, t_params **params)
 				lst = lst->next;
 		}
 	}
+	if (p->exit_status != 2 && ft_strncmp((*line), "", 1) && *(*line) == *(*line + 1))
+	{
+		if (!check_unexpected_token((*line), p))
+			return ;
+	}
 	if (p->exit_status != 2 && (*(*line) == ';' || *(*line) == '|'))
 	{
+//		if ((*(*line) == ';' || *(*line) == '|') && *(*line + 1) != *(*line))
+//		{
+//			if (!check_unexpected_token((*line) + 1, p))
+//				return;
+//		}
+
 		if (*(*line) == ';')
 			(*params)->pipe_semic = 2;
 		else if (*(*line) == '|')
