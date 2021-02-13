@@ -50,7 +50,7 @@ add_executable(srcs
 		other/sort.c
         headers/minishell.h
 #		lexer/lexer.c
-		lexic_analizator/lexic_analizator.c
+		lexic/lexic.c
 		other/check_word.c
 		builtins/ft_env.c
 		builtins/ft_export.c

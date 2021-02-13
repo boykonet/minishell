@@ -14,23 +14,23 @@
 #include "parser.h"
 #include "minishell.h"
 
-static void 	check_pipes_semic(t_parser *p, char *line)
-{
-	char 		c;
-	char 		*curr;
-	char 		*buff;
-
-	line = remove_spaces(line);
-	c = *line;
-	curr = line;
-	buff = NULL;
-	while (*curr == c)
-		curr++;
-	if (!(buff = ft_substr(line, 0, curr - line)))
-		exit(errno);
-	check_unexpected_token(buff, p);
-	free(buff);
-}
+//static void 	check_pipes_semic(t_parser *p, char *line)
+//{
+//	char 		c;
+//	char 		*curr;
+//	char 		*buff;
+//
+//	line = remove_spaces(line);
+//	c = *line;
+//	curr = line;
+//	buff = NULL;
+//	while (*curr == c)
+//		curr++;
+//	if (!(buff = ft_substr(line, 0, curr - line)))
+//		exit(errno);
+//	check_unexpected_token(buff, p);
+//	free(buff);
+//}
 
 //char 		*simple_without_quotes(char **line, int escaping)
 //{
@@ -84,7 +84,7 @@ char 			*simple_token(char **line, t_parser *p)
 			p->quotes = 1;
 		if ((c == '\'' || c == '\"') && p->escaping == 0 && p->quotes == 1)
 			p->quotes = 2;
-		if (p->escaping == 1 && c != '\\' || p->escaping == 2)
+		if ((p->escaping == 1 && c != '\\') || p->escaping == 2)
 			p->escaping = 0;
 		if (p->quotes == 2)
 			p->quotes = 0;

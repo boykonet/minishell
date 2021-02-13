@@ -10,8 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "builtins.h"
-#include "other.h"
 #include "parser.h"
 #include "minishell.h"
 
@@ -21,13 +19,15 @@ int			check_redir(char **line)
 	char	*str;
 	char	symb;
 	int		r;
+	int 	i;
 
 	r = -1;
+	i = 0;
 	if (*(*line) == '<' || *(*line) == '>')
 	{
 		curr_str = (*line);
 		symb = *(*line);
-		while (*curr_str && *curr_str == symb && *curr_str != ' ')
+		while (i < 2 && *curr_str && *curr_str == symb && *curr_str != ' ')
 			curr_str++;
 		if (!(str = ft_substr((*line), 0, curr_str - (*line))))
 			exit(errno);
