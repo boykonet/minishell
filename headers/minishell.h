@@ -46,21 +46,16 @@ typedef struct 		s_lexic
 {
 	int 			quotes;
 	int 			escaping;
-	int 			status;
 }					t_lexic;
 
-typedef struct		s_parser
+typedef struct		s_eval
 {
-	t_params		*params;
 	t_env			*env;
-	char 			**copy_line;
 	int				status;
 	int				exit_status;
 	int				quotes;
 	int 			dollar_flag;
-	int 			pipe_semic;
-	int 			escaping;
-}					t_parser;
+}					t_eval;
 
 typedef struct 		s_pipes
 {

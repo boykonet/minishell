@@ -15,7 +15,7 @@
 #include "parser.h"
 #include "minishell.h"
 
-static char		*tokens_with_single_quotes(char **line)
+static char		*single_quotes(char **line)
 {
 	char		*token;
 	char		*curr;
@@ -35,7 +35,7 @@ static char		*tokens_with_single_quotes(char **line)
 	return (token);
 }
 
-static int		validate_token_with_double_quotes(char **line, int *spec_char)
+static int		validate_double_quotes(char **line, int *spec_char)
 {
 	*spec_char = 0;
 	if (*(*line) == '\\')
@@ -56,7 +56,7 @@ static int		validate_token_with_double_quotes(char **line, int *spec_char)
 	return (1);
 }
 
-static char		*return_token_double_quotes(char **line, char *token, t_parser *p)
+static char		*return_double_quotes(char **line, char *token, t_eval *p)
 {
 	char		*curr;
 
@@ -68,7 +68,7 @@ static char		*return_token_double_quotes(char **line, char *token, t_parser *p)
 	return (token);
 }
 
-static char		*tokens_with_double_quotes(char **line, t_parser *p)
+static char		*double_quotes(char **line, t_eval *eval)
 {
 	char		*token;
 	char		*tmp;
@@ -81,10 +81,10 @@ static char		*tokens_with_double_quotes(char **line, t_parser *p)
 	while (*(*line))
 	{
 		tmp = token;
-		if (!validate_token_with_double_quotes(line, &spec_char))
+		if (!validate_double_quotes(line, &spec_char))
 			break ;
 		if (*(*line) == '$' && !spec_char)
-			token = return_token_double_quotes(line, token, p);
+			token = return_double_quotes(line, token, eval);
 		else
 			token = append_to_array(token, *(*line)++);
 		free(tmp);
@@ -92,20 +92,20 @@ static char		*tokens_with_double_quotes(char **line, t_parser *p)
 	return (token);
 }
 
-char			*handling_tokens_with_quotes(char **line, t_parser *p)
+char			*handling_tokens_with_quotes(char **line, t_eval *eval)
 {
 	char		*res;
 
 	res = NULL;
 	if (*(*line) == '\'')
 	{
-		res = tokens_with_single_quotes(line);
-		p->quotes = 1;
+		res = single_quotes(line);
+		eval->quotes = 1;
 	}
 	else if (*(*line) == '\"')
 	{
-		res = tokens_with_double_quotes(line, p);
-		p->quotes = 2;
+		res = double_quotes(line, eval);
+		eval->quotes = 2;
 	}
 	return (res);
 }

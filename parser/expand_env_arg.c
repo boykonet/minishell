@@ -39,19 +39,19 @@ char		*find_and_write_env(char **line, t_env *env)
 	return (res);
 }
 
-char		*expand_env_arg(char **line, t_parser *p)
+char		*expand_env_arg(char **line, t_eval *eval)
 {
 	char	*res;
 
 	res = NULL;
-	p->dollar_flag = 1;
+	eval->dollar_flag = 1;
 	if (!ft_strncmp(*line, "$?", 2))
 	{
-		res = ft_itoa(p->status);
+		res = ft_itoa(eval->status);
 		(*line) = *(line) + 2;
 		if (!res)
 			exit(errno);
-		p->dollar_flag = 2;
+		eval->dollar_flag = 2;
 	}
 	else if (*(*line) == '$' && (!ft_isalnum(*(*line + 1)) || \
 				*(*line + 1) == '\\'))
@@ -61,6 +61,6 @@ char		*expand_env_arg(char **line, t_parser *p)
 		(*line)++;
 	}
 	else
-		res = find_and_write_env(line, p->env);
+		res = find_and_write_env(line, eval->env);
 	return (res);
 }

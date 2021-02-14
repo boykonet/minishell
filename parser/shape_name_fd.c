@@ -13,7 +13,7 @@
 #include "minishell.h"
 #include "parser.h"
 
-static void 	token_with_dollar_error(char *start, char *end, t_parser *p)
+static void 	token_with_dollar_error(char *start, char *end, t_eval *eval)
 {
 	char 		*res;
 
@@ -23,56 +23,51 @@ static void 	token_with_dollar_error(char *start, char *end, t_parser *p)
 	ft_putstr_fd(res, 2);
 	ft_putendl_fd(": ambiguous redirect", 2);
 	free(res);
-	p->status = 1;
-	p->exit_status = 2;
+	eval->status = 1;
+	eval->exit_status = 2;
 }
 
-static char		*token_with_dollar(char **line, t_parser *p)
+static char		*token_with_dollar(char *line, t_eval *eval)
 {
-	char 		*start;
 	char 		*end;
 	char 		*res;
 
-	start = (*line);
-	end = (*line);
+	end = line;
+	res = NULL;
 	while (*end && *end != ' ' && *end != '\\')
 		end++;
 	if (*end == '\\' && *(end + 1))
 	{
-		start = ++end;
+		line = ++end;
 		if (*end == '$')
 			end++;
 		while (*end && *end != ' ' && *end != '$')
 			end++;
-		if (!(res = ft_substr(start, 0, end - start)))
+		if (!(res = ft_substr(line, 0, end - line)))
 			exit(errno);
 		while (*end && *end != ' ')
 			end++;
-		(*line) = end;
-		return (res);
 	}
 	else
-		token_with_dollar_error(start, end, p);
-	return (NULL);
+		token_with_dollar_error(line, end, eval);
+	return (res);
 }
 
-char			*shape_name_fd(char **line, char *curr, t_parser *p)
+char			*shape_name_fd(char *name, t_eval *eval)
 {
-	char		symb;
 	char		*name_fd;
 
-	symb = *(*line);
-	if (*curr == '$')
-		name_fd = token_with_dollar(line, p);
-	else if (*curr == ';' || *curr == '|')
-	{
-		while (*curr && *curr == symb && *curr != ' ')
-			curr++;
-		if (!(name_fd = ft_substr((*line), 0, curr - *(line))))
-			exit(errno);
-		(*line) = curr;
-	}
+	if (*name == '$')
+		name_fd = token_with_dollar(name, eval);
 	else
-		name_fd = return_token(line, p);
+		name_fd = return_token(&name, eval);
+//	else if (*curr == ';' || *curr == '|')
+//	{
+//		while (*curr && *curr == symb && *curr != ' ')
+//			curr++;
+//		if (!(name_fd = ft_substr((*line), 0, curr - *(line))))
+//			exit(errno);
+//		(*line) = curr;
+//	}
 	return (name_fd);
 }

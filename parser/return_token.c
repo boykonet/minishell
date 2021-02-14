@@ -13,17 +13,18 @@
 #include "other.h"
 #include "parser.h"
 #include "minishell.h"
+#include "lexic.h"
 
-char 		*token_without_quotes(char **line, t_parser *p, const int *spec_char)
+char 		*token_without_quotes(char **line, t_eval *eval, const int *spec_char)
 {
 	char 	*curr;
 
 	curr = NULL;
 	if (*(*line) == '$' && !(*spec_char))
-		curr = expand_env_arg(line, p);
+		curr = expand_env_arg(line, eval);
 	else if ((!ft_strncmp(*line, "~", 2) || !ft_strncmp(*line, "~ ", 2)) && !(*spec_char))
 	{
-		if (!(curr = ft_strdup(find_data_in_env(p->env, "HOME", 0))))
+		if (!(curr = ft_strdup(find_data_in_env(eval->env, "HOME", 0))))
 			exit(errno);
 		(*line)++;
 	}
@@ -38,7 +39,7 @@ char 		*token_without_quotes(char **line, t_parser *p, const int *spec_char)
 	return (curr);
 }
 
-char 		*check_line(char **line, t_parser *p)
+char 		*check_line(char **line, t_eval *eval)
 {
 	char	*curr;
 	int 	spec_char;
@@ -52,31 +53,31 @@ char 		*check_line(char **line, t_parser *p)
 	}
 	if ((*(*line) == '\'' || *(*line) == '\"') && !spec_char)
 	{
-		curr = handling_tokens_with_quotes(line, p);
-		p->quotes = 1;
+		curr = handling_tokens_with_quotes(line, eval);
+		eval->quotes = 1;
 	}
 	else
-		curr = token_without_quotes(line, p, &spec_char);
+		curr = token_without_quotes(line, eval, &spec_char);
 	return (curr);
 }
 
-char 		*return_token(char **line, t_parser *p)
+char 		*return_token(char **line, t_eval *eval)
 {
 	char 	*res;
 	char 	*tmp;
 	char 	*curr;
-	char 	c;
 
-	p->quotes = 0;
-	p->dollar_flag = 0;
+	eval->quotes = 0;
+	eval->dollar_flag = 0;
 	tmp = NULL;
 	if (!(res = ft_strdup("")))
 		exit(errno);
-	c = *(*line);
-	while (c && c != ' ' && c != ';' && c != '|' && c != '>' && c != '<' && c != ')' && c != '(' && c != '&')
+	while (*(*line))
 	{
+		if (spec_symb(eval->quotes, 0, *(*line)))
+			break ;
 		tmp = res;
-		if (!(curr = check_line(line, p)))
+		if (!(curr = check_line(line, eval)))
 		{
 			free(tmp);
 			exit(errno);
@@ -87,7 +88,6 @@ char 		*return_token(char **line, t_parser *p)
 		free(curr);
 		if (!res)
 			exit(errno);
-		c = *(*line);
 	}
 	free(tmp);
 	return (res);

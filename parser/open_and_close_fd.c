@@ -14,56 +14,36 @@
 #include "parser.h"
 #include "minishell.h"
 
-int				redirect_and_name_fd(char **line, t_parser *p, int *fd)
+void			redirect_and_name_fd(char *redir, char *name, t_eval *eval, int *fd)
 {
-	char		*redir;
 	char		*curr;
-	char		*nfd;
+	char 		*nfd;
 
-	curr = (*line);
-	while (*curr && *curr == *(*line) && *curr != ' ')
-		curr++;
-	if (!(redir = ft_substr((*line), 0, curr - (*line))))
-		exit(errno);
-	curr = remove_spaces(curr);
-	(*line) = curr;
-	nfd = shape_name_fd(line, curr, p);
-	if (!p->quotes)
-		check_unexpected_token(nfd, p);
-	if (p->exit_status != 2)
+	nfd = shape_name_fd(name, eval);
+	if (eval->exit_status != 2)
 	{
 		if ((*fd = open_fd(nfd, redir)) < 0)
 		{
-			p->status = 1;
-			p->exit_status = 2;
+			eval->status = 1;
+			eval->exit_status = 2;
 		}
 	}
-	free(redir);
 	free(nfd);
-	if (p->status && p->exit_status == 2)
-		return (0);
-	return (1);
 }
 
-static int		reopen_fd(char **line, t_parser *p, int *fd)
+static void		reopen_fd(char *redir, char *name, t_eval *eval, int *fd)
 {
 	if (*fd > 2)
 		close_fd(*fd);
-	if (!redirect_and_name_fd(line, p, fd))
-		return (0);
-	return (1);
+	redirect_and_name_fd(redir, name, eval, fd);
 }
 
-int				open_and_close_fd(char **line, t_parser *p, t_params **params)
+void			open_and_close_fd(char *redir, char *name, t_eval *eval, t_params **params)
 {
-	int			res;
-
-	res = 1;
-	if (check_redir(line) == 0)
-		res = reopen_fd(line, p, &((*params)->in));
-	else if (check_redir(line) == 1)
-		res = reopen_fd(line, p, &((*params)->out));
-	else if (check_redir(line) == 2)
-		res = reopen_fd(line, p, &((*params)->err));
-	return (res);
+	if (number_of_redirect(redir) == 0)
+		reopen_fd(redir, name, eval, &((*params)->in));
+	else if (number_of_redirect(redir) == 1)
+		reopen_fd(redir, name, eval, &((*params)->out));
+	else if (number_of_redirect(redir) == 2)
+		reopen_fd(redir, name, eval, &((*params)->err));
 }

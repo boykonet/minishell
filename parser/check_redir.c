@@ -10,29 +10,26 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "other.h"
 #include "parser.h"
 #include "minishell.h"
 
 int			check_redir(char **line)
 {
 	char	*curr_str;
-	char	*str;
-	char	symb;
+	char	*redir;
 	int		r;
-	int 	i;
 
-	r = -1;
-	i = 0;
-	if (*(*line) == '<' || *(*line) == '>')
-	{
-		curr_str = (*line);
-		symb = *(*line);
-		while (i < 2 && *curr_str && *curr_str == symb && *curr_str != ' ')
-			curr_str++;
-		if (!(str = ft_substr((*line), 0, curr_str - (*line))))
-			exit(errno);
-		r = number_of_redirect(str);
-		free(str);
-	}
+	redir = NULL;
+	curr_str = (*line);
+	if (!ft_strncmp(*line, ">>", 2))
+		curr_str += 2;
+	else if (!ft_strncmp(*line, ">", 1) || \
+		!ft_strncmp(*line, "<", 2))
+		curr_str += 1;
+	if (!(redir = ft_substr((*line), 0, curr_str - (*line))))
+		exit(errno);
+	r = number_of_redirect(redir);
+	free(redir);
 	return (r);
 }

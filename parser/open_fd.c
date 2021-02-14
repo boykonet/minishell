@@ -16,7 +16,7 @@ int			open_fd(char *file, char *redir)
 {
 	int		fd;
 
-	fd = -2;
+	fd = -1;
 	if (!ft_strncmp(redir, "<", ft_strlen(redir)))
 		fd = open(file, O_RDONLY);
 	else if (!ft_strncmp(redir, ">", ft_strlen(redir)))
@@ -25,7 +25,7 @@ int			open_fd(char *file, char *redir)
 	else if (!ft_strncmp(redir, ">>", ft_strlen(redir)))
 		fd = open(file, O_CREAT | O_RDWR | O_APPEND, \
 		S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
-	if (fd < 0)
+	if (fd == -1)
 	{
 		ft_putstr_fd("-minishell: ", 2);
 		ft_putstr_fd(file, 2);

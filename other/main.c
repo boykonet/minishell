@@ -14,12 +14,12 @@
 #include "parser.h"
 #include "builtins.h"
 #include "other.h"
-#include "lexer.h"
+#include "evaluator.h"
 #include "lexic.h"
 
 static int		programm_logic(t_d **data, int *status)
 {
-//	t_params 	*curr;
+	t_params 	*curr;
 
 	if (*(*data)->line == '\0' && (*data)->exit_status == 2)
 	{
@@ -32,14 +32,14 @@ static int		programm_logic(t_d **data, int *status)
 		(*data)->exit_status = 2;
 		return (1);
 	}
-	parser((*data)->line, data, status);
-//	curr = (*data)->params;
-//	while (!(*status) && curr)
-//	{
-////		lexer(data, curr);
-//		if (!pipes_and_one_cmd(data, &curr, status))
-//			return (0);
-//	}
+	(*data)->params = parser((*data)->line);
+	curr = (*data)->params;
+	while (!(*status) && curr)
+	{
+		evaluator(data, curr, status);
+		if (!pipes_and_one_cmd(data, &curr, status))
+			return (0);
+	}
 	return (1);
 }
 

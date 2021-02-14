@@ -49,7 +49,7 @@ add_executable(srcs
 		parser/shape_name_fd.c
 		other/sort.c
         headers/minishell.h
-#		lexer/lexer.c
+		evaluator/evaluator.c
 		lexic/lexic.c
 		other/check_word.c
 		builtins/ft_env.c
