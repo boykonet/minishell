@@ -9,56 +9,71 @@ t_list			*dollar_tokens(char **line, t_eval *eval)
 	t_list		*list;
 	char 		*token;
 
-	token = return_token(line, eval);
-	if (!(head = ft_lstnew(token)))
-		exit(errno);
-	list = head;
+	list = NULL;
+	head = NULL;
+	*line = remove_spaces(*line);
+	if (*(*line))
+	{
+		token = return_token(line, eval);
+		if (!(head = ft_lstnew(token)))
+			exit(errno);
+		list = head;
+	}
 	while (*(*line))
 	{
-		list->next = ft_lstnew(NULL);
-		list = list->next;
+		*line = remove_spaces(*line);
+		if (*(*line))
+		{
+			token = return_token(line, eval);
+			if (!(list->next = ft_lstnew(token)))
+				exit(errno);
+			list = list->next;
+		}
 	}
 	return (head);
 }
 
 void			check_lists(t_d **data, t_params *params, t_eval *eval)
 {
-	t_list		*list;
-	t_list		*prev;
+	t_list		**list;
 	t_list		*tokens;
+	t_list		*redir;
+	t_list		*name;
 	char 		*tmp;
 	char 		*tmp2;
-	char 		*name;
-	char 		*redir;
 
 	tmp = NULL;
-	list = params->args;
-	prev = params->args;
-	while (list && eval->exit_status != 2)
+	list = &params->args;
+	while (list && (*list) && eval->exit_status != 2)
 	{
-		if (!ft_strcmp(tmp, ">>") || !ft_strcmp(tmp, ">") || !ft_strcmp(tmp, "<"))
+		if (!ft_strcmp((*list)->content, ">>") || !ft_strcmp((*list)->content, ">") || !ft_strcmp((*list)->content, "<"))
 		{
-			open_and_close_fd(list->content, list->next->content, eval, &params);
-			if (eval->exit_status == 2)
-				break ;
-//			delete_list_elem(&params->args, prev->next);
-//			delete_list_elem(&params->args, prev->next);
-			list = list->next;
+			redir = (*list);
+			name = (*list)->next;
+			open_and_close_fd(redir->content, name->content, eval, &params);
+			if (!eval->exit_status)
+			{
+				lst_delete(&params->args, redir);
+				lst_delete(&params->args, name);
+			}
 		}
 		else
 		{
-			tmp = (char*)list->content;
-			list->content = return_token((char**)&list->content, eval);
-			//		if (!ft_strcmp(list->content, "") && !eval->quotes && eval->dollar_flag = 1)
-			//			delete_list_elem();
-			if (ft_strchr(list->content, ' ') && eval->dollar_flag == 1 && !eval->quotes)
+			tmp = (char*)(*list)->content;
+			tmp2 = tmp;
+			(*list)->content = return_token(&tmp2, eval);
+			ft_putendl_fd((*list)->content, 1);
+			if (!ft_strcmp((*list)->content, "") && !eval->quotes && eval->dollar_flag == 1)
+				lst_delete(&params->args, *list);
+			if (ft_strchr((*list)->content, ' ') && eval->dollar_flag == 1 && !eval->quotes)
 			{
-				tokens = dollar_tokens((char **) &list->content, eval);
+				tokens = dollar_tokens((*list)->content, eval);
+				lst_replase(&params->args, &tokens, *list);
 			}
 			free(tmp);
 			tmp = NULL;
 		}
- 		list = list->next;
+		(*list) = (*list)->next;
 	}
 }
 

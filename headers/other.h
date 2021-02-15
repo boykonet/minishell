@@ -30,6 +30,8 @@ void				del_list_content(void *content);
 void				del_params_content(t_params *params);
 void				del_env_content(t_env *env);
 void				del_data_content(t_d *data);
+void				lst_delete(t_list **head, t_list *d);
+void				lst_replase(t_list **head, t_list **list, t_list *d);
 
 char				*find_data_in_env(t_env *env, char *needle, int serial_num);
 t_env				*find_list_env(t_env *env, char *needle, int spec);

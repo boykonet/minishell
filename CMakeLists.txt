@@ -34,6 +34,7 @@ add_executable(srcs
 		other/functions.c
 		other/getcharacter.c
 		other/init.c
+		other/lst_delete.c
 		other/main.c
 		other/prompt_line.c
 		parser/append_to_array.c

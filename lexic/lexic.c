@@ -100,8 +100,6 @@ int 		lexic(char *line)
 			status = check_redir_fd(&line);
 		else if (r == 4)
 			status = check_unexpected_token(line);
-//		if (r == 2 && !status)
-//			line++;
 	}
 	return (status);
 }

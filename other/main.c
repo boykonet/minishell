@@ -20,6 +20,8 @@
 static int		programm_logic(t_d **data, int *status)
 {
 	t_params 	*curr;
+	t_params	*aaa;
+	t_list		*a;
 
 	if (*(*data)->line == '\0' && (*data)->exit_status == 2)
 	{
@@ -33,6 +35,17 @@ static int		programm_logic(t_d **data, int *status)
 		return (1);
 	}
 	(*data)->params = parser((*data)->line);
+	aaa = (*data)->params;
+	while (aaa)
+	{
+		a = aaa->args;
+		while (a)
+		{
+			ft_putendl_fd(a->content, 1);
+			a = a->next;
+		}
+		aaa = aaa->next;
+	}
 	curr = (*data)->params;
 	while (!(*status) && curr)
 	{
