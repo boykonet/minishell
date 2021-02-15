@@ -82,9 +82,6 @@ t_list 			*write_token_to_list(char **line)
 {
 	t_list 		*list;
 	char 		*str;
-	char 		*w1;
-	char 		*w2;
-
 
 	str = simple_token(line);
 	list = NULL;

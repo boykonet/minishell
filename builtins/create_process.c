@@ -53,13 +53,35 @@ static int	parent_process(int pid, t_d **data)
 	return (status_code);
 }
 
-int			create_process(t_d **data, char **args, char **envp, char *cmd)
+char 		*path_cmd(t_d **data, t_params *par, int *status)
+{
+	char 	*cmd;
+
+	cmd = NULL;
+	if (!(cmd = find_path(par->args->content,\
+		find_data_in_env((*data)->env, "PATH", 0), status)))
+	{
+		if (!(*status))
+			if (!(cmd = ft_strdup(par->args->content)))
+				exit(errno);
+	}
+	return (cmd);
+}
+
+int			create_process(t_d **data, t_params *par, char **args, char **envp)
 {
 	pid_t	pid;
+	char 	*cmd;
 	int		status;
 
+	cmd = path_cmd(data, par, &status);
+	if (status > 0)
+	{
+		free(cmd);
+		return (status);
+	}
 	if ((pid = fork()) == 0)
-		child_process((*data)->params, args, envp, cmd);
+		child_process(par, args, envp, cmd);
 	else if (pid < 0)
 	{
 		ft_putendl_fd("-minishell: fork failed", 2);
@@ -69,5 +91,6 @@ int			create_process(t_d **data, char **args, char **envp, char *cmd)
 	dup2((*data)->origfd[0], 0);
 	dup2((*data)->origfd[1], 1);
 	(*data)->flag = 0;
+	free(cmd);
 	return (status);
 }

@@ -16,7 +16,6 @@
 
 void			redirect_and_name_fd(char *redir, char *name, t_eval *eval, int *fd)
 {
-	char		*curr;
 	char 		*nfd;
 
 	nfd = shape_name_fd(name, eval);

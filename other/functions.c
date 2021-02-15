@@ -24,7 +24,7 @@ size_t		number_of_lines(char **arr)
 
 char		*remove_spaces(char *line)
 {
-	while (*line == ' ')
+	while (*line && *line == ' ')
 		line++;
 	return (line);
 }

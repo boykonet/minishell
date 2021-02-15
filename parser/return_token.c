@@ -69,26 +69,27 @@ char 		*return_token(char **line, t_eval *eval)
 
 	eval->quotes = 0;
 	eval->dollar_flag = 0;
-	tmp = NULL;
-	if (!(res = ft_strdup("")))
-		exit(errno);
-	while (*(*line))
+	res = NULL;
+	if (*(*line))
 	{
-		if (spec_symb(eval->quotes, 0, *(*line)))
-			break ;
-		tmp = res;
-		if (!(curr = check_line(line, eval)))
+		if (!(res = ft_strdup("")))
+			exit(errno);
+		while (*(*line))
 		{
+			if (spec_symb(eval->quotes, 0, *(*line)))
+				break;
+			tmp = res;
+			if (!(curr = check_line(line, eval))) {
+				free(tmp);
+				exit(errno);
+			}
+			res = ft_strjoin(res, curr);
 			free(tmp);
-			exit(errno);
+			tmp = NULL;
+			free(curr);
+			if (!res)
+				exit(errno);
 		}
-		res = ft_strjoin(res, curr);
-		free(tmp);
-		tmp = NULL;
-		free(curr);
-		if (!res)
-			exit(errno);
 	}
-	free(tmp);
 	return (res);
 }

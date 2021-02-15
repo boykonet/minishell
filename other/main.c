@@ -20,38 +20,34 @@
 static int		programm_logic(t_d **data, int *status)
 {
 	t_params 	*curr;
-	t_params	*aaa;
-	t_list		*a;
+	int 		stat;
 
-	if (*(*data)->line == '\0' && (*data)->exit_status == 2)
+	stat = 0;
+//	if (*(*data)->line == '\0' && (*data)->exit_status == 2)
+//	{
+//		(*data)->exit_status = 0;
+//		*status = 0;
+//	}
+	stat = lexic((*data)->line);
+	if (stat)
 	{
-		(*data)->exit_status = 0;
-		*status = 0;
-	}
-	*status = lexic((*data)->line);
-	if (*status)
-	{
+		*status = stat;
 		(*data)->exit_status = 2;
 		return (1);
 	}
 	(*data)->params = parser((*data)->line);
-	aaa = (*data)->params;
-	while (aaa)
-	{
-		a = aaa->args;
-		while (a)
-		{
-			ft_putendl_fd(a->content, 1);
-			a = a->next;
-		}
-		aaa = aaa->next;
-	}
 	curr = (*data)->params;
-	while (!(*status) && curr)
+	while (!stat && curr)
 	{
 		evaluator(data, curr, status);
-		if (!pipes_and_one_cmd(data, &curr, status))
-			return (0);
+		if (!(*status) && (*data)->exit_status != 2)
+			if (!pipes_and_one_cmd(data, &curr, &stat))
+			{
+				*status = stat;
+				return (0);
+			}
+		if (stat)
+			*status = stat;
 	}
 	return (1);
 }

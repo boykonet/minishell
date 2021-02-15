@@ -14,6 +14,8 @@ MINISRCS =	builtins/builtins.c \
             builtins/pipes_and_one_cmd.c \
             builtins/print_notification.c \
             builtins/signals.c \
+            evaluator/evaluator.c \
+            lexic/lexic.c \
             other/check_command.c \
             other/check_word.c \
             other/convert_from_to.c \
@@ -29,6 +31,7 @@ MINISRCS =	builtins/builtins.c \
 			other/functions.c \
 			other/getcharacter.c \
 			other/init.c \
+			other/lst_func.c \
 			other/prompt_line.c \
 			other/sort.c \
 			parser/append_to_array.c \
@@ -43,7 +46,7 @@ MINISRCS =	builtins/builtins.c \
 			parser/return_token.c \
 			parser/shape_name_fd.c
 
-CFLAGS = -fsanitize=address -fsanitize=leak -fno-omit-frame-pointer -g -Wall -Wextra -Werror
+CFLAGS = -fsanitize=address -fno-omit-frame-pointer -g -Wall -Wextra -Werror
 
 SRCS =  ./other/main.c $(MINISRCS)
 
@@ -59,7 +62,7 @@ HEADERS =	./headers/minishell.h \
 
 INCLUDEDIR = ./headers
 
-CC = gcc
+CC = clang
 
 all: $(NAME)
 

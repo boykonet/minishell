@@ -14,7 +14,7 @@
 #include "other.h"
 #include "minishell.h"
 
-static int		write_in_fd(t_d **data, t_params *curr, char **args, \
+static int		write_in_fd(t_d **data, t_params *par, char **args, \
 									char **envp)
 {
 	int			status;
@@ -22,13 +22,13 @@ static int		write_in_fd(t_d **data, t_params *curr, char **args, \
 
 	status = 0;
 	cmd = NULL;
-	if (!(cmd = find_path(curr->args->content, \
+	if (!(cmd = find_path(par->args->content, \
 	find_data_in_env((*data)->env, "PATH", 0), &status)))
 		if (!status)
-			if (!(cmd = ft_strdup(curr->args->content)))
+			if (!(cmd = ft_strdup(par->args->content)))
 				exit(EXIT_FAILURE);
-	if (!status && !check_command(curr->args->content))
-		status = builtins(data);
+	if (!status && !check_command(par->args->content))
+		status = builtins(data, par);
 	else if (!status)
 	{
 		if (execve(cmd, args, envp) < 0)
@@ -43,23 +43,23 @@ static int		write_in_fd(t_d **data, t_params *curr, char **args, \
 	return (status);
 }
 
-static int		cmd_write(t_d **data, t_params *curr, t_pipes *pp)
+static int		cmd_write(t_d **data, t_params *par, t_pipes *pp)
 {
 	int			status;
 	char		**envp;
 	char		**args;
 
-	if (curr->in > 2)
-		dup2(curr->in, 0);
-	if (curr->out > 2)
-		dup2(curr->out, 1);
+	if (par->in > 2)
+		dup2(par->in, 0);
+	if (par->out > 2)
+		dup2(par->out, 1);
 	else if (pp->position < pp->size_params - 1)
 		dup2(pp->rpipe[1], 1);
 	close_fd(pp->rpipe[0]);
 	close_fd(pp->rpipe[1]);
 	envp = convert_env_to_arr((*data)->env);
-	args = convert_struct_to_array(curr->args);
-	status = write_in_fd(data, curr, args, envp);
+	args = convert_struct_to_array(par->args);
+	status = write_in_fd(data, par, args, envp);
 	free_string(args);
 	free_string(envp);
 	return (status);
@@ -73,7 +73,7 @@ static void		cmd_read(t_d **data, int *lpipe)
 	close_fd(lpipe[1]);
 }
 
-static void		fork_child_proc(t_d **data, t_params *curr, t_pipes *pp)
+static void		fork_child_proc(t_d **data, t_params *par, t_pipes *pp)
 {
 	int 		status;
 
@@ -81,7 +81,7 @@ static void		fork_child_proc(t_d **data, t_params *curr, t_pipes *pp)
 	{
 		if (pp->position > 0)
 			cmd_read(data, pp->lpipe);
-		status = cmd_write(data, curr, pp);
+		status = cmd_write(data, par, pp);
 		exit(status);
 	}
 	if ((pp->childpid[pp->position]) < 0)
@@ -115,14 +115,14 @@ static int 		parent_pipes(t_pipes *pp)
 	return (status);
 }
 
-static void 	work_child_proc(t_d **data, t_params *curr, t_pipes *pp)
+static void 	work_child_proc(t_d **data, t_params *par, t_pipes *pp)
 {
 	if (pipe(pp->rpipe) == -1)
 	{
 		ft_putendl_fd("-minishell: pipe failed", 2);
 		exit(EXIT_FAILURE);
 	}
-	fork_child_proc(data, curr, pp);
+	fork_child_proc(data, par, pp);
 	if (pp->position > 0)
 	{
 		close_fd(pp->lpipe[0]);
@@ -135,21 +135,25 @@ static void 	work_child_proc(t_d **data, t_params *curr, t_pipes *pp)
 	}
 }
 
-static int		pipes_in_work(t_d **data)
+static int		pipes_in_work(t_d **data, t_params **params)
 {
 	t_pipes 	pp;
 	t_params	*curr;
 	int			status;
 
 	init_pipes(&pp);
-	pp.size_params = ft_lstsize_params((*data)->params);
-	curr = (*data)->params;
-	if (!(pp.childpid = ft_calloc(pp.size_params, sizeof(pid_t))))
+	curr = (*params);
+	while (curr && curr->pipe_semic == 1)
+	{
+		pp.size_params++;
+		curr = curr->next;
+	}
+	if (!(pp.childpid = ft_calloc(++pp.size_params, sizeof(pid_t))))
 		exit(errno);
 	while (pp.position < pp.size_params)
 	{
-		work_child_proc(data, curr, &pp);
-		curr = curr->next;
+		work_child_proc(data, *params, &pp);
+		(*params) = (*params)->next;
 		pp.position++;
 	}
 	close_fd(pp.rpipe[0]);
@@ -159,11 +163,11 @@ static int		pipes_in_work(t_d **data)
 	return (status);
 }
 
-int				pipes(t_d **data)
+int				pipes(t_d **data, t_params **params)
 {
 	int			status;
 
-	status = pipes_in_work(data);
+	status = pipes_in_work(data, params);
 	dup2((*data)->origfd[0], 0);
 	dup2((*data)->origfd[1], 1);
 	(*data)->flag = 0;

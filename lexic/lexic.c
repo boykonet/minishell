@@ -4,13 +4,13 @@
 
 int 		spec_symb(int quotes, int ident, char c)
 {
-	if (quotes == 0 && c == ' ')
+	if (!quotes && c == ' ')
 		return (1);
-	else if (quotes == 0 && (c == ';' || c == '|'))
+	else if ((!ident || ident == 1) && !quotes && (c == ';' || c == '|'))
 		return (2);
-	else if (!ident && quotes == 0 && (c == '>' || c == '<'))
+	else if (!ident && !quotes && (c == '>' || c == '<'))
 		return (3);
-	else if (!ident && quotes == 0 && (c == ')' || c == '(' || c == '&'))
+	else if (!ident && !quotes && (c == ')' || c == '(' || c == '&'))
 		return (4);
 	return (0);
 }
