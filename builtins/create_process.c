@@ -30,6 +30,7 @@ static int	child_process(t_params *par, char **args, char **envp, char *cmd)
 		ft_putendl_fd(": command not found", 2);
 		exit_code = 127;
 	}
+	ft_putendl_fd("aaa", 2);
 	exit(exit_code);
 }
 
@@ -80,14 +81,15 @@ int			create_process(t_d **data, t_params *par, char **args, char **envp)
 		free(cmd);
 		return (status);
 	}
-	if ((pid = fork()) == 0)
-		child_process(par, args, envp, cmd);
-	else if (pid < 0)
+	if ((pid = fork()) == -1)
 	{
 		ft_putendl_fd("-minishell: fork failed", 2);
 		exit(EXIT_FAILURE);
 	}
-	status = parent_process(pid, data);
+	if (pid == 0)
+		child_process(par, args, envp, cmd);
+	else
+		status = parent_process(pid, data);
 	dup2((*data)->origfd[0], 0);
 	dup2((*data)->origfd[1], 1);
 	(*data)->flag = 0;

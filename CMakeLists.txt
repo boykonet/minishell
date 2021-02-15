@@ -58,5 +58,6 @@ add_executable(srcs
 		other/ft_split_by.c
 		other/check_command.c
 		other/ft_strcmp.c
+		other/params_del.c
 
         )

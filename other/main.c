@@ -39,8 +39,8 @@ static int		programm_logic(t_d **data, int *status)
 	curr = (*data)->params;
 	while (!stat && curr)
 	{
-		evaluator(data, curr, status);
-		if (!(*status) && (*data)->exit_status != 2)
+		evaluator(data, &curr, status);
+		if (curr && !(*status) && (*data)->exit_status != 2)
 			if (!pipes_and_one_cmd(data, &curr, &stat))
 			{
 				*status = stat;

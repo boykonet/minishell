@@ -92,14 +92,14 @@ void			check_lists(t_params *params, t_eval *eval)
 			{
 				if (!ft_strcmp(list->content, "") && !eval->quotes && eval->dollar_flag == 1)
 					lst_delete(&params->args, list);
-				if (ft_strchr(list->content, ' ') && eval->dollar_flag == 1 && !eval->quotes)
+				else if (ft_strchr(list->content, ' ') && eval->dollar_flag == 1 && !eval->quotes)
 				{
 					tokens = dollar_tokens(list->content, eval);
 					lst_replase(&params->args, &tokens, list);
 				}
 			}
-			list = next;
 			free(tmp);
+			list = next;
 			tmp = NULL;
 		}
 	}
@@ -114,17 +114,27 @@ void 			init_eval(t_d **data, t_eval *eval, const int *status)
 	eval->status = *status;
 }
 
-void 			evaluator(t_d **data, t_params *par, int *status)
+void 			evaluator(t_d **data, t_params **par, int *status)
 {
 	t_eval		eval;
+	t_params	*curr;
+	t_params	*next;
 
 	init_eval(data, &eval, status);
-	while (par)
+	curr = (*par);
+	while (curr)
 	{
-		check_lists(par, &eval);
-		if (eval.exit_status == 2 || par->pipe_semic == 2)
-			break ;
-		par = par->next;
+		next = curr->next;
+		check_lists(curr, &eval);
+		if (!curr->args)
+		{
+			params_delete(&(*data)->params, curr);
+			(*par) = next;
+		}
+		else
+			if (eval.exit_status == 2 || curr->pipe_semic == 2)
+				break ;
+		curr = next;
 	}
 	if (eval.status > 0 && eval.exit_status == 1)
 	{

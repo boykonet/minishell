@@ -40,6 +40,7 @@ void				params_free(t_params **params, void (*del)(t_params *));
 void				env_free(t_env **env, void (*del)(t_env *));
 void				free_string(char **str);
 void				free_env_element(t_env *lst);
+void				params_delete(t_params **head, t_params *d);
 
 void				ft_lstadd_back_env(t_env **env, t_env *new);
 char				*remove_spaces(char *line);

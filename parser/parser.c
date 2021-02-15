@@ -99,8 +99,10 @@ t_list			*elem_list(char **line, int *pipe_semic)
 {
 	t_list 		*list;
 
+	list = NULL;
 	(*line) = remove_spaces((*line));
-	list = write_token_to_list(line);
+	if (*(*line))
+		list = write_token_to_list(line);
 	if (*(*line) == '|')
 		*pipe_semic = 1;
 	else if (*(*line) == ';')
@@ -115,10 +117,11 @@ t_list 			*new_lists(char **line, int *pipe_semic)
 
 	head = elem_list(line, pipe_semic);
 	list = head;
-	while (!(*pipe_semic) && *(*line))
+	while (*(*line) && !(*pipe_semic))
 	{
 		list->next = elem_list(line, pipe_semic);
-		list = list->next;
+		if (list->next)
+			list = list->next;
 	}
 	if (*(*line) == ';' || *(*line) == '|')
 		(*line)++;

@@ -32,6 +32,7 @@ MINISRCS =	builtins/builtins.c \
 			other/getcharacter.c \
 			other/init.c \
 			other/lst_func.c \
+			other/params_del.c \
 			other/prompt_line.c \
 			other/sort.c \
 			parser/append_to_array.c \
