@@ -38,7 +38,6 @@ add_executable(srcs
 		other/main.c
 		other/prompt_line.c
 		parser/append_to_array.c
-		parser/check_redir.c
 		parser/expand_env_arg.c
 		parser/handling_tokens_with_quotes.c
 		parser/open_and_close_fd.c

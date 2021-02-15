@@ -24,7 +24,6 @@ t_params			*new_params_element(void);
 t_env				*ft_lstnew_env(void *name, void *value);
 t_env				*new_item(t_list *item);
 int					ft_lstsize_env(t_env *lst);
-int					ft_lstsize_params(t_params *params);
 
 void				del_list_content(void *content);
 void				del_params_content(t_params *params);

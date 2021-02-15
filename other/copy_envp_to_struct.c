@@ -42,8 +42,8 @@ t_env			*copy_envp_to_struct(char **envp)
 	}
 	if (!find_data_in_env(env, "OLDPWD", 0))
 	{
-		curr->next = ft_lstnew_env(ft_strdup("OLDPWD"), ft_strdup(""));
-		if (!curr->next->name || !curr->next->value)
+		curr->next = ft_lstnew_env(ft_strdup("OLDPWD"), NULL);
+		if (!curr->next->name)
 			exit(errno);
 	}
 	return (env);

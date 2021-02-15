@@ -16,7 +16,6 @@
 # include "minishell.h"
 
 char				*append_to_array(char *src, char symb);
-int					check_redir(char **line);
 char				*expand_env_arg(char **line, t_eval *eval);
 char				*handling_tokens_with_quotes(char **line, t_eval *eval);
 void				open_and_close_fd(char *redir, char *name, t_eval *eval, t_params **params);

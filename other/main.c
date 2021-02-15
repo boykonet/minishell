@@ -23,31 +23,28 @@ static int		programm_logic(t_d **data, int *status)
 	int 		stat;
 
 	stat = 0;
-//	if (*(*data)->line == '\0' && (*data)->exit_status == 2)
-//	{
-//		(*data)->exit_status = 0;
-//		*status = 0;
-//	}
-	stat = lexic((*data)->line);
-	if (stat)
+	if (ft_strcmp(remove_spaces((*data)->line), ""))
 	{
-		*status = stat;
-		(*data)->exit_status = 2;
-		return (1);
-	}
-	(*data)->params = parser((*data)->line);
-	curr = (*data)->params;
-	while (!stat && curr)
-	{
-		evaluator(data, &curr, status);
-		if (curr && !(*status) && (*data)->exit_status != 2)
-			if (!pipes_and_one_cmd(data, &curr, &stat))
-			{
-				*status = stat;
-				return (0);
-			}
-		if (stat)
+		if ((stat = lexic((*data)->line)) > 0)
+		{
 			*status = stat;
+			(*data)->exit_status = 2;
+			return (1);
+		}
+		(*data)->params = parser((*data)->line);
+		curr = (*data)->params;
+		while (!stat && curr)
+		{
+			evaluator(data, &curr, status);
+			if (curr && !(*status) && (*data)->exit_status != 2)
+				if (!pipes_and_one_cmd(data, &curr, &stat))
+				{
+					*status = stat;
+					return (0);
+				}
+			if (stat)
+				*status = stat;
+		}
 	}
 	return (1);
 }

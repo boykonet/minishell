@@ -24,16 +24,3 @@ int			ft_lstsize_env(t_env *lst)
 	}
 	return (size);
 }
-
-int			ft_lstsize_params(t_params *params)
-{
-	size_t	size;
-
-	size = 0;
-	while (params)
-	{
-		params = params->next;
-		size++;
-	}
-	return (size);
-}

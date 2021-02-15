@@ -30,7 +30,6 @@ static int	child_process(t_params *par, char **args, char **envp, char *cmd)
 		ft_putendl_fd(": command not found", 2);
 		exit_code = 127;
 	}
-	ft_putendl_fd("aaa", 2);
 	exit(exit_code);
 }
 
@@ -75,6 +74,7 @@ int			create_process(t_d **data, t_params *par, char **args, char **envp)
 	char 	*cmd;
 	int		status;
 
+	status = 0;
 	cmd = path_cmd(data, par, &status);
 	if (status > 0)
 	{

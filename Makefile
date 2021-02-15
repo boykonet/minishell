@@ -36,7 +36,6 @@ MINISRCS =	builtins/builtins.c \
 			other/prompt_line.c \
 			other/sort.c \
 			parser/append_to_array.c \
-            parser/check_redir.c \
             parser/check_unexpected_token.c \
             parser/expand_env_arg.c \
             parser/handling_tokens_with_quotes.c \
