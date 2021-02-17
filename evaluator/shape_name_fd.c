@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include "parser.h"
+#include "evaluator.h"
 
 static void 	token_with_dollar_error(char *start, char *end, t_eval *eval)
 {
@@ -61,13 +61,5 @@ char			*shape_name_fd(char *name, t_eval *eval)
 		name_fd = token_with_dollar(name, eval);
 	else
 		name_fd = return_token(&name, eval);
-//	else if (*curr == ';' || *curr == '|')
-//	{
-//		while (*curr && *curr == symb && *curr != ' ')
-//			curr++;
-//		if (!(name_fd = ft_substr((*line), 0, curr - *(line))))
-//			exit(errno);
-//		(*line) = curr;
-//	}
 	return (name_fd);
 }

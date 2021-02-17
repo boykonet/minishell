@@ -1,6 +1,6 @@
 #include "minishell.h"
 #include "other.h"
-#include "parser.h"
+#include "lexic.h"
 
 int 		spec_symb(int quotes, int ident, char c)
 {

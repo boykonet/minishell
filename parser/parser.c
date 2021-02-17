@@ -11,59 +11,8 @@
 /* ************************************************************************** */
 
 #include "other.h"
-#include "parser.h"
 #include "minishell.h"
 #include "lexic.h"
-
-//	(*line) = remove_spaces((*line));
-//	while (p->exit_status != 2 && *(*line) && (*(*line) == '<' || *(*line) == '>'))
-//		open_and_close_fd(line, p, params);
-
-
-//	if (ft_strchr(str, ' ') && p->dollar_flag == 1 && !p->quotes)
-//	{
-//		tmp = *p->copy_line;
-//		*p->copy_line = ft_strjoin(str, (*line));
-//		free(tmp);
-//		free(str);
-//		str = NULL;
-//		if (!(*p->copy_line))
-//			exit(errno);
-//		(*line) = *p->copy_line;
-//	}
-//	else if (((p->quotes && !ft_strncmp(str, "", 1)) || ft_strncmp(str, "", 1)) || p->dollar_flag == 2)
-//	{
-//		if (!(token = ft_strdup(str)))
-//			exit(errno);
-//		(*list) = ft_lstnew(token);
-//		free(str);
-//	}
-
-
-//	if (*(*line))
-//	{
-//		while (!p->pipe_semic && !lst && *(*line))
-//			elem_list(line, p, params, &lst);
-//		elem_list(line, p, params, &lst);
-//		(*params)->args = lst;
-//		while (!p->pipe_semic && *(*line))
-//		{
-//			elem_list(line, p, params, &lst->next);
-//			if (lst->next)
-//				lst = lst->next;
-//		}
-//	}
-
-
-//		if (!ft_lstsize(p.params->args))
-//		{
-//			params_free(&p.params, del_params_content);
-//			p.params = NULL;
-//		}
-//		else
-//			p.params = p.params->next;
-
-
 
 char 			*simple_token(char **line)
 {
@@ -84,7 +33,6 @@ t_list 			*write_token_to_list(char **line)
 	char 		*str;
 
 	str = simple_token(line);
-	list = NULL;
 	if (ft_strcmp(str, ""))
 	{
 		if (!(list = ft_lstnew(str)))

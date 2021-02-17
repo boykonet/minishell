@@ -44,6 +44,7 @@ void				params_delete(t_params **head, t_params *d);
 void				ft_lstadd_back_env(t_env **env, t_env *new);
 char				*remove_spaces(char *line);
 char				**copy_array(char **src);
+char				*append_to_array(char *src, char symb);
 void				quicksort(char **arr, int low, int high);
 void				close_fd(int fd);
 size_t				number_of_lines(char **arr);

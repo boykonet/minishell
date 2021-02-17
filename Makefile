@@ -15,7 +15,16 @@ MINISRCS =	builtins/builtins.c \
             builtins/print_notification.c \
             builtins/signals.c \
             evaluator/evaluator.c \
+            evaluator/expand_env_arg.c \
+            evaluator/handling_tokens_with_quotes.c \
+            evaluator/number_of_redirect.c \
+            evaluator/open_and_close_fd.c \
+            evaluator/open_fd.c \
+            evaluator/return_token.c \
+            evaluator/shape_name_fd.c \
+            lexic/check_unexpected_token.c \
             lexic/lexic.c \
+            other/append_to_array.c \
             other/check_command.c \
             other/check_word.c \
             other/convert_from_to.c \
@@ -35,16 +44,7 @@ MINISRCS =	builtins/builtins.c \
 			other/params_del.c \
 			other/prompt_line.c \
 			other/sort.c \
-			parser/append_to_array.c \
-            parser/check_unexpected_token.c \
-            parser/expand_env_arg.c \
-            parser/handling_tokens_with_quotes.c \
-            parser/open_and_close_fd.c \
-            parser/open_fd.c \
-            parser/parser.c \
-			parser/number_of_redirect.c \
-			parser/return_token.c \
-			parser/shape_name_fd.c
+			parser/parser.c
 
 CFLAGS = -fsanitize=address -fsanitize=leak -fno-omit-frame-pointer -g -Wall -Wextra -Werror
 

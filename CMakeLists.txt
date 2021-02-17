@@ -50,6 +50,10 @@ add_executable(srcs
 		other/sort.c
         headers/minishell.h
 		evaluator/evaluator.c
+		evaluator/expand_env_arg.c
+		evaluator/handling_tokens_with_quotes.c
+		evaluator/number_of_redirect.c
+		evaluator/open_and_close_fd.c
 		lexic/lexic.c
 		other/check_word.c
 		builtins/ft_env.c

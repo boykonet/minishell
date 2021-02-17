@@ -36,7 +36,6 @@ static int		one_cmd_execve(t_d **data, t_params **par)
 	char		**envp;
 	int			status;
 
-	status = 0;
 	arr = convert_struct_to_array((*par)->args);
 	envp = convert_env_to_arr((*data)->env);
 	status = create_process(data, *par, arr, envp);

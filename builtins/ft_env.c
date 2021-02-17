@@ -68,9 +68,9 @@ int				ft_env(t_env **env, t_params *argv)
 	if (argv->args->next)
 	{
 		argv->args = argv->args->next;
-		ft_putstr_fd("env: ", 2);
+		ft_putstr_fd("env: `", 2);
 		ft_putstr_fd(argv->args->content, 2);
-		ft_putendl_fd(": No such file or directory", 2);
+		ft_putendl_fd("`: No such file or directory", 2);
 		status = 127;
 	}
 	else if (!ft_strncmp(argv->args->content, "env", 3))

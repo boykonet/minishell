@@ -1,55 +1,47 @@
 
 #include "minishell.h"
+#include "evaluator.h"
 #include "other.h"
-#include "parser.h"
 #include "lexic.h"
+
+t_list 			*list_dollar(char **line, t_eval *eval)
+{
+	t_list		*list;
+	char 		*token;
+
+	list = NULL;
+	*line = remove_spaces(*line);
+	token = *line;
+	if (*(*line))
+	{
+		if (spec_symb(eval->quotes, 0, *(*line)) > 1)
+		{
+			lexic_token(line, 1);
+			token = ft_substr(token, 0, *line - token);
+		}
+		else
+			token = return_token(line, eval);
+		if (token)
+		{
+			if (!(list = ft_lstnew(token)))
+				exit(errno);
+		}
+	}
+	return (list);
+}
 
 t_list			*dollar_tokens(char *line, t_eval *eval)
 {
 	t_list		*head;
 	t_list		*list;
-	char 		*token;
 
 	list = NULL;
-	head = NULL;
-	line = remove_spaces(line);
-	if (*line)
-	{
-		token = line;
-		if (spec_symb(eval->quotes, 0, *line) > 1)
-		{
-			lexic_token(&line, 1);
-			token = ft_substr(token, 0, line - token);
-		}
-		else
-			token = return_token(&line, eval);
-		if (token)
-		{
-			if (!(head = ft_lstnew(token)))
-				exit(errno);
-		}
+	if ((head = list_dollar(&line, eval)))
 		list = head;
-	}
 	while (*line)
 	{
-		line = remove_spaces(line);
-		token = line;
-		if (*line)
-		{
-			if (spec_symb(eval->quotes, 0, *line) > 1)
-			{
-				lexic_token(&line, 2);
-				token = ft_substr(token, 0, line - token);
-			}
-			else
-				token = return_token(&line, eval);
-			if (token)
-			{
-				if (!(list->next = ft_lstnew(token)))
-					exit(errno);
-				list = list->next;
-			}
-		}
+		if ((list->next = list_dollar(&line, eval)))
+			list = list->next;
 	}
 	return (head);
 }

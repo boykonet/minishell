@@ -23,7 +23,17 @@ static int	child_process(t_params *par, char **args, char **envp, char *cmd)
 		dup2(par->in, 0);
 	if (par->out > 2)
 		dup2(par->out, 1);
-	execve(cmd, args, envp);
+	if (execve(cmd, args, envp) < 0)
+	{
+		ft_putstr_fd("-minishell: ", 2);
+		ft_putstr_fd(cmd, 2);
+		ft_putstr_fd(": ", 2);
+		ft_putendl_fd(strerror(errno), 2);
+		if (errno == 13)
+			exit_code = 126;
+		else if (errno == 2)
+			exit_code = 127;
+	}
 	exit(exit_code);
 }
 
@@ -55,6 +65,8 @@ int			create_process(t_d **data, t_params *par, char **args, char **envp)
 
 	status = 0;
 	cmd = find_path(par->args->content,find_data_in_env((*data)->env, "PATH", 0), &status);
+	if (!cmd && !status)
+		cmd = ft_strdup(par->args->content);
 	if (status > 0)
 	{
 		free(cmd);

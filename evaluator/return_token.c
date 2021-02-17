@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "other.h"
-#include "parser.h"
+#include "evaluator.h"
 #include "minishell.h"
 #include "lexic.h"
 
@@ -23,7 +23,6 @@ char 		*token_without_quotes(char **line, t_eval *eval, const int *spec_char)
 	if (*(*line) == '$' && !(*spec_char))
 		curr = expand_env_arg(line, eval);
 	else if (*(*line) == '~' && !(*spec_char))
-//	else if ((!ft_strncmp(*line, "~", 2) || !ft_strncmp(*line, "~ ", 2)) && !(*spec_char))
 	{
 		if ((curr = find_data_in_env(eval->env, "HOME", 0)))
 			curr = ft_strdup(curr);

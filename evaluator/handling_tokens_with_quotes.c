@@ -10,9 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "builtins.h"
+#include "evaluator.h"
 #include "other.h"
-#include "parser.h"
 #include "minishell.h"
 
 static char		*single_quotes(char **line)
