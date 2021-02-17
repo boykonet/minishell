@@ -48,21 +48,21 @@ static int 			err_path(char *old_cmd)
 	return (127);
 }
 
-//static void			is_dir(char *cmd, int *status)
-//{
-//	struct stat		s;
-//
-//	if (!(stat(cmd, &s)))
-//	{
-//		if (s.st_mode & S_IFDIR)
-//		{
-//			ft_putstr_fd("-minishell: ", 2);
-//			ft_putstr_fd(cmd, 2);
-//			ft_putendl_fd(": Is a directory", 2);
-//			*status = 126;
-//		}
-//	}
-//}
+static void			is_dir(char *cmd, int *status)
+{
+	struct stat		s;
+
+	if (!(stat(cmd, &s)))
+	{
+		if (s.st_mode & S_IFDIR)
+		{
+			ft_putstr_fd("-minishell: ", 2);
+			ft_putstr_fd(cmd, 2);
+			ft_putendl_fd(": Is a directory", 2);
+			*status = 126;
+		}
+	}
+}
 
 static void			fn_arg_req(char *cmd, int *status)
 {
@@ -102,12 +102,14 @@ char				*find_path(char *old_cmd, char *path, int *status)
 	free_string(dirs);
 	if (cmd)
 		return (cmd);
-	else if (!ft_strchr(old_cmd, '/'))
+	else if (!(*status) && !ft_strchr(old_cmd, '/'))
 	{
 		ft_putstr_fd("-minishell ", 2);
 		ft_putstr_fd(old_cmd, 2);
 		ft_putendl_fd(": command not found", 2);
 		*status = 127;
 	}
+	else if (!(*status))
+		is_dir(old_cmd, status);
 	return (NULL);
 }
