@@ -68,13 +68,23 @@ static void			is_dir(char *cmd, int *status)
 			ft_putendl_fd(": Permission denied", 2);
 			*status = 126;
 		}
-		else if (s.st_mode & S_IFREG)
-		{
-			ft_putstr_fd("-minishell: ", 2);
-			ft_putstr_fd(cmd, 2);
-			ft_putendl_fd(": command not found", 2);
-			*status = 127;
-		}
+	}
+}
+
+static void			cmd_not_fnd(char *cmd, int *status)
+{
+	if (!ft_strcmp(cmd, "."))
+	{
+		ft_putendl_fd("-minishell: .: filename argument required", 2);
+		ft_putendl_fd(".: usage: . filename [arguments]", 2);
+		*status = 2;
+	}
+	else
+	{
+		ft_putstr_fd("-minishell: ", 2);
+		ft_putstr_fd(cmd, 2);
+		ft_putendl_fd(": command not found", 2);
+		*status = 127;
 	}
 }
 
@@ -94,7 +104,7 @@ char				*find_path(char *old_cmd, char *path, int *status)
 	}
 	else
 		*status = err_path(old_cmd);
-	while (!(*status) && path && dirs[i])
+	while (!(*status) && path && dirs[i] && ft_strcmp(old_cmd, "..") && ft_strcmp(old_cmd, "."))
 	{
 		if ((cmd = read_dir(dirs, i, old_cmd)))
 			break ;
@@ -103,6 +113,9 @@ char				*find_path(char *old_cmd, char *path, int *status)
 	free_string(dirs);
 	if (cmd)
 		return (cmd);
-	is_dir(old_cmd, status);
+	if (ft_strcmp(old_cmd, "..") && ft_strcmp(old_cmd, "."))
+		is_dir(old_cmd, status);
+	if (!(*status))
+		cmd_not_fnd(old_cmd, status);
 	return (NULL);
 }
