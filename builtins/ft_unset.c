@@ -25,13 +25,14 @@ static void		env_item_free(t_env *env, t_env *prev, void (*del)(t_env *))
 	prev->next = curr;
 }
 
-void			del_if_found(t_list *smth, t_env *buf, t_env *buf_prev, t_env *buf_next)	
+static void		del_if_found(t_list *smth, t_env *buf, \
+				t_env *buf_prev, t_env *buf_next)
 {
 	while (buf)
 	{
 		if (!ft_strcmp(smth->content, buf->name))
 		{
-			buf_next = buf->next; 
+			buf_next = buf->next;
 			env_item_free(buf, buf_prev, del_env_content);
 			buf = buf_next;
 		}
@@ -41,9 +42,7 @@ void			del_if_found(t_list *smth, t_env *buf, t_env *buf_prev, t_env *buf_next)
 			buf = buf->next;
 		}
 	}
-	return ;
 }
-
 
 int				ft_unset(t_env **env, t_params *argv)
 {

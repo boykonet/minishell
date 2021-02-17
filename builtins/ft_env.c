@@ -29,11 +29,11 @@ static void		print_env(char **str, int len)
 	}
 }
 
-char		**prepare_env_to_arr(t_env *env)
+static char		**prepare_env_to_arr(t_env *env)
 {
-	int		i;
-	char	**arr;
-	char	*tmp;
+	int			i;
+	char		**arr;
+	char		*tmp;
 
 	i = ft_lstsize_env(env);
 	if (!(arr = ft_calloc(i + 1, sizeof(char*))))
@@ -76,7 +76,7 @@ int				ft_env(t_env **env, t_params *argv)
 	else if (!ft_strncmp(argv->args->content, "env", 3))
 	{
 		arr = prepare_env_to_arr(buf);
-		while(arr && arr[len])
+		while (arr && arr[len])
 			len++;
 		print_env(arr, len);
 		free_string(arr);

@@ -32,5 +32,7 @@ int					create_process(t_d **data, t_params *par, char **args, \
 					char **envp);
 void				handle_sig(int signo);
 int					print_notification(t_params *argv, t_list *smth);
+char 				*find_cmd(t_d **data, t_params *par, int *status);
+void				execve_error(char *cmd, int *status);
 
 #endif

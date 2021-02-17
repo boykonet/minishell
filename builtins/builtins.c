@@ -48,7 +48,8 @@ int			builtins(t_d **data, t_params *params)
 	int		status;
 
 	status = 0;
-	if (!find_data_in_env((*data)->env, "PATH", 0) && !ft_strcmp(params->args->content, "env"))
+	if (!find_data_in_env((*data)->env, "PATH", 0) && \
+	!ft_strcmp(params->args->content, "env"))
 	{
 		ft_putstr_fd("-minishell: ", 2);
 		ft_putstr_fd((*data)->params->args->content, 2);

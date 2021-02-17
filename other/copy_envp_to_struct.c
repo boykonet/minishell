@@ -22,16 +22,18 @@ static void		init_name_value(char *str, \
 		exit(errno);
 }
 
-void			add_params(t_env **curr, char *name, char *value)
+void			add_params_env(t_env **curr, char *name, char *value)
 {
+	t_env		*new;
+
 	if (name)
 		if (!(name = ft_strdup(name)))
 			exit(errno);
 	if (value)
 		if (!(value = ft_strdup(value)))
 			exit(errno);
-	(*curr)->next = ft_lstnew_env(name, value);
-	(*curr) = (*curr)->next;
+	new = ft_lstnew_env(name, value);
+	ft_lstadd_back_env(curr, new);
 }
 
 t_env			*copy_envp_to_struct(char **envp)
@@ -54,15 +56,15 @@ t_env			*copy_envp_to_struct(char **envp)
 		curr = curr->next;
 	}
 	if (!find_data_in_env(env, "OLDPWD", 0))
-		add_params(&curr, "OLDPWD", NULL);
+		add_params_env(&curr, "OLDPWD", NULL);
 	if (!find_data_in_env(env, "HOME", 0))
-		add_params(&curr, "HOME", "/");
+		add_params_env(&curr, "HOME", "/");
 	if (!find_data_in_env(env, "LOGNAME", 0))
-		add_params(&curr, "LOGNAME", "logname");
+		add_params_env(&curr, "LOGNAME", "logname");
 	if (!find_data_in_env(env, "PWD", 0))
 	{
 		ft_pwd(&tmp);
-		add_params(&curr, "PWD", tmp);
+		add_params_env(&curr, "PWD", tmp);
 		free(tmp);
 	}
 	return (env);

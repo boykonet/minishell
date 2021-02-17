@@ -21,13 +21,16 @@ static int		write_in_fd(t_d **data, t_params *par, char **args, \
 	char		*cmd;
 
 	status = 0;
-	cmd = find_path(par->args->content, find_data_in_env((*data)->env, "PATH", 0), &status);
+	cmd = find_cmd(data, par, &status);
 	if (status > 0)
 		return (status);
-	if (!check_command(par->args->content))
+	if (!check_command(cmd))
 		status = builtins(data, par);
 	else
-		execve(cmd, args, envp);
+	{
+		if (execve(cmd, args, envp) < 0)
+			execve_error(cmd, &status);
+	}
 	free(cmd);
 	return (status);
 }

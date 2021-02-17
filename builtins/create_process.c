@@ -14,9 +14,33 @@
 #include "builtins.h"
 #include "other.h"
 
-static int	child_process(t_params *par, char **args, char **envp, char *cmd)
+char			*find_cmd(t_d **data, t_params *par, int *status)
 {
-	int		exit_code;
+	char		*cmd;
+
+	cmd = find_path(par->args->content,\
+	find_data_in_env((*data)->env, "PATH", 0), status);
+	if (!cmd && !(*status))
+		cmd = ft_strdup(par->args->content);
+	return (cmd);
+}
+
+void			execve_error(char *cmd, int *status)
+{
+	ft_putstr_fd("-minishell: ", 2);
+	ft_putstr_fd(cmd, 2);
+	ft_putstr_fd(": ", 2);
+	ft_putendl_fd(strerror(errno), 2);
+	if (errno == 13)
+		*status = 126;
+	else if (errno == 2)
+		*status = 127;
+}
+
+static int		child_process(t_params *par, char **args, \
+				char **envp, char *cmd)
+{
+	int			exit_code;
 
 	exit_code = 0;
 	if (par->in > 2)
@@ -24,23 +48,14 @@ static int	child_process(t_params *par, char **args, char **envp, char *cmd)
 	if (par->out > 2)
 		dup2(par->out, 1);
 	if (execve(cmd, args, envp) < 0)
-	{
-		ft_putstr_fd("-minishell: ", 2);
-		ft_putstr_fd(cmd, 2);
-		ft_putstr_fd(": ", 2);
-		ft_putendl_fd(strerror(errno), 2);
-		if (errno == 13)
-			exit_code = 126;
-		else if (errno == 2)
-			exit_code = 127;
-	}
+		execve_error(cmd, &exit_code);
 	exit(exit_code);
 }
 
-static int	parent_process(int pid, t_d **data)
+static int		parent_process(int pid, t_d **data)
 {
-	int		wstatus;
-	int		status_code;
+	int			wstatus;
+	int			status_code;
 
 	wstatus = 0;
 	status_code = 0;
@@ -57,21 +72,17 @@ static int	parent_process(int pid, t_d **data)
 	return (status_code);
 }
 
-int			create_process(t_d **data, t_params *par, char **args, char **envp)
+int				create_process(t_d **data, t_params *par, \
+				char **args, char **envp)
 {
-	pid_t	pid;
-	char 	*cmd;
-	int		status;
+	pid_t		pid;
+	char		*cmd;
+	int			status;
 
 	status = 0;
-	cmd = find_path(par->args->content,find_data_in_env((*data)->env, "PATH", 0), &status);
-	if (!cmd && !status)
-		cmd = ft_strdup(par->args->content);
+	cmd = find_cmd(data, par, &status);
 	if (status > 0)
-	{
-		free(cmd);
 		return (status);
-	}
 	if ((pid = fork()) == -1)
 	{
 		ft_putendl_fd("-minishell: fork failed", 2);

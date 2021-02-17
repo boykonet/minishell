@@ -13,25 +13,33 @@
 #include "builtins.h"
 #include "other.h"
 
-int			ft_echo(t_list *args)
+static void		newline(t_list **curr, int *flag)
 {
-	t_list	*curr;
-	char	*str;
-	int		flag;
+	char		*str;
 
-	flag = 0;
-	curr = args;
-	while (curr && !ft_strncmp(curr->content, "-", 1))
+	while (curr && *curr && !ft_strncmp((*curr)->content, "-", 1))
 	{
-		str = curr->content + 1;
-		if (str && !ft_strcmp(str, "n"))
+		str = (*curr)->content + 1;
+		while (str && ft_strchr(str, 'n'))
+			str++;
+		if (!ft_strcmp(str, ""))
 		{
-			flag = 1;
-			curr = curr->next;
+			*flag = 1;
+			(*curr) = (*curr)->next;
 		}
 		else
 			break ;
 	}
+}
+
+int				ft_echo(t_list *args)
+{
+	t_list		*curr;
+	int			flag;
+
+	flag = 0;
+	curr = args;
+	newline(&curr, &flag);
 	while (curr)
 	{
 		ft_putstr_fd(curr->content, 1);

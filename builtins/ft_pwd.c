@@ -14,11 +14,6 @@
 
 int			ft_pwd(char **pwd)
 {
-	if (!(*pwd = getcwd(NULL, 0)))
-	{
-		ft_putstr_fd("-minishell: pwd: ", 2);
-		ft_putendl_fd(strerror(errno), 2);
-		return (errno);
-	}
+	*pwd = getcwd(NULL, 0);
 	return (0);
 }

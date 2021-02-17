@@ -14,9 +14,9 @@
 #include "other.h"
 #include "builtins.h"
 
-void			print_comma(char **str, int k, int i)
+static void		print_comma(char **str, int k, int i)
 {
-	if(str[k][i])
+	if (str[k][i])
 	{
 		ft_putchar_fd('"', 1);
 		while (str[k][i] != '\0')
@@ -31,10 +31,10 @@ void			print_comma(char **str, int k, int i)
 	ft_putchar_fd('\n', 1);
 }
 
-void			form_export(char **str, int len)
+static void		form_export(char **str, int len)
 {
-	int		k;
-	int		i;
+	int			k;
+	int			i;
 
 	k = 0;
 	while (k < len)
@@ -51,23 +51,21 @@ void			form_export(char **str, int len)
 	}
 }
 
-
-void 			print_export(t_env *buf)
+static void		print_export(t_env *buf)
 {
-	int		len;
-	char	**arr;
+	int			len;
+	char		**arr;
 
 	len = ft_lstsize_env(buf);
 	arr = convert_env_to_arr(buf);
 	quicksort(arr, 0, len - 1);
 	form_export(arr, len);
 	free_string(arr);
-	return ;
 }
 
-int			add_it(t_env *buf, t_list *smth, t_env **env)
+static int		add_it(t_env *buf, t_list *smth, t_env **env)
 {
-	t_env	*random;
+	t_env		*random;
 
 	random = new_item(smth);
 	while (buf)
@@ -90,9 +88,9 @@ int			add_it(t_env *buf, t_list *smth, t_env **env)
 
 int				ft_export(t_env **env, t_params *argv)
 {
-	int		status;
-	t_list	*smth;
-	t_env	*buf;
+	int			status;
+	t_list		*smth;
+	t_env		*buf;
 
 	status = 0;
 	buf = *env;

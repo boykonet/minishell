@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   print_notification.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gkarina <gkarina@student.21-school.r       +#+  +:+       +#+        */
+/*   By: gkarina <gkarina@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 19:03:52 by gkarina           #+#    #+#             */
 /*   Updated: 2021/02/09 19:03:52 by gkarina          ###   ########.fr       */

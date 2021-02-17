@@ -40,25 +40,24 @@ static char			*read_dir(char **dirs, int i, char *old_cmd)
 	return (cmd);
 }
 
-static int 			err_path(char *old_cmd)
-{
-	ft_putstr_fd("-minishell: ", 2);
-	ft_putstr_fd(old_cmd, 2);
-	ft_putendl_fd(": No such file or directory", 2);
-	return (127);
-}
-
 static void			is_dir(char *cmd, int *status)
 {
 	struct stat		s;
 
-	if (!(stat(cmd, &s)))
+	if (!ft_strchr(cmd, '/') && check_command(cmd))
+	{
+		ft_putstr_fd("-minishell ", 2);
+		ft_putstr_fd(cmd, 2);
+		ft_putendl_fd(": command not found", 2);
+		*status = 127;
+	}
+	else if (!(stat(cmd, &s)))
 	{
 		if (s.st_mode & S_IFDIR)
 		{
 			ft_putstr_fd("-minishell: ", 2);
 			ft_putstr_fd(cmd, 2);
-			ft_putendl_fd(": Is a directory", 2);
+			ft_putendl_fd(": is a directory", 2);
 			*status = 126;
 		}
 	}
@@ -74,6 +73,26 @@ static void			fn_arg_req(char *cmd, int *status)
 	}
 }
 
+static char			**ret_dirs(char *old_cmd, char *path, int *status)
+{
+	char			**dirs;
+
+	dirs = NULL;
+	if (path)
+	{
+		if (!(dirs = ft_split(path, ':')))
+			exit(errno);
+	}
+	else
+	{
+		ft_putstr_fd("-minishell: ", 2);
+		ft_putstr_fd(old_cmd, 2);
+		ft_putendl_fd(": No such file or directory", 2);
+		*status = 127;
+	}
+	return (dirs);
+}
+
 char				*find_path(char *old_cmd, char *path, int *status)
 {
 	char			*cmd;
@@ -82,18 +101,12 @@ char				*find_path(char *old_cmd, char *path, int *status)
 
 	i = 0;
 	cmd = NULL;
-	if (path)
-	{
-		if (!(dirs = ft_split(path, ':')))
-			exit(errno);
-	}
-	else
-	{
-		*status = err_path(old_cmd);
+	dirs = ret_dirs(old_cmd, path, status);
+	if (*status > 0)
 		return (NULL);
-	}
 	fn_arg_req(old_cmd, status);
-	while (!(*status) && dirs[i] && ft_strcmp(old_cmd, "..") && !ft_strchr(old_cmd, '/'))
+	while (!(*status) && dirs[i] && ft_strcmp(old_cmd, "..") && \
+	!ft_strchr(old_cmd, '/'))
 	{
 		if ((cmd = read_dir(dirs, i, old_cmd)))
 			break ;
@@ -102,14 +115,7 @@ char				*find_path(char *old_cmd, char *path, int *status)
 	free_string(dirs);
 	if (cmd)
 		return (cmd);
-	else if (!(*status) && !ft_strchr(old_cmd, '/'))
-	{
-		ft_putstr_fd("-minishell ", 2);
-		ft_putstr_fd(old_cmd, 2);
-		ft_putendl_fd(": command not found", 2);
-		*status = 127;
-	}
-	else if (!(*status))
+	if (!(*status))
 		is_dir(old_cmd, status);
 	return (NULL);
 }

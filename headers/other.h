@@ -42,6 +42,7 @@ void				free_env_element(t_env *lst);
 void				params_delete(t_params **head, t_params *d);
 
 void				ft_lstadd_back_env(t_env **env, t_env *new);
+void				add_params_env(t_env **curr, char *name, char *value);
 char				*remove_spaces(char *line);
 char				**copy_array(char **src);
 char				*append_to_array(char *src, char symb);
