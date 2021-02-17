@@ -13,23 +13,40 @@
 #include "minishell.h"
 #include "other.h"
 
-static void		write_username_folder(t_env *env, char **username, \
-									char **folder)
+void 			init_home(t_env *env, char **home)
+{
+	char 		*line;
+
+	if ((line = find_data_in_env(env, "HOME", 0)))
+		if (!(*home = ft_strdup(line)))
+			exit(errno);
+}
+
+void			logname_folder_home(t_env *env, char **logname, char **folder, char **home)
 {
 	char		*line;
+//	int 		flag;
 
-	if ((line = find_data_in_env(env, "USER", 0)))
+//	flag = find_data_in_env(env, "HOME", 0) ? 1 : 0;
+	if ((line = find_data_in_env(env, "HOME", 0)))
 	{
-		if (*username)
-			free(*username);
-		if (!(*username = ft_strdup(line)))
+		if (*home)
+			free(*home);
+		if (!(*home = ft_strdup(line)))
+			exit(errno);
+	}
+	if ((line = find_data_in_env(env, "LOGNAME", 0)))
+	{
+		if (*logname)
+			free(*logname);
+		if (!(*logname = ft_strdup(line)))
 			exit(errno);
 	}
 	if ((line = find_data_in_env(env, "PWD", 0)))
 	{
 		if (*folder)
 			free(*folder);
-		if ((ft_strcmp(find_data_in_env(env, "HOME", 0), line)))
+		if (!find_data_in_env(env, "HOME", 0) || ft_strcmp(*home, line))
 			*folder = ft_strdup(ft_strrchr(line, '/'));
 		else
 			*folder = ft_strdup(line);
@@ -38,24 +55,24 @@ static void		write_username_folder(t_env *env, char **username, \
 	}
 }
 
-static char		*prompt_line(t_env *env, char **username, char **folder)
+static char		*prompt_line(t_d *data)
 {
 	char		*line;
 	char		*res;
 
-	write_username_folder(env, username, folder);
-	if (ft_strlen(*folder) == 1)
-		line = ft_strjoin("\e[1;36m", *folder);
-	else if (!(ft_strcmp(find_data_in_env(env, "HOME", 0), *folder)))
+	if (ft_strlen(data->folder) == 1)
+		line = ft_strjoin("\e[1;36m", data->folder);
+	else if (find_data_in_env(data->env, "HOME", 0) && \
+		!ft_strcmp(find_data_in_env(data->env, "HOME", 0), data->folder))
 		line = ft_strdup("\e[1;36m~");
 	else
-		line = ft_strjoin("\e[1;36m", *folder + 1);
+		line = ft_strjoin("\e[1;36m", data->folder + 1);
 	if (!line)
 		exit(errno);
 	if (!(res = ft_strjoin(line, " ")))
 		exit(errno);
 	free(line);
-	if (!(line = ft_strjoin(res, *username)))
+	if (!(line = ft_strjoin(res, data->logname)))
 		exit(errno);
 	free(res);
 	if (!(res = ft_strjoin(line, "\e[0m$ ")))
@@ -78,7 +95,7 @@ void			print_prompt_line(t_d *data, int signo)
 		write(1, "\n", 1);
 	if (signo == 0 || (signo == SIGINT && temp->flag == 0))
 	{
-		str = prompt_line(temp->env, &temp->username, &temp->folder);
+		str = prompt_line(temp);
 		ft_putstr_fd(str, 1);
 		free(str);
 	}

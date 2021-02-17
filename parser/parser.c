@@ -85,7 +85,7 @@ t_list 			*write_token_to_list(char **line)
 
 	str = simple_token(line);
 	list = NULL;
-	if (*(*line) != ';' && *(*line) != '|')
+	if (ft_strcmp(str, ""))
 	{
 		if (!(list = ft_lstnew(str)))
 			exit(errno);

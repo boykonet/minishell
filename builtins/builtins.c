@@ -14,7 +14,7 @@
 #include "minishell.h"
 #include "other.h"
 
-static int	seven_commands(t_params *params, t_env **env, int *exit_status)
+static int	seven_commands(t_d **data, t_params *params)
 {
 	char	*str;
 	int		stat;
@@ -26,15 +26,15 @@ static int	seven_commands(t_params *params, t_env **env, int *exit_status)
 	else if (!ft_strcmp(params->args->content, "pwd"))
 		stat = ft_pwd(&str);
 	else if (!ft_strcmp(params->args->content, "cd"))
-		stat = ft_cd(params->args->next, env);
+		stat = ft_cd(params->args->next, &(*data)->env);
 	else if (!ft_strcmp(params->args->content, "export"))
-		stat = ft_export(env, params);
+		stat = ft_export(&(*data)->env, params);
 	else if (!ft_strcmp(params->args->content, "unset"))
-		stat = ft_unset(env, params);
+		stat = ft_unset(&(*data)->env, params);
 	else if (!ft_strcmp(params->args->content, "env"))
-		stat = ft_env(env, params);
+		stat = ft_env(&(*data)->env, params);
 	else if (!ft_strcmp(params->args->content, "exit"))
-		stat = ft_exit(params->args->next, exit_status);
+		stat = ft_exit(params->args->next, &(*data)->exit_status);
 	if (str)
 	{
 		ft_putendl_fd(str, 1);
@@ -57,6 +57,6 @@ int			builtins(t_d **data, t_params *params)
 		(*data)->exit_status = 2;
 	}
 	if (!status)
-		status = seven_commands(params, &(*data)->env, &(*data)->exit_status);
+		status = seven_commands(data, params);
 	return (status);
 }

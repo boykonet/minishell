@@ -20,9 +20,8 @@
 static int		programm_logic(t_d **data, int *status)
 {
 	t_params 	*curr;
-	int 		stat;
+	int			stat;
 
-	stat = 0;
 	if (ft_strcmp(remove_spaces((*data)->line), ""))
 	{
 		if ((stat = lexic((*data)->line)) > 0)
@@ -33,17 +32,13 @@ static int		programm_logic(t_d **data, int *status)
 		}
 		(*data)->params = parser((*data)->line);
 		curr = (*data)->params;
-		while (!stat && curr)
+		while (curr)
 		{
+			logname_folder_home((*data)->env, &(*data)->logname, &(*data)->folder, &(*data)->home);
 			evaluator(data, &curr, status);
 			if (curr && !(*status) && (*data)->exit_status != 2)
-				if (!pipes_and_one_cmd(data, &curr, &stat))
-				{
-					*status = stat;
+				if (!pipes_and_one_cmd(data, &curr, status))
 					return (0);
-				}
-			if (stat)
-				*status = stat;
 		}
 	}
 	return (1);
@@ -51,6 +46,7 @@ static int		programm_logic(t_d **data, int *status)
 
 static int		read_and_write_cmd(t_d *data, int *status)
 {
+	logname_folder_home(data->env, &data->logname, &data->folder, &data->home);
 	print_prompt_line(data, 0);
 	if (!(getcharacter(0, &data->line)))
 	{

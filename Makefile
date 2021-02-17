@@ -46,7 +46,7 @@ MINISRCS =	builtins/builtins.c \
 			parser/return_token.c \
 			parser/shape_name_fd.c
 
-CFLAGS = -fsanitize=address -fno-omit-frame-pointer -g -Wall -Wextra -Werror
+CFLAGS = -fsanitize=address -fsanitize=leak -fno-omit-frame-pointer -g -Wall -Wextra -Werror
 
 SRCS =  ./other/main.c $(MINISRCS)
 
@@ -62,12 +62,12 @@ HEADERS =	./headers/minishell.h \
 
 INCLUDEDIR = ./headers
 
-CC = clang
+CC = gcc
 
 all: $(NAME)
 
 $(NAME): $(OBJS) libft.a libminishell.a $(HEADERS)
-	$(CC) $(CFLAGS) -L. -I $(INCLUDEDIR) -o $@ ./other/main.c -lminishell -lft
+	$(CC) $(CFLAGS) -L. -I $(INCLUDEDIR) -o $@ ./other/main.c -lminishell -lft ; export LSAN_OPTIONS=detect_leaks=1
 
 libft.a:
 	$(MAKE) bonus -C ./libs/libft CC=$(CC)

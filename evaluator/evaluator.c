@@ -87,12 +87,11 @@ void			check_lists(t_params *params, t_eval *eval)
 			next = list->next;
 			tmp2 = tmp;
 			list->content = return_token(&tmp2, eval);
-//			ft_putendl_fd(list->content, 1);
 			if (list->content)
 			{
-				if (!ft_strcmp(list->content, "") && !eval->quotes && eval->dollar_flag == 1)
+				if (!ft_strcmp(list->content, "") && !eval->quotes)
 					lst_delete(&params->args, list);
-				else if (ft_strchr(list->content, ' ') && eval->dollar_flag == 1 && !eval->quotes)
+				else if (ft_strchr(list->content, ' ') && !eval->quotes && eval->dollar_flag == 1)
 				{
 					tokens = dollar_tokens(list->content, eval);
 					lst_replase(&params->args, &tokens, list);
@@ -112,6 +111,8 @@ void 			init_eval(t_d **data, t_eval *eval, const int *status)
 	eval->env = (*data)->env;
 	eval->quotes = 0;
 	eval->status = *status;
+	eval->home = (*data)->home;
+
 }
 
 void 			evaluator(t_d **data, t_params **par, int *status)

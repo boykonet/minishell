@@ -22,9 +22,14 @@ char 		*token_without_quotes(char **line, t_eval *eval, const int *spec_char)
 	curr = NULL;
 	if (*(*line) == '$' && !(*spec_char))
 		curr = expand_env_arg(line, eval);
-	else if ((!ft_strncmp(*line, "~", 2) || !ft_strncmp(*line, "~ ", 2)) && !(*spec_char))
+	else if (*(*line) == '~' && !(*spec_char))
+//	else if ((!ft_strncmp(*line, "~", 2) || !ft_strncmp(*line, "~ ", 2)) && !(*spec_char))
 	{
-		if (!(curr = ft_strdup(find_data_in_env(eval->env, "HOME", 0))))
+		if ((curr = find_data_in_env(eval->env, "HOME", 0)))
+			curr = ft_strdup(curr);
+		else
+			curr = ft_strdup(eval->home);
+		if (!curr)
 			exit(errno);
 		(*line)++;
 	}
@@ -52,10 +57,7 @@ char 		*check_line(char **line, t_eval *eval)
 		spec_char = 1;
 	}
 	if ((*(*line) == '\'' || *(*line) == '\"') && !spec_char)
-	{
 		curr = handling_tokens_with_quotes(line, eval);
-		eval->quotes = 1;
-	}
 	else
 		curr = token_without_quotes(line, eval, &spec_char);
 	return (curr);
@@ -79,7 +81,8 @@ char 		*return_token(char **line, t_eval *eval)
 			if (spec_symb(eval->quotes, 0, *(*line)))
 				break;
 			tmp = res;
-			if (!(curr = check_line(line, eval))) {
+			if (!(curr = check_line(line, eval)))
+			{
 				free(tmp);
 				exit(errno);
 			}

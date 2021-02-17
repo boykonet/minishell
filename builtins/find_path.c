@@ -48,6 +48,36 @@ static int 			err_path(char *old_cmd)
 	return (127);
 }
 
+static void			is_dir(char *cmd, int *status)
+{
+	struct stat		s;
+
+	if (!(stat(cmd, &s)))
+	{
+		if (s.st_mode & S_IFDIR)
+		{
+			ft_putstr_fd("-minishell: ", 2);
+			ft_putstr_fd(cmd, 2);
+			ft_putendl_fd(": Is a directory", 2);
+			*status = 126;
+		}
+		else if (s.st_mode & S_IRWXU)
+		{
+			ft_putstr_fd("-minishell: ", 2);
+			ft_putstr_fd(cmd, 2);
+			ft_putendl_fd(": Permission denied", 2);
+			*status = 126;
+		}
+		else if (s.st_mode & S_IFREG)
+		{
+			ft_putstr_fd("-minishell: ", 2);
+			ft_putstr_fd(cmd, 2);
+			ft_putendl_fd(": command not found", 2);
+			*status = 127;
+		}
+	}
+}
+
 char				*find_path(char *old_cmd, char *path, int *status)
 {
 	char			*cmd;
@@ -64,7 +94,7 @@ char				*find_path(char *old_cmd, char *path, int *status)
 	}
 	else
 		*status = err_path(old_cmd);
-	while (path && dirs[i])
+	while (!(*status) && path && dirs[i])
 	{
 		if ((cmd = read_dir(dirs, i, old_cmd)))
 			break ;
@@ -73,5 +103,6 @@ char				*find_path(char *old_cmd, char *path, int *status)
 	free_string(dirs);
 	if (cmd)
 		return (cmd);
+	is_dir(old_cmd, status);
 	return (NULL);
 }

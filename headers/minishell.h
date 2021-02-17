@@ -20,6 +20,7 @@
 # include <sys/types.h>
 # include <sys/wait.h>
 # include <signal.h>
+# include <sys/stat.h>
 # include "../libs/libft/libft.h"
 
 # define TRUE 1
@@ -51,6 +52,7 @@ typedef struct 		s_lexic
 typedef struct		s_eval
 {
 	t_env			*env;
+	char 			*home;
 	int				status;
 	int				exit_status;
 	int				quotes;
@@ -73,7 +75,8 @@ typedef struct		s_d
 	char			**argv;
 	char			*line;
 	char			*folder;
-	char			*username;
+	char			*logname;
+	char 			*home;
 	int				origfd[2];
 	int				argc;
 	int				exit_status;

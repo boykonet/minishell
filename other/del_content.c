@@ -45,8 +45,10 @@ void		del_data_content(t_d *data)
 		free(data->line);
 	if (data->folder)
 		free(data->folder);
-	if (data->username)
-		free(data->username);
+	if (data->logname)
+		free(data->logname);
+	if (data->home)
+		free(data->home);
 	if (data->argv)
 		free_string(data->argv);
 	if (data->params)

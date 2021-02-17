@@ -23,13 +23,7 @@ static int	child_process(t_params *par, char **args, char **envp, char *cmd)
 		dup2(par->in, 0);
 	if (par->out > 2)
 		dup2(par->out, 1);
-	if (execve(cmd, args, envp) < 0)
-	{
-		ft_putstr_fd("-minishell: ", 2);
-		ft_putstr_fd(cmd, 2);
-		ft_putendl_fd(": command not found", 2);
-		exit_code = 127;
-	}
+	execve(cmd, args, envp);
 	exit(exit_code);
 }
 
@@ -53,21 +47,6 @@ static int	parent_process(int pid, t_d **data)
 	return (status_code);
 }
 
-char 		*path_cmd(t_d **data, t_params *par, int *status)
-{
-	char 	*cmd;
-
-	cmd = NULL;
-	if (!(cmd = find_path(par->args->content,\
-		find_data_in_env((*data)->env, "PATH", 0), status)))
-	{
-		if (!(*status))
-			if (!(cmd = ft_strdup(par->args->content)))
-				exit(errno);
-	}
-	return (cmd);
-}
-
 int			create_process(t_d **data, t_params *par, char **args, char **envp)
 {
 	pid_t	pid;
@@ -75,7 +54,7 @@ int			create_process(t_d **data, t_params *par, char **args, char **envp)
 	int		status;
 
 	status = 0;
-	cmd = path_cmd(data, par, &status);
+	cmd = find_path(par->args->content,find_data_in_env((*data)->env, "PATH", 0), &status);
 	if (status > 0)
 	{
 		free(cmd);

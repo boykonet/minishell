@@ -21,24 +21,13 @@ static int		write_in_fd(t_d **data, t_params *par, char **args, \
 	char		*cmd;
 
 	status = 0;
-	cmd = NULL;
-	if (!(cmd = find_path(par->args->content, \
-	find_data_in_env((*data)->env, "PATH", 0), &status)))
-		if (!status)
-			if (!(cmd = ft_strdup(par->args->content)))
-				exit(EXIT_FAILURE);
-	if (!status && !check_command(par->args->content))
+	cmd = find_path(par->args->content, find_data_in_env((*data)->env, "PATH", 0), &status);
+	if (status > 0)
+		return (status);
+	if (!check_command(par->args->content))
 		status = builtins(data, par);
-	else if (!status)
-	{
-		if (execve(cmd, args, envp) < 0)
-		{
-			ft_putstr_fd("-minishell: ", 2);
-			ft_putstr_fd(cmd, 2);
-			ft_putendl_fd(": command not found", 2);
-			status = 127;
-		}
-	}
+	else
+		execve(cmd, args, envp);
 	free(cmd);
 	return (status);
 }

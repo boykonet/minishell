@@ -38,6 +38,7 @@ void		init_data(t_d **data)
 	(*data)->env = NULL;
 	(*data)->line = NULL;
 	(*data)->folder = NULL;
-	(*data)->username = NULL;
+	(*data)->logname = NULL;
+	(*data)->home = NULL;
 	(*data)->params = NULL;
 }
