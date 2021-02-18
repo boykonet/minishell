@@ -35,6 +35,7 @@ int					create_process(t_d **data, t_params *par, char **args, \
 					char **envp);
 void				handle_sig(int signo);
 int					print_notification(t_params *argv, t_list *smth);
+void				err_exit(char *str, int status);
 char				*name_cmd(t_d **data, t_params *par, int *status);
 void				execve_error(char *cmd, int *status);
 void				change_pwd(t_env **env, char *str);

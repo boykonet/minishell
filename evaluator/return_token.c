@@ -54,22 +54,22 @@ static char		*token_without_quotes(char **line, t_eval *eval, \
 	return (curr);
 }
 
-static char		*check_line(char **line, t_eval *eval)
+static char		*check_line(char **line, t_eval *eval, int *esc)
 {
 	char		*curr;
-	int			spec_char;
 
-	spec_char = 0;
 	curr = NULL;
+	if (*esc > 0)
+		*esc = 0;
 	if (*(*line) == '\\')
 	{
 		(*line)++;
-		spec_char = 1;
+		*esc = 1;
 	}
-	if ((*(*line) == '\'' || *(*line) == '\"') && !spec_char)
+	if ((*(*line) == '\'' || *(*line) == '\"') && !(*esc))
 		curr = handling_tokens_with_quotes(line, eval);
 	else
-		curr = token_without_quotes(line, eval, &spec_char);
+		curr = token_without_quotes(line, eval, esc);
 	return (curr);
 }
 
@@ -77,13 +77,15 @@ static void		token_res(char **line, t_eval *eval, char **res)
 {
 	char		*curr;
 	char		*tmp;
+	int			escaping;
 
+	escaping = 0;
 	while (*(*line))
 	{
-		if (spec_symb(eval->quotes, 0, 0, *(*line)))
+		if (spec_symb(eval->quotes, escaping, 0, *(*line)))
 			break ;
 		tmp = *res;
-		if (!(curr = check_line(line, eval)))
+		if (!(curr = check_line(line, eval, &escaping)))
 		{
 			free(tmp);
 			exit(errno);

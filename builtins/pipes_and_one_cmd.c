@@ -60,8 +60,7 @@ int				pipes_and_one_cmd(t_d **data, t_params *par, int *status)
 			*status = one_cmd_builtins(data, &par);
 		else
 			*status = one_cmd_execve(data, &par);
-		if (!ft_strcmp(par->args->content, "exit") && \
-				(*data)->exit_status == 1)
+		if (!ft_strcmp(par->args->content, "exit"))
 			return (0);
 	}
 	return (1);

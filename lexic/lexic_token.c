@@ -33,7 +33,7 @@ static void		esc_quotes(t_lexic *lexic, char c)
 		lexic->escaping = 1;
 	else if (c == '\\' && lexic->escaping == 1)
 		lexic->escaping = 2;
-	if (c == '\'' && lexic->quotes == 1)
+	if (c == '\'' && lexic->quotes == 0)
 		lexic->quotes = 1;
 	else if (c == '\'' && lexic->quotes == 1)
 		lexic->quotes = 2;

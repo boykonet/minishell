@@ -17,30 +17,34 @@
 #include "evaluator.h"
 #include "lexic.h"
 
-static t_params	*split_list(t_params **head, int len)
+static int		command_work(t_d **data, int *status)
 {
-	t_params	*newhead;
 	t_params	*curr;
-	int			i;
 
-	i = 0;
-	newhead = (*head);
-	curr = newhead;
-	while (i < len)
+	while ((*data)->params)
 	{
-		(*head) = (*head)->next;
-		i++;
+		curr = split_par(&(*data)->params, count_params((*data)->params));
+		logname_folder_home((*data)->env, &(*data)->logname, \
+			&(*data)->folder, &(*data)->home);
+		evaluator(data, &curr, status);
+		if (!(*status) && (*data)->exit_status != 2)
+		{
+			if (!pipes_and_one_cmd(data, curr, status))
+			{
+				ft_putendl_fd("exit", 1);
+				if ((*data)->exit_status == 2)
+					err_exit(curr->args->next->content, *status);
+				params_free(&curr, del_params_content);
+				return (0);
+			}
+		}
+		params_free(&curr, del_params_content);
 	}
-	while (curr && --len)
-		curr = curr->next;
-	if (curr)
-		curr->next = NULL;
-	return (newhead);
+	return (1);
 }
 
 static int		programm_logic(t_d **data, int *status)
 {
-	t_params	*curr;
 	int			stat;
 
 	if (ft_strcmp(remove_spaces((*data)->line), ""))
@@ -52,17 +56,8 @@ static int		programm_logic(t_d **data, int *status)
 			return (1);
 		}
 		(*data)->params = parser((*data)->line);
-		while ((*data)->params)
-		{
-			curr = split_list(&(*data)->params, count_params((*data)->params));
-			logname_folder_home((*data)->env, &(*data)->logname, \
-			&(*data)->folder, &(*data)->home);
-			evaluator(data, &curr, status);
-			if (!(*status) && (*data)->exit_status != 2)
-				if (!pipes_and_one_cmd(data, curr, status))
-					return (0);
-			params_free(&curr, del_params_content);
-		}
+		if (!command_work(data, status))
+			return (0);
 	}
 	return (1);
 }
@@ -80,7 +75,6 @@ static int		read_and_write_cmd(t_d *data, int *status)
 	}
 	if (!programm_logic(&data, status))
 	{
-		ft_putendl_fd("exit", 1);
 		del_data_content(data);
 		return (0);
 	}

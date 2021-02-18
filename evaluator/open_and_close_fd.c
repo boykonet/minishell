@@ -34,7 +34,10 @@ static void		redirect_and_name_fd(char *redir, char *name, \
 static void		reopen_fd(char *redir, char *name, t_eval *eval, int *fd)
 {
 	if (*fd > 2)
+	{
 		close_fd(*fd);
+		*fd = -2;
+	}
 	redirect_and_name_fd(redir, name, eval, fd);
 }
 
