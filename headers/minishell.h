@@ -39,33 +39,33 @@ typedef struct		s_params
 	int				in;
 	int				out;
 	int				err;
-	int 			pipe_semic;
+	int				pipe_semic;
 	struct s_params	*next;
 }					t_params;
 
-typedef struct 		s_lexic
+typedef struct		s_lexic
 {
-	int 			quotes;
-	int 			escaping;
+	int				quotes;
+	int				escaping;
 }					t_lexic;
 
 typedef struct		s_eval
 {
 	t_env			*env;
-	char 			*home;
+	char			*home;
 	int				status;
 	int				exit_status;
 	int				quotes;
-	int 			dollar_flag;
+	int				dollar_flag;
 }					t_eval;
 
-typedef struct 		s_pipes
+typedef struct		s_pipes
 {
-	int 			lpipe[2];
-	int 			rpipe[2];
+	int				lpipe[2];
+	int				rpipe[2];
 	pid_t			*childpid;
-	int 			size_params;
-	int 			position;
+	int				size_params;
+	int				position;
 }					t_pipes;
 
 typedef struct		s_d
@@ -76,7 +76,7 @@ typedef struct		s_d
 	char			*line;
 	char			*folder;
 	char			*logname;
-	char 			*home;
+	char			*home;
 	int				origfd[2];
 	int				argc;
 	int				exit_status;

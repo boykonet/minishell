@@ -52,8 +52,9 @@ size_t				number_of_lines(char **arr);
 int					getcharacter(int fd, char **line);
 
 void				init_params(t_params **params);
-void 				init_pipes(t_pipes *pp);
+void				init_pipes(t_pipes *pp);
 void				init_data(t_d **data);
+void				init_eval(t_d **data, t_eval *eval, const int *status);
 
 int					check_command(char *cmd);
 int					check_word(t_list *str);
@@ -62,6 +63,7 @@ char				**ft_split_by_colon(char *str, char c);
 void				*ft_split_by_quation(char *str, t_env *lst, char c);
 
 void				print_prompt_line(t_d *data, int signo);
-void				logname_folder_home(t_env *env, char **logname, char **folder, char **home);
+void				logname_folder_home(t_env *env, char **logname, \
+					char **folder, char **home);
 
 #endif

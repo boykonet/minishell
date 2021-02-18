@@ -14,7 +14,7 @@
 #include "builtins.h"
 #include "other.h"
 
-char			*find_cmd(t_d **data, t_params *par, int *status)
+char			*name_cmd(t_d **data, t_params *par, int *status)
 {
 	char		*cmd;
 
@@ -80,7 +80,7 @@ int				create_process(t_d **data, t_params *par, \
 	int			status;
 
 	status = 0;
-	cmd = find_cmd(data, par, &status);
+	cmd = name_cmd(data, par, &status);
 	if (status > 0)
 		return (status);
 	if ((pid = fork()) == -1)

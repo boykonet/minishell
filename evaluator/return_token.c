@@ -15,21 +15,30 @@
 #include "minishell.h"
 #include "lexic.h"
 
-char 		*token_without_quotes(char **line, t_eval *eval, const int *spec_char)
+static char		*home_token(t_eval *eval)
 {
-	char 	*curr;
+	char		*curr;
+
+	if ((curr = find_data_in_env(eval->env, "HOME", 0)))
+		curr = ft_strdup(curr);
+	else
+		curr = ft_strdup(eval->home);
+	if (!curr)
+		exit(errno);
+	return (curr);
+}
+
+static char		*token_without_quotes(char **line, t_eval *eval, \
+				const int *spec_char)
+{
+	char		*curr;
 
 	curr = NULL;
 	if (*(*line) == '$' && !(*spec_char))
 		curr = expand_env_arg(line, eval);
 	else if (*(*line) == '~' && !(*spec_char))
 	{
-		if ((curr = find_data_in_env(eval->env, "HOME", 0)))
-			curr = ft_strdup(curr);
-		else
-			curr = ft_strdup(eval->home);
-		if (!curr)
-			exit(errno);
+		curr = home_token(eval);
 		(*line)++;
 	}
 	else
@@ -38,15 +47,17 @@ char 		*token_without_quotes(char **line, t_eval *eval, const int *spec_char)
 			exit(errno);
 		if (*(*line) == '\\' && !(*spec_char))
 			(*line)++;
-		curr[0] = *(*line)++;
+		curr[0] = *(*line);
+		if (*(*line))
+			(*line)++;
 	}
 	return (curr);
 }
 
-char 		*check_line(char **line, t_eval *eval)
+static char		*check_line(char **line, t_eval *eval)
 {
-	char	*curr;
-	int 	spec_char;
+	char		*curr;
+	int			spec_char;
 
 	spec_char = 0;
 	curr = NULL;
@@ -62,11 +73,33 @@ char 		*check_line(char **line, t_eval *eval)
 	return (curr);
 }
 
-char 		*return_token(char **line, t_eval *eval)
+static void		token_res(char **line, t_eval *eval, char **res)
 {
-	char 	*res;
-	char 	*tmp;
-	char 	*curr;
+	char		*curr;
+	char		*tmp;
+
+	while (*(*line))
+	{
+		if (spec_symb(eval->quotes, 0, *(*line)))
+			break ;
+		tmp = *res;
+		if (!(curr = check_line(line, eval)))
+		{
+			free(tmp);
+			exit(errno);
+		}
+		*res = ft_strjoin(*res, curr);
+		free(tmp);
+		tmp = NULL;
+		free(curr);
+		if (!(*res))
+			exit(errno);
+	}
+}
+
+char			*return_token(char **line, t_eval *eval)
+{
+	char		*res;
 
 	eval->quotes = 0;
 	eval->dollar_flag = 0;
@@ -75,23 +108,7 @@ char 		*return_token(char **line, t_eval *eval)
 	{
 		if (!(res = ft_strdup("")))
 			exit(errno);
-		while (*(*line))
-		{
-			if (spec_symb(eval->quotes, 0, *(*line)))
-				break;
-			tmp = res;
-			if (!(curr = check_line(line, eval)))
-			{
-				free(tmp);
-				exit(errno);
-			}
-			res = ft_strjoin(res, curr);
-			free(tmp);
-			tmp = NULL;
-			free(curr);
-			if (!res)
-				exit(errno);
-		}
+		token_res(line, eval, &res);
 	}
 	return (res);
 }

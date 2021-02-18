@@ -8,6 +8,7 @@ include_directories(gnl)
 set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -I ../headers -L. -lft -lftprintf")
 
 add_executable(srcs
+		builtins/arg_for_cd.c
 		builtins/builtins.c
 builtins/create_process.c
 builtins/find_path.c
@@ -22,6 +23,8 @@ builtins/pipes.c
 builtins/pipes_and_one_cmd.c
 builtins/print_notification.c
 builtins/signals.c
+		evaluator/check_lists.c
+		builtins/child_parent.c
 evaluator/evaluator.c
 evaluator/expand_env_arg.c
 evaluator/handling_tokens_with_quotes.c

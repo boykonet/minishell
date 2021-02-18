@@ -1,117 +1,36 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   evaluator.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gkarina <gkarina@student.21-school.ru>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/02/18 02:03:59 by gkarina           #+#    #+#             */
+/*   Updated: 2021/02/18 02:03:59 by gkarina          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "minishell.h"
 #include "evaluator.h"
 #include "other.h"
 #include "lexic.h"
 
-t_list 			*list_dollar(char **line, t_eval *eval)
+static void			redefinition(t_d **data, t_eval *eval, int *status)
 {
-	t_list		*list;
-	char 		*token;
-
-	list = NULL;
-	*line = remove_spaces(*line);
-	token = *line;
-	if (*(*line))
+	if (eval->status > 0 && eval->exit_status == 1)
 	{
-		if (spec_symb(eval->quotes, 0, *(*line)) > 1)
-		{
-			lexic_token(line, 1);
-			token = ft_substr(token, 0, *line - token);
-		}
-		else
-			token = return_token(line, eval);
-		if (token)
-		{
-			if (!(list = ft_lstnew(token)))
-				exit(errno);
-		}
+		eval->status = 0;
+		eval->exit_status = 0;
 	}
-	return (list);
+	(*data)->exit_status = eval->exit_status;
+	*status = eval->status;
 }
 
-t_list			*dollar_tokens(char *line, t_eval *eval)
+void				evaluator(t_d **data, t_params **par, int *status)
 {
-	t_list		*head;
-	t_list		*list;
-
-	list = NULL;
-	if ((head = list_dollar(&line, eval)))
-		list = head;
-	while (*line)
-	{
-		if ((list->next = list_dollar(&line, eval)))
-			list = list->next;
-	}
-	return (head);
-}
-
-void			check_lists(t_params *params, t_eval *eval)
-{
-	t_list		*list;
-	t_list		*next;
-	t_list		*tokens;
-	t_list		*redir;
-	t_list		*name;
-	char 		*tmp;
-	char 		*tmp2;
-
-	tmp = NULL;
-	list = params->args;
-	while (list && eval->exit_status != 2)
-	{
-		if (!ft_strcmp(list->content, ">>") || !ft_strcmp(list->content, ">") || !ft_strcmp(list->content, "<"))
-		{
-			redir = list;
-			name = list->next;
-			next = list->next->next;
-			open_and_close_fd(redir->content, name->content, eval, &params);
-			if (!eval->exit_status)
-			{
-				lst_delete(&params->args, redir);
-				lst_delete(&params->args, name);
-			}
-			list = next;
-		}
-		else
-		{
-			tmp = (char*)list->content;
-			next = list->next;
-			tmp2 = tmp;
-			list->content = return_token(&tmp2, eval);
-			if (list->content)
-			{
-				if (!ft_strcmp(list->content, "") && !eval->quotes)
-					lst_delete(&params->args, list);
-				else if (ft_strchr(list->content, ' ') && !eval->quotes && eval->dollar_flag == 1)
-				{
-					tokens = dollar_tokens(list->content, eval);
-					lst_replase(&params->args, &tokens, list);
-				}
-			}
-			free(tmp);
-			list = next;
-			tmp = NULL;
-		}
-	}
-}
-
-void 			init_eval(t_d **data, t_eval *eval, const int *status)
-{
-	eval->exit_status = (*data)->exit_status == 2 ? 1 : 0;
-	eval->dollar_flag = 0;
-	eval->env = (*data)->env;
-	eval->quotes = 0;
-	eval->status = *status;
-	eval->home = (*data)->home;
-
-}
-
-void 			evaluator(t_d **data, t_params **par, int *status)
-{
-	t_eval		eval;
-	t_params	*curr;
-	t_params	*next;
+	t_eval			eval;
+	t_params		*curr;
+	t_params		*next;
 
 	init_eval(data, &eval, status);
 	curr = (*par);
@@ -125,15 +44,11 @@ void 			evaluator(t_d **data, t_params **par, int *status)
 			(*par) = next;
 		}
 		else
+		{
 			if (eval.exit_status == 2 || curr->pipe_semic == 2)
 				break ;
+		}
 		curr = next;
 	}
-	if (eval.status > 0 && eval.exit_status == 1)
-	{
-		eval.status = 0;
-		eval.exit_status = 0;
-	}
-	(*data)->exit_status = eval.exit_status;
-	*status = eval.status;
+	redefinition(data, &eval, status);
 }

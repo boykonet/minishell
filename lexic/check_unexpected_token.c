@@ -16,19 +16,17 @@
 int				check_unexpected_token(char *token)
 {
 	char		**err;
-	int 		status;
+	int			status;
 	int			i;
 
 	i = 0;
 	status = 0;
 	err = (char*[]) {">>", "<<", ";;", "||", "&&", "<", ">", "(", ")", ";", \
-						"|", "&", NULL};
+						"|", "&", "", NULL};
 	token = remove_spaces(token);
 	while (err[i])
 	{
-		if (*token == *err[i] && \
-		!ft_strncmp(err[i], token, ft_strlen(err[i])) && \
-		!ft_isalpha(*(token + ft_strlen(err[i]))))
+		if (!ft_strcmp(err[i], token))
 		{
 			ft_putstr_fd("-minishell: syntax error near unexpected token `", 2);
 			if (!ft_strncmp(token, "", 1))

@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   shape_name_fd.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gkarina <gkarina@student.21-school.r       +#+  +:+       +#+        */
+/*   By: gkarina <gkarina@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/10 23:38:41 by gkarina           #+#    #+#             */
 /*   Updated: 2021/02/10 23:38:41 by gkarina          ###   ########.fr       */
@@ -13,9 +13,9 @@
 #include "minishell.h"
 #include "evaluator.h"
 
-static void 	token_with_dollar_error(char *start, char *end, t_eval *eval)
+static void		token_with_dollar_error(char *start, char *end, t_eval *eval)
 {
-	char 		*res;
+	char		*res;
 
 	if (!(res = ft_substr(start, 0, end - start)))
 		exit(errno);
@@ -29,8 +29,8 @@ static void 	token_with_dollar_error(char *start, char *end, t_eval *eval)
 
 static char		*token_with_dollar(char *line, t_eval *eval)
 {
-	char 		*end;
-	char 		*res;
+	char		*end;
+	char		*res;
 
 	end = line;
 	res = NULL;

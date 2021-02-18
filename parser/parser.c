@@ -14,10 +14,10 @@
 #include "minishell.h"
 #include "lexic.h"
 
-char 			*simple_token(char **line)
+static char		*simple_token(char **line)
 {
-	char 	*res;
-	char 	*curr;
+	char		*res;
+	char		*curr;
 
 	curr = *line;
 	lexic_token(line, 1);
@@ -27,10 +27,10 @@ char 			*simple_token(char **line)
 	return (res);
 }
 
-t_list 			*write_token_to_list(char **line)
+static t_list	*write_token_to_list(char **line)
 {
-	t_list 		*list;
-	char 		*str;
+	t_list		*list;
+	char		*str;
 
 	str = simple_token(line);
 	if (ft_strcmp(str, ""))
@@ -43,9 +43,9 @@ t_list 			*write_token_to_list(char **line)
 	return (NULL);
 }
 
-t_list			*elem_list(char **line, int *pipe_semic)
+static t_list	*elem_list(char **line, int *pipe_semic)
 {
-	t_list 		*list;
+	t_list		*list;
 
 	list = NULL;
 	(*line) = remove_spaces((*line));
@@ -58,9 +58,9 @@ t_list			*elem_list(char **line, int *pipe_semic)
 	return (list);
 }
 
-t_list 			*new_lists(char **line, int *pipe_semic)
+static t_list	*new_lists(char **line, int *pipe_semic)
 {
-	t_list 		*head;
+	t_list		*head;
 	t_list		*list;
 
 	head = elem_list(line, pipe_semic);
@@ -76,11 +76,11 @@ t_list 			*new_lists(char **line, int *pipe_semic)
 	return (head);
 }
 
-t_params 		*parser(char *line)
+t_params		*parser(char *line)
 {
 	t_params	*head;
 	t_params	*elem;
-	int 		pipe_semic;
+	int			pipe_semic;
 
 	pipe_semic = 0;
 	head = new_params_element();

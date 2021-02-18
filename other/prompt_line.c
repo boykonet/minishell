@@ -13,21 +13,10 @@
 #include "minishell.h"
 #include "other.h"
 
-void 			init_home(t_env *env, char **home)
-{
-	char 		*line;
-
-	if ((line = find_data_in_env(env, "HOME", 0)))
-		if (!(*home = ft_strdup(line)))
-			exit(errno);
-}
-
-void			logname_folder_home(t_env *env, char **logname, char **folder, char **home)
+void			init_home(t_env *env, char **home)
 {
 	char		*line;
-//	int 		flag;
 
-//	flag = find_data_in_env(env, "HOME", 0) ? 1 : 0;
 	if ((line = find_data_in_env(env, "HOME", 0)))
 	{
 		if (*home)
@@ -35,6 +24,14 @@ void			logname_folder_home(t_env *env, char **logname, char **folder, char **hom
 		if (!(*home = ft_strdup(line)))
 			exit(errno);
 	}
+}
+
+void			logname_folder_home(t_env *env, char **logname, \
+				char **folder, char **home)
+{
+	char		*line;
+
+	init_home(env, home);
 	if ((line = find_data_in_env(env, "LOGNAME", 0)))
 	{
 		if (*logname)

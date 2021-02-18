@@ -14,9 +14,10 @@
 #include "evaluator.h"
 #include "minishell.h"
 
-void			redirect_and_name_fd(char *redir, char *name, t_eval *eval, int *fd)
+static void		redirect_and_name_fd(char *redir, char *name, \
+				t_eval *eval, int *fd)
 {
-	char 		*nfd;
+	char		*nfd;
 
 	nfd = shape_name_fd(name, eval);
 	if (eval->exit_status != 2)
@@ -37,7 +38,8 @@ static void		reopen_fd(char *redir, char *name, t_eval *eval, int *fd)
 	redirect_and_name_fd(redir, name, eval, fd);
 }
 
-void			open_and_close_fd(char *redir, char *name, t_eval *eval, t_params **params)
+void			open_and_close_fd(char *redir, char *name, \
+				t_eval *eval, t_params **params)
 {
 	if (number_of_redirect(redir) == 0)
 		reopen_fd(redir, name, eval, &((*params)->in));

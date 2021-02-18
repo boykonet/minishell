@@ -36,6 +36,25 @@ void			add_params_env(t_env **curr, char *name, char *value)
 	ft_lstadd_back_env(curr, new);
 }
 
+static void		add_elem(t_env **env)
+{
+	char		*tmp;
+
+	tmp = NULL;
+	if (!find_data_in_env(*env, "OLDPWD", 0))
+		add_params_env(env, "OLDPWD", NULL);
+	if (!find_data_in_env(*env, "HOME", 0))
+		add_params_env(env, "HOME", "/");
+	if (!find_data_in_env(*env, "LOGNAME", 0))
+		add_params_env(env, "LOGNAME", "logname");
+	if (!find_data_in_env(*env, "PWD", 0))
+	{
+		ft_pwd(&tmp);
+		add_params_env(env, "PWD", tmp);
+		free(tmp);
+	}
+}
+
 t_env			*copy_envp_to_struct(char **envp)
 {
 	t_env		*env;
@@ -55,17 +74,6 @@ t_env			*copy_envp_to_struct(char **envp)
 		init_name_value(envp[i], tmp, &curr->next->name, &curr->next->value);
 		curr = curr->next;
 	}
-	if (!find_data_in_env(env, "OLDPWD", 0))
-		add_params_env(&curr, "OLDPWD", NULL);
-	if (!find_data_in_env(env, "HOME", 0))
-		add_params_env(&curr, "HOME", "/");
-	if (!find_data_in_env(env, "LOGNAME", 0))
-		add_params_env(&curr, "LOGNAME", "logname");
-	if (!find_data_in_env(env, "PWD", 0))
-	{
-		ft_pwd(&tmp);
-		add_params_env(&curr, "PWD", tmp);
-		free(tmp);
-	}
+	add_elem(&env);
 	return (env);
 }

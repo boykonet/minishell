@@ -1,6 +1,8 @@
 NAME = minishell
 
-MINISRCS =	builtins/builtins.c \
+MINISRCS =	builtins/arg_for_cd.c \
+			builtins/builtins.c \
+			builtins/child_parent.c \
 			builtins/create_process.c \
 			builtins/find_path.c \
 			builtins/ft_cd.c \
@@ -14,6 +16,7 @@ MINISRCS =	builtins/builtins.c \
             builtins/pipes_and_one_cmd.c \
             builtins/print_notification.c \
             builtins/signals.c \
+			evaluator/check_lists.c \
             evaluator/evaluator.c \
             evaluator/expand_env_arg.c \
             evaluator/handling_tokens_with_quotes.c \

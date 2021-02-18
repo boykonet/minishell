@@ -28,7 +28,9 @@ static char		*single_quotes(char **line)
 		curr++;
 	}
 	token = ft_substr((*line), 1, curr - (*line) - 1);
-	(*line) = ++curr;
+	(*line) = curr;
+	if (*(*line) == '\'')
+		(*line)++;
 	if (!token)
 		exit(errno);
 	return (token);

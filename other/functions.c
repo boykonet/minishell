@@ -50,7 +50,7 @@ char		**copy_array(char **src)
 	return (res);
 }
 
-void			close_fd(int fd)
+void		close_fd(int fd)
 {
 	if (close(fd) < 0)
 	{

@@ -19,7 +19,7 @@
 
 static int		programm_logic(t_d **data, int *status)
 {
-	t_params 	*curr;
+	t_params	*curr;
 	int			stat;
 
 	if (ft_strcmp(remove_spaces((*data)->line), ""))
@@ -34,7 +34,8 @@ static int		programm_logic(t_d **data, int *status)
 		curr = (*data)->params;
 		while (curr)
 		{
-			logname_folder_home((*data)->env, &(*data)->logname, &(*data)->folder, &(*data)->home);
+			logname_folder_home((*data)->env, &(*data)->logname, \
+			&(*data)->folder, &(*data)->home);
 			evaluator(data, &curr, status);
 			if (curr && !(*status) && (*data)->exit_status != 2)
 				if (!pipes_and_one_cmd(data, &curr, status))

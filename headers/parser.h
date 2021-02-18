@@ -16,6 +16,6 @@
 # include "minishell.h"
 
 t_params			*parser(char *line);
-char 				*simple_token(char **line);
+char				*simple_token(char **line);
 
 #endif
