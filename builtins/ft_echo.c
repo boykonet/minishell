@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "builtins.h"
-#include "other.h"
+#include "utils.h"
 
 static void		newline(t_list **curr, int *flag)
 {

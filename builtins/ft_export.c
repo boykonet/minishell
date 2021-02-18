@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include "other.h"
+#include "utils.h"
 #include "builtins.h"
 
 static void		print_comma(char **str, int k, int i)

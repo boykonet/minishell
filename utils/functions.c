@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "other.h"
+#include "utils.h"
 
 size_t			number_of_lines(char **arr)
 {

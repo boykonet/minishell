@@ -1,28 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_split_by.c                                      :+:      :+:    :+:   */
+/*   check_command.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gkarina <gkarina@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/02/18 03:21:11 by gkarina           #+#    #+#             */
-/*   Updated: 2021/02/18 03:21:11 by gkarina          ###   ########.fr       */
+/*   Created: 2021/01/29 18:25:38 by gkarina           #+#    #+#             */
+/*   Updated: 2021/01/29 18:25:38 by gkarina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include "utils.h"
 
-void		*ft_split_by_quation(char *str, t_env *lst, char c)
+int			check_command(char *cmd)
 {
-	char	*tmp;
+	char	**arr;
+	int		count;
 
-	tmp = ft_strchr(str, c);
-	lst->name = ft_substr(str, 0, tmp - str);
-	if (*(tmp + 1) == '\0')
-		lst->value = ft_strdup("");
-	else
-		lst->value = ft_substr(tmp, 1, ft_strlen(str));
-	if (!lst->name || !lst->value)
-		exit(errno);
-	return (tmp);
+	arr = (char*[]) { "echo", "pwd", "cd", "env", "export", "unset", \
+					"exit", NULL };
+	count = 0;
+	while (arr[count])
+	{
+		if (!ft_strcmp(arr[count], cmd))
+			return (0);
+		count++;
+	}
+	return (1);
 }

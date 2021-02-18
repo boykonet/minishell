@@ -12,7 +12,7 @@
 
 #include "builtins.h"
 #include "minishell.h"
-#include "other.h"
+#include "utils.h"
 
 static int	seven_commands(t_d **data, t_params *params)
 {

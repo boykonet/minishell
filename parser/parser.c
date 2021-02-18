@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "other.h"
+#include "utils.h"
 #include "minishell.h"
 #include "lexic.h"
 
@@ -18,9 +18,17 @@ static char		*simple_token(char **line)
 {
 	char		*res;
 	char		*curr;
+	char		c;
 
 	curr = *line;
-	lexic_token(line, 1);
+	c = *(*line);
+	if (c == '<' || c == '>')
+	{
+		while (*(*line) && c == *(*line))
+			(*line)++;
+	}
+	else
+		lexic_token(line, 1);
 	res = ft_substr(curr, 0, *line - curr);
 	if (!res)
 		exit(errno);

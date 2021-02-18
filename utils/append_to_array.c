@@ -1,28 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_split_by.c                                      :+:      :+:    :+:   */
+/*   append_to_array.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gkarina <gkarina@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/02/18 03:21:11 by gkarina           #+#    #+#             */
-/*   Updated: 2021/02/18 03:21:11 by gkarina          ###   ########.fr       */
+/*   Created: 2021/01/18 22:34:35 by gkarina           #+#    #+#             */
+/*   Updated: 2021/01/18 22:34:35 by gkarina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void		*ft_split_by_quation(char *str, t_env *lst, char c)
+char		*append_to_array(char *src, char symb)
 {
-	char	*tmp;
+	char	*dst;
+	int		i;
 
-	tmp = ft_strchr(str, c);
-	lst->name = ft_substr(str, 0, tmp - str);
-	if (*(tmp + 1) == '\0')
-		lst->value = ft_strdup("");
-	else
-		lst->value = ft_substr(tmp, 1, ft_strlen(str));
-	if (!lst->name || !lst->value)
+	i = 0;
+	if (!(dst = ft_calloc(ft_strlen(src) + 2, sizeof(char))))
 		exit(errno);
-	return (tmp);
+	while (src[i])
+	{
+		dst[i] = src[i];
+		i++;
+	}
+	dst[i] = symb;
+	dst[++i] = '\0';
+	return (dst);
 }

@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include "other.h"
+#include "utils.h"
 
 static void		pwd_oldpwd(t_env **env, t_env **pwd, t_env **oldpwd)
 {
@@ -63,7 +63,7 @@ static int		cd_minus(t_list *args, t_env **env, char **res)
 		ft_putendl_fd("-minishell: cd: OLDPWD not set", 2);
 		return (1);
 	}
-	else if (ft_strcmp(args->content, "--"))
+	else if (*(char*)(args->content + 1) != ' ' && *(char*)(args->content + 1))
 	{
 		ft_putstr_fd("-minishell: cd: ", 2);
 		ft_putchar_fd(*(char*)args->content, 2);

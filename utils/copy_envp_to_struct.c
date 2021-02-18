@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "other.h"
+#include "utils.h"
 #include "builtins.h"
 
 static void		init_name_value(char *str, \

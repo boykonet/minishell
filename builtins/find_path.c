@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include "other.h"
+#include "utils.h"
 
 static char			*read_dir(char **dirs, int i, char *old_cmd)
 {
@@ -106,7 +106,7 @@ char				*find_path(char *old_cmd, char *path, int *status)
 		return (NULL);
 	fn_arg_req(old_cmd, status);
 	while (!(*status) && dirs[i] && ft_strcmp(old_cmd, "..") && \
-	!ft_strchr(old_cmd, '/'))
+	!ft_strchr(old_cmd, '/') && check_command(old_cmd))
 	{
 		if ((cmd = read_dir(dirs, i, old_cmd)))
 			break ;

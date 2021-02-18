@@ -13,7 +13,7 @@
 #include "minishell.h"
 #include "parser.h"
 #include "builtins.h"
-#include "other.h"
+#include "utils.h"
 #include "evaluator.h"
 #include "lexic.h"
 

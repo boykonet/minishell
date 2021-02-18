@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "other.h"
+#include "utils.h"
 #include "minishell.h"
 
 t_env			*ft_lstnew_env(void *name, void *value)

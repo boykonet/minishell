@@ -12,8 +12,7 @@
 
 #include "minishell.h"
 #include "evaluator.h"
-#include "other.h"
-#include "lexic.h"
+#include "utils.h"
 
 static void			redefinition(t_d **data, t_eval *eval, int *status)
 {
@@ -43,11 +42,8 @@ void				evaluator(t_d **data, t_params **par, int *status)
 			params_delete(&(*data)->params, curr);
 			(*par) = next;
 		}
-		else
-		{
-			if (eval.exit_status == 2 || curr->pipe_semic == 2)
-				break ;
-		}
+		else if (eval.exit_status == 2)
+			break ;
 		curr = next;
 	}
 	redefinition(data, &eval, status);

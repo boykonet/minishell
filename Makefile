@@ -1,3 +1,15 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: gkarina <gkarina@student.21-school.ru>     +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2021/02/18 16:10:01 by gkarina           #+#    #+#              #
+#    Updated: 2021/02/18 16:10:01 by gkarina          ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 NAME = minishell
 
 MINISRCS =	builtins/arg_for_cd.c \
@@ -27,31 +39,32 @@ MINISRCS =	builtins/arg_for_cd.c \
             evaluator/shape_name_fd.c \
             lexic/check_unexpected_token.c \
             lexic/lexic.c \
-            other/append_to_array.c \
-            other/check_command.c \
-            other/check_word.c \
-            other/convert_from_to.c \
-			other/copy_envp_to_struct.c \
-			other/create_new_elements.c \
-			other/del_content.c \
-			other/find_in_env.c \
-            other/free_params_in_struct.c \
-            other/ft_lstadd_back_env.c \
-            other/ft_lstsize_env.c \
-            other/ft_split_by.c \
-            other/ft_strcmp.c \
-			other/functions.c \
-			other/getcharacter.c \
-			other/init.c \
-			other/lst_func.c \
-			other/params_del.c \
-			other/prompt_line.c \
-			other/sort.c \
+            lexic/lexic_token.c \
+            utils/append_to_array.c \
+            utils/check_command.c \
+            utils/check_word.c \
+            utils/convert_from_to.c \
+			utils/copy_envp_to_struct.c \
+			utils/create_new_elements.c \
+			utils/del_content.c \
+			utils/find_in_env.c \
+            utils/free_params_in_struct.c \
+            utils/ft_lstadd_back_env.c \
+            utils/ft_lstsize_env.c \
+            utils/ft_split_by.c \
+            utils/ft_strcmp.c \
+			utils/functions.c \
+			utils/getcharacter.c \
+			utils/init.c \
+			utils/lst_func.c \
+			utils/params_del.c \
+			utils/prompt_line.c \
+			utils/sort.c \
 			parser/parser.c
 
 CFLAGS = -fsanitize=address -fsanitize=leak -fno-omit-frame-pointer -g -Wall -Wextra -Werror
 
-SRCS =  ./other/main.c $(MINISRCS)
+SRCS =  ./utils/main.c $(MINISRCS)
 
 MINIOBJS = $(MINISRCS:%.c=%.o)
 
@@ -59,7 +72,7 @@ OBJS = $(SRCS:%.c=%.o)
 
 HEADERS =	./headers/minishell.h \
 			./headers/builtins.h \
-			./headers/other.h \
+			./headers/utils.h \
 			./headers/parser.h \
 			./libs/libft/libft.h
 
@@ -70,7 +83,7 @@ CC = gcc
 all: $(NAME)
 
 $(NAME): $(OBJS) libft.a libminishell.a $(HEADERS)
-	$(CC) $(CFLAGS) -L. -I $(INCLUDEDIR) -o $@ ./other/main.c -lminishell -lft ; export LSAN_OPTIONS=detect_leaks=1
+	$(CC) $(CFLAGS) -L. -I $(INCLUDEDIR) -o $@ ./utils/main.c -lminishell -lft ; export LSAN_OPTIONS=detect_leaks=1
 
 libft.a:
 	$(MAKE) bonus -C ./libs/libft CC=$(CC)

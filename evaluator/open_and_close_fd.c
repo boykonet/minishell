@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "other.h"
+#include "utils.h"
 #include "evaluator.h"
 #include "minishell.h"
 

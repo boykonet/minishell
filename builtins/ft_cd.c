@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "builtins.h"
-#include "other.h"
+#include "utils.h"
 #include "minishell.h"
 
 static int		chdir_in_work(char *path)

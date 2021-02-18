@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include "other.h"
+#include "utils.h"
 
 int				check_unexpected_token(char *token)
 {

@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include "other.h"
+#include "utils.h"
 #include "builtins.h"
 
 static int		write_in_fd(t_d **data, t_params *par, char **args, \

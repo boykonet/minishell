@@ -1,28 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_split_by.c                                      :+:      :+:    :+:   */
+/*   ft_strcmp.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gkarina <gkarina@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/02/18 03:21:11 by gkarina           #+#    #+#             */
-/*   Updated: 2021/02/18 03:21:11 by gkarina          ###   ########.fr       */
+/*   Created: 2021/02/18 03:28:56 by gkarina           #+#    #+#             */
+/*   Updated: 2021/02/18 03:28:56 by gkarina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
-
-void		*ft_split_by_quation(char *str, t_env *lst, char c)
+int			ft_strcmp(const char *s1, const char *s2)
 {
-	char	*tmp;
-
-	tmp = ft_strchr(str, c);
-	lst->name = ft_substr(str, 0, tmp - str);
-	if (*(tmp + 1) == '\0')
-		lst->value = ft_strdup("");
-	else
-		lst->value = ft_substr(tmp, 1, ft_strlen(str));
-	if (!lst->name || !lst->value)
-		exit(errno);
-	return (tmp);
+	while (*s1 || *s2)
+	{
+		if (*s1 != *s2)
+			return ((unsigned char)*s1 - (unsigned char)*s2);
+		s1++;
+		s2++;
+	}
+	return (0);
 }

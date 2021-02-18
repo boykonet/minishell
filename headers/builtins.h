@@ -24,7 +24,7 @@ int					ft_export(t_env **env, t_params *argv);
 int					ft_unset(t_env **env, t_params *argv);
 int					ft_exit(t_list *args, int *error_status);
 
-int					pipes_and_one_cmd(t_d **data, t_params **par, int *status);
+int					pipes_and_one_cmd(t_d **data, t_params *par, int *status);
 int					pipes(t_d **data, t_params **params);
 int					parent_pipes(t_pipes *pp);
 void				fork_child_proc(t_d **data, t_params *par, t_pipes *pp);

@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "evaluator.h"
-#include "other.h"
+#include "utils.h"
 #include "minishell.h"
 
 static char		*single_quotes(char **line)

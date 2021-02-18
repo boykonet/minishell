@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "builtins.h"
-#include "other.h"
+#include "utils.h"
 #include "minishell.h"
 
 static void		work_child_proc(t_d **data, t_params *par, t_pipes *pp)
@@ -37,17 +37,11 @@ static void		work_child_proc(t_d **data, t_params *par, t_pipes *pp)
 static int		pipes_in_work(t_d **data, t_params **params)
 {
 	t_pipes		pp;
-	t_params	*curr;
 	int			status;
 
 	init_pipes(&pp);
-	curr = (*params);
-	while (curr && curr->pipe_semic == 1)
-	{
-		pp.size_params++;
-		curr = curr->next;
-	}
-	if (!(pp.childpid = ft_calloc(++pp.size_params, sizeof(pid_t))))
+	pp.size_params = ft_lstsize_params(*params);
+	if (!(pp.childpid = ft_calloc(pp.size_params, sizeof(pid_t))))
 		exit(errno);
 	while (pp.position < pp.size_params)
 	{

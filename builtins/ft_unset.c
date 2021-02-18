@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include "other.h"
+#include "utils.h"
 #include "builtins.h"
 
 static void		env_item_free(t_env *env, t_env *prev, void (*del)(t_env *))

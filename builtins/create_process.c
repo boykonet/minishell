@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 #include "builtins.h"
-#include "other.h"
+#include "utils.h"
 
 char			*name_cmd(t_d **data, t_params *par, int *status)
 {

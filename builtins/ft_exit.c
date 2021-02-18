@@ -40,6 +40,7 @@ static int		exit_error(char *str, int *error_status, int overflow,\
 	status = 0;
 	if (overflow)
 	{
+		ft_putendl_fd("exit", 1);
 		ft_putstr_fd("-minishell: exit: ", 2);
 		ft_putstr_fd(str, 2);
 		ft_putendl_fd(": numeric argument required", 2);
@@ -48,6 +49,7 @@ static int		exit_error(char *str, int *error_status, int overflow,\
 	}
 	else if (many_arg)
 	{
+		ft_putendl_fd("exit", 1);
 		ft_putendl_fd("-minishell: exit: too many arguments", 2);
 		status = 1;
 		*error_status = 2;
@@ -73,7 +75,6 @@ int				ft_exit(t_list *args, int *error_status)
 		many_arg = 1;
 	if (args)
 		arg_exit(args->content, &neg, &long_num, &overflow);
-	ft_putendl_fd("exit", 1);
 	if (args && (answ = exit_error(args->content, error_status, \
 	overflow, many_arg)) > 0)
 		long_num = answ;

@@ -1,28 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_split_by.c                                      :+:      :+:    :+:   */
+/*   params_del.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gkarina <gkarina@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/02/18 03:21:11 by gkarina           #+#    #+#             */
-/*   Updated: 2021/02/18 03:21:11 by gkarina          ###   ########.fr       */
+/*   Created: 2021/02/18 03:20:48 by gkarina           #+#    #+#             */
+/*   Updated: 2021/02/18 03:20:48 by gkarina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include "utils.h"
 
-void		*ft_split_by_quation(char *str, t_env *lst, char c)
+void			params_delete(t_params **head, t_params *d)
 {
-	char	*tmp;
+	t_params	**elem;
 
-	tmp = ft_strchr(str, c);
-	lst->name = ft_substr(str, 0, tmp - str);
-	if (*(tmp + 1) == '\0')
-		lst->value = ft_strdup("");
-	else
-		lst->value = ft_substr(tmp, 1, ft_strlen(str));
-	if (!lst->name || !lst->value)
-		exit(errno);
-	return (tmp);
+	elem = head;
+	while (elem && (*elem) && (*elem) != d)
+		elem = &(*elem)->next;
+	if (elem && *elem)
+	{
+		*elem = (*elem)->next;
+		del_params_content(d);
+		free(d);
+	}
 }

@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include "other.h"
+#include "utils.h"
 #include "evaluator.h"
 #include "lexic.h"
 
@@ -25,9 +25,9 @@ static t_list		*list_dollar(char **line, t_eval *eval)
 	token = *line;
 	if (*(*line))
 	{
-		if (spec_symb(eval->quotes, 0, *(*line)) > 1)
+		if (spec_symb(eval->quotes, 0, 0, *(*line)) > 1)
 		{
-			lexic_token(line, 1);
+			lexic_token(line, 2);
 			token = ft_substr(token, 0, *line - token);
 		}
 		else

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "other.h"
+#include "utils.h"
 #include "evaluator.h"
 #include "minishell.h"
 #include "lexic.h"
@@ -80,7 +80,7 @@ static void		token_res(char **line, t_eval *eval, char **res)
 
 	while (*(*line))
 	{
-		if (spec_symb(eval->quotes, 0, *(*line)))
+		if (spec_symb(eval->quotes, 0, 0, *(*line)))
 			break ;
 		tmp = *res;
 		if (!(curr = check_line(line, eval)))
