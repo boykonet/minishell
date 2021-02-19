@@ -62,7 +62,7 @@ MINISRCS =	builtins/arg_for_cd.c \
 			utils/sort.c \
 			parser/parser.c
 
-CFLAGS = -fsanitize=address -fsanitize=leak -fno-omit-frame-pointer -g -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror
 
 SRCS =  ./utils/main.c $(MINISRCS)
 
@@ -83,7 +83,7 @@ CC = gcc
 all: $(NAME)
 
 $(NAME): $(OBJS) libft.a libminishell.a $(HEADERS)
-	$(CC) $(CFLAGS) -L. -I $(INCLUDEDIR) -o $@ ./utils/main.c -lminishell -lft ; export LSAN_OPTIONS=detect_leaks=1
+	$(CC) $(CFLAGS) -L. -I $(INCLUDEDIR) -o $@ ./utils/main.c -lminishell -lft
 
 libft.a:
 	$(MAKE) bonus -C ./libs/libft CC=$(CC)

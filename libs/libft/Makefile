@@ -22,7 +22,7 @@ else
 OBJ_FILES = $(REG_OBJ_FILES)
 endif
 
-FLAGS = -g -Wall -Wextra -Werror
+FLAGS = -Wall -Wextra -Werror
 
 all: $(NAME)
 
