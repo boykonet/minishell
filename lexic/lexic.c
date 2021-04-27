@@ -40,10 +40,10 @@ static int		check_semic_pipes(char **line)
 	int			status;
 
 	status = 0;
-	if (*(*line + 1) == ' ' || *(*line) != *(*line + 1))
+	if ((*(*line + 1) == ' ' || *(*line) == ';') && (*(*line) != *(*line + 1)))
 		(*line)++;
 	*line = remove_spaces(*line);
-	if (*(*line) != '>' && *(*line) != '<')
+	if (*(*line) != '>' && *(*line) != '<' && *(*line) != '\0')
 		status = check_unexpected_token(*line);
 	return (status);
 }

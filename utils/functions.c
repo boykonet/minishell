@@ -66,7 +66,7 @@ int				count_params(t_params *head)
 	size_t		count;
 
 	count = 0;
-	while (head->pipe_semic == 1)
+	while (head && head->pipe_semic == 1)
 	{
 		count++;
 		head = head->next;

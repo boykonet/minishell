@@ -16,15 +16,13 @@
 
 static int	seven_commands(t_d **data, t_params *params)
 {
-	char	*str;
 	int		stat;
 
-	str = NULL;
 	stat = 0;
 	if (!ft_strcmp(params->args->content, "echo"))
 		stat = ft_echo(params->args->next);
 	else if (!ft_strcmp(params->args->content, "pwd"))
-		stat = ft_pwd(&str);
+		stat = ft_pwd();
 	else if (!ft_strcmp(params->args->content, "cd"))
 		stat = ft_cd(params->args->next, &(*data)->env);
 	else if (!ft_strcmp(params->args->content, "export"))
@@ -35,11 +33,6 @@ static int	seven_commands(t_d **data, t_params *params)
 		stat = ft_env(&(*data)->env, params);
 	else if (!ft_strcmp(params->args->content, "exit"))
 		stat = ft_exit(params->args->next, &(*data)->exit_status);
-	if (str)
-	{
-		ft_putendl_fd(str, 1);
-		free(str);
-	}
 	return (stat);
 }
 
@@ -52,7 +45,7 @@ int			builtins(t_d **data, t_params *params)
 	!ft_strcmp(params->args->content, "env"))
 	{
 		ft_putstr_fd("-minishell: ", 2);
-		ft_putstr_fd((*data)->params->args->content, 2);
+		ft_putstr_fd(params->args->content, 2);
 		ft_putendl_fd(": No such file or directory", 2);
 		status = 127;
 		(*data)->exit_status = 2;

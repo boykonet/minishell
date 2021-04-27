@@ -14,56 +14,51 @@
 #include "utils.h"
 #include "builtins.h"
 
-static void		env_item_free(t_env *env, t_env *prev, void (*del)(t_env *))
+void			env_item_free(t_env **head, t_env *d)
 {
-	t_env	*curr;
+	t_env		**elem;
 
-	curr = env->next;
-	if (del)
-		(*del)(env);
-	free(env);
-	prev->next = curr;
+	elem = head;
+	while (elem && (*elem) && (*elem) != d)
+		elem = &(*elem)->next;
+	if (elem && *elem)
+	{
+		*elem = (*elem)->next;
+		del_env_content(d);
+		free(d);
+	}
 }
 
-static void		del_if_found(t_list *smth, t_env *buf, \
-				t_env *buf_prev, t_env *buf_next)
+static void		del_if_found(char *name, t_env **env)
 {
+	t_env		*buf;
+
+	buf = *env;
 	while (buf)
 	{
-		if (!ft_strcmp(smth->content, buf->name))
+		if (!ft_strcmp(name, buf->name))
 		{
-			buf_next = buf->next;
-			env_item_free(buf, buf_prev, del_env_content);
-			buf = buf_next;
+			env_item_free(env, buf);
+			break ;
 		}
-		else if (buf)
-		{
-			buf_prev = buf;
-			buf = buf->next;
-		}
+		buf = buf->next;
 	}
 }
 
 int				ft_unset(t_env **env, t_params *argv)
 {
-	t_list		*smth;
-	t_env		*buf;
-	t_env		*buf_prev;
-	t_env		*buf_next;
+	t_list		*list;
 	int			status;
 
 	status = 0;
-	buf_prev = NULL;
-	buf_next = NULL;
-	smth = argv->args;
-	while (smth->next)
+	list = argv->args;
+	while (list->next)
 	{
-		buf = *env;
-		smth = smth->next;
-		if (check_word(smth))
-			del_if_found(smth, buf, buf_prev, buf_next);
+		list = list->next;
+		if (check_word(list))
+			del_if_found(list->content, env);
 		else
-			status = print_notification(argv, smth);
+			status = print_notification(argv, list);
 	}
 	return (status);
 }

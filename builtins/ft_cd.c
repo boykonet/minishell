@@ -30,15 +30,14 @@ static int		chdir_in_work(char *path)
 static int		get_pwd(char **pwd)
 {
 	errno = 0;
-	ft_pwd(pwd);
-	if (errno > 0)
+	if (!(*pwd = getcwd(NULL, 0)))
 	{
 		ft_putstr_fd("cd: error retrieving current directory: ", 2);
 		ft_putstr_fd("getcwd: cannot access parent directories: ", 2);
 		ft_putendl_fd(strerror(errno), 2);
-		return (errno);
+		return (0);
 	}
-	return (0);
+	return (1);
 }
 
 static int		free_pwd_res(char *res, char *pwd, int status)
@@ -64,7 +63,7 @@ int				ft_cd(t_list *args, t_env **env)
 		return (free_pwd_res(res, pwd, status));
 	if ((status = chdir_in_work(res)) > 0)
 		return (free_pwd_res(res, pwd, status));
-	if (get_pwd(&pwd) > 0)
+	if (!(status = get_pwd(&pwd)))
 		return (free_pwd_res(res, pwd, status));
 	change_pwd(env, pwd);
 	if (args && !ft_strncmp(args->content, "-", ft_strlen(args->content)))

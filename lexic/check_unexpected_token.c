@@ -22,11 +22,11 @@ int				check_unexpected_token(char *token)
 	i = 0;
 	status = 0;
 	err = (char*[]) {">>", "<<", ";;", "||", "&&", "<", ">", "(", ")", ";", \
-						"|", "&", "", NULL};
+						"|", "&", NULL};
 	token = remove_spaces(token);
 	while (err[i])
 	{
-		if (!ft_strcmp(err[i], token))
+		if (!ft_strncmp(err[i], token, ft_strlen(err[i])) || *token == '\0')
 		{
 			ft_putstr_fd("-minishell: syntax error near unexpected token `", 2);
 			if (!ft_strncmp(token, "", 1))

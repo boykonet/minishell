@@ -23,9 +23,9 @@ char		*find_data_in_env(t_env *env, char *needle, int serial_num)
 	val = NULL;
 	while (env)
 	{
-		if (serial_num == 0)
+		if (env->name && serial_num == 0)
 			val = env->name;
-		else if (serial_num == 1)
+		else if (env->value && serial_num == 1)
 			val = env->value;
 		if (!ft_strcmp(val, needle))
 			break ;

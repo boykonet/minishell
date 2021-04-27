@@ -12,8 +12,17 @@
 
 #include "builtins.h"
 
-int			ft_pwd(char **pwd)
+int			ft_pwd(void)
 {
-	*pwd = getcwd(NULL, 0);
+	char	*pwd;
+
+	if (!(pwd = getcwd(NULL, 0)))
+	{
+		ft_putstr_fd("-minishell: pwd: ", 2);
+		ft_putendl_fd(strerror(errno), 2);
+		return (errno);
+	}
+	ft_putendl_fd(pwd, 1);
+	free(pwd);
 	return (0);
 }

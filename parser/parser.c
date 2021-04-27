@@ -28,7 +28,7 @@ static char		*simple_token(char **line)
 			(*line)++;
 	}
 	else
-		lexic_token(line, 1);
+		lexic_token(line, 0);
 	res = ft_substr(curr, 0, *line - curr);
 	if (!res)
 		exit(errno);

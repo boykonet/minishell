@@ -93,7 +93,7 @@ libminishell.a: $(MINIOBJS)
 	ar rcs $@ $^
 	ranlib $@
 
-%.o: %.c
+%.o: %.c $(HEADERS)
 	$(CC) $(CFLAGS) -I $(INCLUDEDIR) -c $< -o $@
 
 clean:
